@@ -1,0 +1,150 @@
+
+%%%%%%%%%%%%%%%
+% GENERAL POINTS
+
+1. Task page:
+http://alt.qcri.org/semeval2014/task5/
+
+2. Github repo:
+https://github.com/iucl/l2-writing-assistant
+
+3. SemEval Schedule
+
+x Task proposals due September 15, 2013
+x Tasks chosen/merged October 15, 2013
+x Trial data ready October 30, 2013
+
+Training data ready December 15, 2013
+Test data ready March 10, 2014
+Evaluation start March 15, 2014
+Evaluation end March 30, 2014
+Paper submission due April 30, 2014 [TBC]
+Paper reviews due May 30, 2014 [TBC]
+Camera ready due June 30, 2014 [TBC]
+SemEval workshop August 23-24, 2014
+
+%%%%%%%%%%%%%%%
+% LEARNER CORPORA
+
+%%%%%
+
+On miller (nlp.indiana.edu):
+
+1) /Volumes/Data/en/NUCLE/
+  * NUS Corpus of Learner English
+  * error-tagged
+  * 1,400 essays written by university students at the National University of Singapore on a wide range of topics
+
+2) /Volumes/Data/en/icle/
+  * International Corpus of Learner English
+  * 
+
+3) /Volumes/Data/en/EFCAMDAT/
+   * EF-CAMbridge open language DATabase (EFCAMDAT):
+   * http://corpus.mml.cam.ac.uk/efcamdat/
+   * "The resource currently contains over 30 million words in written assignments across 16 teaching levels"
+
+%%%%%
+
+Learner corpora around the world:
+http://www.uclouvain.be/en-cecl-lcworld.html
+- The GICLE corpus (German component of ICLE)
+
+%%%%%%%%%%%%%%%
+% THOUGHTS/QUESTIONS
+
+1. When learners code-switch, are they more likely to do so in
+   phrases, or do they have good amounts of word-for-word switches?
+
+   - Hunch: the L2 is more likely to be word-for-word, so translating
+     back to the L1 may be easier, in some sense.
+
+2. When do we need to register?
+   http://alt.qcri.org/semeval2014/index.php?id=registration-1
+
+3. Which of these NUCLE errors are most important to analyze?  Would
+   it make a difference as to what type of code-switching/error we
+   have? (e.g., collocational vs. idiomatic vs. single-word?)
+
+4. Similar questions for EFCAMDAT ...
+
+5. How we can treat ourselves like a bilingual dictionary?  That is
+   what learners are lacking, and that is our role (so to speak).  But
+   there are complications to being a simple dictionary:
+
+   a) there are many possible word/phrase senses
+
+   b) learners may not know exactly what word/phrase they need in the
+   L2, i.e., they may have misused some word or other (e.g., just
+   because I say "run down" doesn't mean that's the phrase that's
+   needed in the L2)
+
+   c) there may be other errors in the context
+
+   Q: would it help to view the dictionary as corrupt and perhaps to
+   derive it, in part, from learner mistakes?  e.g., we could fake
+   transfer errors and then use those to train some type of system?
+
+%%%%%
+
+NUCLE error types
+
+TAG          ERROR TYPE
+--------------------------
+Vt           Verb tense
+Vm           Verb modal
+V0           Missing verb
+Vform        Verb form
+SVA          Subject-verb-agreement
+ArtOrDet     Article or Determiner
+Nn           Noun number
+Npos         Noun possesive
+Pform        Pronoun form
+Pref         Pronoun reference
+Wcip         Wrong collocation/idiom/preposition [7312]
+Wa           Acronyms
+Wform        Word form [2241]
+Wtone        Tone
+Srun         Runons, comma splice
+Smod         Dangling modifier
+Spar         Parallelism
+Sfrag        Fragment
+Ssub         Subordinate clause
+WOinc        Incorrect sentence form
+WOadv        Adverb/adjective position
+Trans        Link word/phrases
+Mec          Punctuation, capitalization, spelling, typos
+Rloc         Local redundancy
+Cit          Citation
+Others       Other errors
+Um           Unclear meaning (cannot be corrected)
+
+%%%%%
+
+EFCAMDAT error types
+
+x >> y change from x to y
+AG agreement
+AR article
+CO combine sentences
+C capitalization
+D delete
+EX expression of idiom
+HL highlight
+I(x) insert x
+MW missing word
+NS new sentence
+NWS no such word
+PH phraseology
+PL plural
+PO possessive
+PR preposition
+PS part of speech
+PU punctuation
+SI sungular
+SP spelling
+VT verb tense
+WC word choice
+WO word order
+
+%%%%%%%%%%%%%%%
