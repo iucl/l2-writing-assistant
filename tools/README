@@ -1,0 +1,66 @@
+SemEval 2014 - Task 5 - L2 Writing Assistant
+    http://alt.qcri.org/semeval2014/task5/
+    Contact: Maarten van Gompel <proycon@anaproy.nl>
+
+    Tools & Python Library - Version 1.0
+
+
+INSTALLATION
+==============
+
+System-wide installation:
+
+$ sudo python ./setup.py install
+
+Python usually defaults to Python 2, but you may also use Python 3:
+
+$ sudo python3 ./setup.py install
+
+If you obtain an import error then make sure the package python-setuptools is
+installed in your distribution. You also need the package python-lxml. 
+
+If you have no sudo-rights, then you can install the library locally
+using the --prefix switch, make sure the target prefix is in your $PYTHONPATH.
+
+TOOLS
+==============
+
+The following tools are included:
+
+
+    semeval2014task5-setview  - This tool simply prints a set to standard output in a terminal, it takes one XML file as argument
+
+    semeval2014task5-evaluate - This is the evaluation script for evaluating your system's output against the trial/test set.
+
+
+EVALUATION
+===========
+
+The evaluation script should be run as follows:
+
+$ semeval2014task5-evaluate --ref trialdata.xml --out systemout.xml
+
+If you want additional Machine Translation evaluation metrics (BLEU, METEOR,
+NIST,TER, WER, PER), you need to download the MT Evaluation Scripts from the
+http://lst-science.ru.nl/~proycon/mtevalscripts.tar.gz and explicitly pass \
+the path to where you decompressed those using --mtevaldir=/path/to/mtevalscripts .
+
+For out-of-five mode you need to add the -a flag to take into account alternatives.
+
+For case-insensitive scoring, add the -i flag. 
+
+FORMAT LIBRARY
+=====================
+
+The semeval2014task5.format module enables you to easily read and write the XML
+format for this task.  Import the format library in your Python source as
+follows:
+
+import libsemeval2014task5 format as format
+
+An example system that shows the functionality of this library has been
+implemented in example.py, which has been heavily commented. Please consult
+this to learn how the library works. It implements a full system that
+'translates' fragments to upper-case instead of doing actual translation from
+L1 to L2.
+

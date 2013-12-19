@@ -1,0 +1,79 @@
+SemEval 2014 - Task 5 - L2 Writing Assistant
+
+
+Website: http://alt.qcri.org/semeval2014/task5/
+Contact: Maarten van Gompel <proycon@anaproy.nl>
+
+Trial data version 2.1 : October 30, 2013
+
+Changes:
+ 2.1 - Changed README
+ 2.0 - Changed IDs
+
+The accompanying dataset is released under a Creative Commons Attribution 3.0 Unported License (http://creativecommons.org/licenses/by/3.0/).
+
+
+==== Format Description ====
+
+The trial data contains 4 files of each 500 sentences of the following language
+combinations of L1 and L2 pairs: English-German, English-Spanish,
+French-English, and Dutch-English.Participants are encouraged to participate in
+as many of the four language pairs as possible, but may also choose any subset.
+Each input sentence is written in the L2 language and a small fragment is
+written in the L1 language. This fragment is labeled with <f>. 
+
+For the trial data we also provide the correctly translated reference sentence
+(<ref>) in which the fragment of the input sentence is given in the L2
+language.
+
+Here is an example of the French-English trial data:
+
+	<sentencepairs L1="fr" L2="en">
+		<s id="1">
+  			<input>I <f id="1">voudrais savoir</f>  whether one can raise an objection of that kind to what is merely a report ,
+  	 not a legislative proposal , and whether that is something I can competently do on Thursday .</input>
+	  		<ref>I <f id="1">want to know</f>  whether one can raise an objection of that kind to what is merely a report , 
+	  not a legislative proposal , and whether that is something I can competently do on Thursday .</ref>
+		</s>
+	....
+	
+	<s id="500">
+  			<input>Transparency and openness mean - and this is my clear call - that we must <f id="1">appliquer</f>  the same yardstick to all the institutions .</input>
+  			<ref>Transparency and openness mean - and this is my clear call - that we must <f id="1">apply</f>  the same yardstick to all the institutions .</ref>
+		</s>
+	</sentencepairs>
+
+A complete specification of the XML format can be found here:
+ http://alt.qcri.org/semeval2014/task5/data/uploads/xmlformat.txt
+
+This contains instructions on what format your system output must adhere to.
+
+To facilitate matters, a complete Python library is available for processing 
+this file format, go to:
+ http://alt.qcri.org/semeval2014/task5/index.php?id=data-and-tools
+
+
+==== Evaluation ====
+
+A script that implements several metrics for automatic evaluation is available
+in the zip file with tools at the website
+http://alt.qcri.org/semeval2014/task5/index.php?id=data-and-tools.
+
+==== SemEval-2014 schedule ====
+
+Trial data ready October 30, 2013
+Test data ready March 10, 2014
+Evaluation start March 15, 2014
+Evaluation end March 30, 2014
+Paper submission due April 30, 2014 [TBC]
+Paper reviews due May 30, 2014 [TBC]
+Camera ready due June 30, 2014 [TBC]
+SemEval workshop August 23-30, 2014 [TBC]
+
+==== Organisers ====
+
+Maarten van Gompel, Centre for Language Studies, Radboud University Nijmegen
+Iris Hendrickx, Centre for Language Studies, Radboud University Nijmegen
+Antal van den Bosch, Centre for Language Studies, Radboud University Nijmegen
+Els Lefever, LT3, Language and Translation Technology Team, Ghent University
+Veronique Hoste, LT3, Language and Translation Technology Team, Ghent University
