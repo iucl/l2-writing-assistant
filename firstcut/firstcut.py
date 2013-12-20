@@ -1,43 +1,52 @@
 #!/usr/bin/env python
 
-#####################################################################
-# SemEval 2014 task 5 - L2 Writing Assistant
-#       Example system in Python
-#
-#
-# This example system takes two arguments, the trial/test set and the file to
-# output to.
-#
-# Instead of translating the fragments from L2 to L1. This example
-# simply converts the fragments to uppercase.
-#
-#####################################################################
+"""
+So far, just using scores from a phrase table and a language model. But let's
+add more stuff!
+"""
 
-import sys
 import argparse
+import math
+import sys
 
-#Here we import the format library for this task:
+import kenlm
+
 import libsemeval2014task5.format as format
 import phrasetable
 from phrasetable import PTEntry
+
+def best_translation(leftcontext, phrase, rightcontext, lm):
+    assert isinstance(phrase, tuple)
+    phrase_s = " ".join(phrase)
+    ptentries = phrasetable.lookup_phrase(phrase_s, "phrase-table-de-en.gz")
+    ## XXX: if we don't have a phrase table entry, look for the individual
+    ## components of the fragment?
+    if not ptentries:
+        return PTEntry(source="OOV",target="OOV",pdirect=1,pinverse=1)
+
+    lowpenalty = float("inf")
+    best = None
+    for ptentry in ptentries:
+        sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
+        print("scoring candidate:", sent)
+        lm_penalty = -lm.score(sent)
+        print("lm_penalty:", lm_penalty)
+        pt_penalty = -math.log(ptentry.pdirect, 10)
+        print("pt_penalty:", pt_penalty)
+        penalty = lm_penalty + pt_penalty
+        if penalty < lowpenalty:
+            lowpenalty = penalty
+            best = ptentry
+    assert best
+    return best
 
 def get_argparser():
     """Build the argument parser for main."""
     parser = argparse.ArgumentParser(description='firstcut')
     parser.add_argument('--infn', type=str, required=True)
     parser.add_argument('--outfn', type=str, required=True)
+    parser.add_argument('--lm', type=str, required=True)
     return parser
-
-
-def best_translation(phrase):
-    assert isinstance(phrase, tuple)
-    phrase_s = " ".join(phrase)
-    ptentries = phrasetable.lookup_phrase(phrase_s, "phrase-table.gz")
-    ## XXX: if we don't have a phrase table entry, look for the individual
-    ## components of the fragment?
-    if not ptentries:
-        return PTEntry(source=phrase_s,target=phrase_s,pdirect=1,pinverse=1)
-    return max(ptentries, key=lambda e: e.pdirect)
 
 def main():
     parser = get_argparser()
@@ -48,17 +57,18 @@ def main():
     reader = format.Reader(inputfilename)
     writer = format.Writer(outputfilename, reader.L1, reader.L2)
 
+    lm = kenlm.LanguageModel(args.lm)
+
     for sentencepair in reader:
         inputfragments = list(sentencepair.inputfragments())
         assert len(inputfragments) == 1
-        leftcontext, fragment, rightcontent = inputfragments[0]
+        leftcontext, fragment, rightcontext = inputfragments[0]
         assert isinstance(fragment, format.Fragment)
 
-        best = best_translation(fragment.value)
+        best = best_translation(leftcontext, fragment.value, rightcontext, lm)
         ## XXX(alexr): this is all going to flip if/when we use a phrase table
         ## that goes in the other direction.
         translatedvalue = best.source.split()
-        # translatedvalue = [x.upper() for x in fragment.value]
 
         # create a new fragment for the new value, it must carry the same ID
         translatedfragment = format.Fragment(tuple(translatedvalue),
