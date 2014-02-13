@@ -29,7 +29,8 @@ def best_translation(leftcontext, phrase, rightcontext, lm):
     for ptentry in ptentries:
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
         print("scoring candidate:", sent)
-        lm_penalty = -lm.score(sent)
+        #lm_penalty = -lm.score(sent)
+        lm_penalty = 0
         print("lm_penalty:", lm_penalty)
         pt_penalty = -math.log(ptentry.pdirect, 10)
         print("pt_penalty:", pt_penalty)
@@ -45,7 +46,7 @@ def get_argparser():
     parser = argparse.ArgumentParser(description='firstcut')
     parser.add_argument('--infn', type=str, required=True)
     parser.add_argument('--outfn', type=str, required=True)
-    parser.add_argument('--lm', type=str, required=True)
+    #parser.add_argument('--lm', type=str, required=True)
     return parser
 
 def main():
@@ -57,7 +58,7 @@ def main():
     reader = format.Reader(inputfilename)
     writer = format.Writer(outputfilename, reader.L1, reader.L2)
 
-    lm = kenlm.LanguageModel(args.lm)
+    #lm = kenlm.LanguageModel(args.lm)
 
     for sentencepair in reader:
         inputfragments = list(sentencepair.inputfragments())
@@ -65,7 +66,7 @@ def main():
         leftcontext, fragment, rightcontext = inputfragments[0]
         assert isinstance(fragment, format.Fragment)
 
-        best = best_translation(leftcontext, fragment.value, rightcontext, lm)
+        best = best_translation(leftcontext, fragment.value, rightcontext, None)
         ## XXX(alexr): this is all going to flip if/when we use a phrase table
         ## that goes in the other direction.
         translatedvalue = best.source.split()
