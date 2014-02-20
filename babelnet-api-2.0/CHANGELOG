@@ -1,0 +1,17 @@
+Changelog for the BabelNet API:
+
+Ver     : Release Date  : Changes
+=================================
+2.0.0 : October 1, 2013 : Added OmegaWiki and Open Multilingual WordNet; 50 languages covered; images of different scales allowed; Java API improvement; Bug fixing
+---------------------------------
+1.1.0 : January 7, 2013 : Major API cleanup and documentation
+---------------------------------
+1.0.1 : July 19, 2012     : Fixed SenseFilter to use Words instead of Strings
+---------------------------------
+1.0.0 : May 23, 2012      : Initial Release
+---------------------------------
+
+Bug Reports
+ID  : Priority : Reported  : Fixed in Ver : Description
+=======================================================
+

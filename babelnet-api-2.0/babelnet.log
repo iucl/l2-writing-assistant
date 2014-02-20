@@ -1,0 +1,159 @@
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/navigli/workspace/BabelNet/releases/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: ${babelnet.dir}/lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: ${babelnet.dir}/dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: ${babelnet.dir}/gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: ${babelnet.dir}/graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: ${babelnet.dir}/lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: ${babelnet.dir}/dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: ${babelnet.dir}/gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: ${babelnet.dir}/graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] Configuration - Loading jlt.properties FROM /space/trybabelnet/babelnet-api-2.0/config/jlt.properties
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] Configuration - Loading jlt.properties FROM /space/trybabelnet/babelnet-api-2.0/config/jlt.properties
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] Configuration - Loading jlt.properties FROM /space/trybabelnet/babelnet-api-2.0/config/jlt.properties
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] Configuration - Loading jlt.properties FROM /space/trybabelnet/babelnet-api-2.0/config/jlt.properties
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /space/trybabelnet/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph
+[ INFO  ] BabelNetConfiguration - Loading babelnet.properties FROM /home/alex/babelnet-api-2.0/config/babelnet.properties
+[ INFO  ] BabelNet - OPENING BABEL LEXICON FROM: /space/trybabelnet//lexicon
+[ INFO  ] BabelNet - OPENING BABEL DICTIONARY FROM: /space/trybabelnet//dict
+[ INFO  ] BabelNet - OPENING BABEL GLOSSES FROM: /space/trybabelnet//gloss
+[ INFO  ] BabelNet - OPENING BABEL GRAPH FROM: /space/trybabelnet//graph

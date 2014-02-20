@@ -1,0 +1,238 @@
+<project name="babelnet-api" basedir="." default="default" >
+	
+    <property name="src.dir"   value="src"/>
+    <property name="bin.dir"   value="bin"/>
+    <property name="docs.dir"   value="docs"/>
+    <property name="javadocs.dir"   value="${docs.dir}/api"/>
+	
+    <property name="output.dir"   value="output"/>
+
+	<!-- Classes with main methods -->
+    <property name="babelnetdemo.class"  value="it.uniroma1.lcl.babelnet.BabelNetDemo"/>
+	<property name="kbgraphutils.class"  value="it.uniroma1.lcl.knowledge.graph.KnowledgeGraphUtils"/>	
+
+	<!-- Factory classes -->
+    <property name="babelnetdump.class"  			value="it.uniroma1.lcl.babelnet.dump.BabelNetDumper"/>
+	<property name="babelnetextradump.class"		value="it.uniroma1.lcl.babelnet.dump.BabelNetExtraDumper"/>
+	
+    <property name="babelnetdictfactory.class"  	value="it.uniroma1.lcl.babelnet.factory.BabelNetDictFactory"/>	
+    <property name="babelnetlexiconfactory.class"	value="it.uniroma1.lcl.babelnet.factory.BabelNetLexiconFactory"/>	
+    <property name="babelnetglossfactory.class"  	value="it.uniroma1.lcl.babelnet.factory.BabelNetGlossFactory"/>	
+    <property name="babelnetgraphfactory.class"  	value="it.uniroma1.lcl.babelnet.factory.BabelNetGraphFactory"/>	
+    <property name="kbasepathindexfactory.class"  	value="it.uniroma1.lcl.knowledge.KnowledgeBasePathIndexFactory"/>	
+ 
+ 	<!-- Stats classes -->
+    <property name="babelnetstats.class"  			value="it.uniroma1.lcl.babelnet.utils.BabelNetStats"/>	
+	
+    <property name="lib.dir"      value="lib"/>	
+    <property name="config.dir"   value="config"/>
+	
+<!--    <property name="babelnet.version"   value="1.1.0"/> -->
+    <property name="babelnet.version"   value="2.0"/> 
+	<property name="babelnet.jar" location="${ant.project.name}-${babelnet.version}.jar" />
+	<property name="babelnet.tar" location="${output.dir}/${ant.project.name}-${babelnet.version}.tar" />
+	
+	<path id="classpath">
+ 		<pathelement path="${classpath}"/>
+    	<fileset dir="lib">
+       		<include name="**/*.jar"/>
+      	</fileset>
+      	<pathelement location="${bin.dir}"/>
+   	  	<pathelement location="${config.dir}"/>
+    </path>
+ 
+    
+    
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+        <delete dir="${javadocs.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${bin.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${bin.dir}"
+	           debug="true" debuglevel="lines,source">
+        	<classpath>
+        		<path refid="classpath"/>
+        	</classpath>
+    	</javac>
+    </target>
+
+ 
+<path id="build.classpath">
+  <fileset dir="${basedir}">
+     <include name="lib/*.jar"/>
+     <include name="**/config/*"/>
+     
+  </fileset>
+ </path>
+
+<pathconvert property="manifest.classpath" pathsep=" ">
+  <path refid="build.classpath"/>
+  <mapper>
+    <chainedmapper>
+       <flattenmapper/>
+       <globmapper from="*.jar" to="lib/*.jar"/>
+ 
+    </chainedmapper>
+  </mapper>
+</pathconvert>
+
+	<target name="jar" depends="compile">
+	 	<jar jarfile="${babelnet.jar}" >
+<!-- 		  vannella, run babelnetdemo jar -->
+ 		  <manifest>
+		      <attribute name="Main-Class" value="${babelnetdemo.class}"/>
+		      <attribute name="Class-Path" value="${manifest.classpath}"/>
+	         </manifest>
+ <!-- 		  vannella,  fine  -->
+
+ 			  <fileset dir="${bin.dir}"   >
+	             		 <!--<exclude name="**/*.class"/>  -->
+				<exclude name="**/babelco/**"/>
+				<exclude name="**/dump/**"/>
+				<exclude name="**/factory/**"/>
+				<exclude name="**/utils/BabelNetStatsJSP.class"/>
+				<exclude  name="**/utils/WikiNetStats.class"/>
+				
+ 			</fileset>
+		 
+		</jar> 
+	</target>
+	
+    <target name="doc">
+    	<javadoc destdir="${javadocs.dir}" 
+        	     sourcepath="${src.dir}"
+            	 packagenames="it.uniroma1.lcl.babelnet"
+                 windowtitle="BabelNet API">
+        	<classpath>
+        		<path refid="classpath"/>
+        	</classpath>
+    	</javadoc>
+    </target>
+	
+	<target name="default" depends="jar,doc"/>
+	
+	<target name="release" depends="jar,doc,tar"/>
+	
+	<target name="tar" depends="">
+		<mkdir dir="${output.dir}"/>
+	    <delete file="${babelnet.tar}.gz"/>
+		<tar destfile="${babelnet.tar}">
+			<tarfileset dir="."
+				        prefix="${ant.project.name}-${babelnet.version}/"
+				        preserveLeadingSlashes="true">
+
+	    		<exclude name="**/*.log"/>
+	    		<exclude name="*.txt"/>
+	    		<exclude name="tmp/**"/>
+	    		<exclude name="output/**"/>
+	    		<exclude name="script/**"/>
+	    		<exclude name="original/**"/>
+	    		<exclude name="website/**"/>
+	    		<exclude name="**/.svn/*"/>
+	    		<exclude name="deploy-hal.sh"/>
+	    		<exclude name="src_20/**"/>
+	    		<exclude name="src_51/**"/>
+	    		<exclude name="build_1.1.xml"/>
+			<!-- NON INSERIRE LE REDIRECTION-->
+	    		<exclude name="resources/redirection/**"/>
+	    		<exclude name="src/it/uniroma1/lcl/babelnet/babelco/**"/>
+	    		<exclude name="src/it/uniroma1/lcl/babelnet/babelco/**"/>
+	    		<exclude name="src/it/uniroma1/lcl/babelnet/dump/**"/>
+	    		<exclude name="src/it/uniroma1/lcl/babelnet/factory/**"/>
+		    	<exclude name="src/it/uniroma1/lcl/babelnet/utils/**"/>
+			<exclude name="bin/it/uniroma1/lcl/babelnet/babelco/**"/>
+	    		<exclude name="bin/it/uniroma1/lcl/babelnet/dump/**"/>
+	    		<exclude name="bin/it/uniroma1/lcl/babelnet/factory/**"/>
+		    	<exclude name="bin/it/uniroma1/lcl/babelnet/utils/**"/>
+		    	<exclude name="bin/it/uniroma1/lcl/knowledge/utils/**"/>
+ 
+		 </tarfileset>
+		 <tarfileset dir="." prefix="${ant.project.name}-${babelnet.version}/"
+				        preserveLeadingSlashes="true">
+		  <include  name="bin/it/uniroma1/lcl/babelnet/utils/BadImageList.class"/>
+		  <include  name="src/it/uniroma1/lcl/babelnet/utils/BadImageList.java"/>
+		</tarfileset>
+
+		</tar>
+		<gzip destfile="${babelnet.tar}.gz" src="${babelnet.tar}"/>
+		<delete file="${babelnet.tar}"/>
+	</target>
+
+	<target name="create-babelnet-dump" depends="compile">
+		<java classname="${babelnetdump.class}" fork="true" maxmemory="16384M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+	</target>
+
+	<target name="create-babelnet-dump-extra" depends="compile">
+		<java classname="${babelnetextradump.class}" fork="true" maxmemory="16384M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+    </target>
+	
+	<target name="create-path-index" depends="compile">
+		<java classname="${kbasepathindexfactory.class}" fork="true" maxmemory="16384M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+	</target>
+	
+	<target name="create-indexes" depends="compile">
+		<!-- DICT -->
+		<java classname="${babelnetdictfactory.class}" fork="true" maxmemory="2048M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+		<!-- LEXICON -->
+		<java classname="${babelnetlexiconfactory.class}" fork="true" maxmemory="2048M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+		<!-- GLOSS -->
+		<java classname="${babelnetglossfactory.class}" fork="true" maxmemory="2048M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+		<!-- GRAPH -->
+		<java classname="${babelnetgraphfactory.class}" fork="true" maxmemory="2048M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+    </target>
+
+	<target name="get-bnstats" depends="compile">
+		<java classname="${babelnetstats.class}" fork="true" maxmemory="8192M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+    </target>
+	
+	<target name="run-babelnetdemo" depends="compile">
+		<java classname="${babelnetdemo.class}" fork="true" maxmemory="512M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+    </target>
+	
+	<target name="run-kbgraph" depends="compile">
+		<java classname="${kbgraphutils.class}" fork="true" maxmemory="1024M">
+	   		<classpath>
+				<path refid="classpath"/>
+	        </classpath>
+		</java>
+    </target>
+	
+</project>

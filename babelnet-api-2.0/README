@@ -1,0 +1,180 @@
+README - BabelNet API 2.0 (October 2013)
+
+This package consists of a Java API to work with BabelNet, a very large
+multilingual semantic network. For more information please refer to the
+documentation below on how to install and run the software, as well as
+our website (http://babelnet.org) and Google group
+(http://groups.google.com/group/babelnet-group) for news, updates and
+papers.
+
+--------
+CONTENTS
+--------
+
+This package contains the following main components:
+
+  babelnet-api-2.0.jar   # Jar of the BabelNet API
+  bin/	       	         # Java .class file hierarchy
+  build.xml    	         # Apache Ant build file
+  CHANGELOG              # changelog for the BabelNet API
+  config/      	         # configuration files
+  docs/api/    	         # Javadocs
+  lib/	       	         # 3rd party libraries
+  LICENSE      	         # BabelNet API's license
+  licenses     	         # 3rd party libraries' licenses
+  README       	         # this file
+  resources/             # resource files needed by the API
+  run-babelnetdemo.sh    # shell script to test BabelNet
+  src/	       	         # Java source file hierarchy 
+
+------------
+REQUIREMENTS
+------------
+
+We assume that you have a standard installation of the Sun Java 1.6 JDK
+and all the associated programs (i.e., java, javac, etc.) in your path.
+
+------------
+INSTALLATION
+------------
+
+1. Download and configure the BabelNet Lucene indexes. The BabelNet API
+relies on a set of Lucene indexes to access the knowledge base content,
+so you need to install them before anything else.
+
+Currently, we provide BabelNet as a semantic network consisting
+of 50 languages (English, Catalan, French, German, Italian, Spanish, Afrikaans,
+Arabic, Bulgarian, Czech, Welsh, Danish, Greek, Estonian, Persian, Finnish,
+Irish, Hebrew, Hindi, Croatian, Hungarian, Indonesian, Icelandic, Japanese,
+Korean, Lithuanian, Latvian, Malay, Dutch, Norwegian, Polish, Portuguese,
+Romanian, Russian, Slovak, Slovenian, Albanian, Serbian, Swedish, Swahili,
+Tagalog, Turkish, Ukranian, Vietnamese, Chinese, Esperanto, Galician, Maltese,
+Basque, Latin) and described in the papers below.
+The indices for BabelNet are available here:
+
+    http://lcl.uniroma1.it/babelnet/data/babelnet-2.0.0-core-lucene.tar.bz2
+
+To start using BabelNet, first download the compressed indexes and
+unpack them:
+
+    # create the data dir
+    mkdirhier ~/data/babelnet 
+    cd ~/data/babelnet
+    # get the data
+    wget http://lcl.uniroma1.it/babelnet/data/babelnet-2.0.0-core-lucene.tar.bz2
+    # unpack the archives
+    tar xjvf babelnet-2.0.0-core-lucene.tar.bz2
+
+Next, tell the API where to find BabelNet by setting the "babelnet.dir"
+property in the config/babelnet.var.properties file. For instance,
+assuming you unpacked BabelNet in the "/home/your_user/data/babelnet",
+you simply need to write the following within "config/babelnet.var.properties":
+
+    babelnet.dir=/home/your_user/data/babelnet
+
+If your WordNet is not installed in the standard location 
+(/usr/local/share/wordnet-3.0), please change the corresponding property
+in the config/jlt.var.properties file:
+
+# simply put /usr/local/share/wordnet
+jlt.wordnetPrefix=/usr/local/share/wordnet
+
+to the prefix of your WordNet path without the "-3.0" suffix. For instance,
+if WordNet 3.0 is located in /opt/WordNet-3.0, you should change the property
+to:
+
+jlt.wordnetPrefix=/opt/WordNet
+
+You are now ready to use the API. If you have Apache Ant installed, you
+can test that everything works by simply issuing the "ant run-babelnetdemo"
+command in the same directory where you found this README file (i.e.,
+the root directory of the BabelNet API package). In alternative we also
+provide a shell script (run-babelnetdemo.sh, make sure that the file is
+executable or set it chmod +x run-babelnetdemo.sh). The next step is to look
+at programmatic usage examples starting from the main method of the
+"main" API class, namely it.uniroma1.lcl.babelnet.BabelNet.
+
+IMPORTANT: please note that, in order to enable the log4j settings, you
+have to add the config folder to your classpath. For instance:
+
+java -classpath bin:lib/*:config it.uniroma1.lcl.babelnet.BabelNetDemo
+
+Within an Eclipse project, right-click the config folder, select
+"Build Path" and click "Use as Source Folder".
+
+-------------
+BABELNET DUMP
+-------------
+
+The data stored within the Lucene indexes are also available in a simple
+text-based format. The BabelNet dump is available here:
+
+    http://lcl.uniroma1.it/babelnet/data/babelnet-2.0.0-core-dump.bz2
+
+Please refer to the papers below for details on the file format of the
+BabelNet dump. We also provide a text file containing the Babel synsets'
+glosses:
+
+    http://lcl.uniroma1.it/babelnet/data/babelnet-2.0.0-glosses.bz2
+
+The format of the file containing the multilingual glosses consists of a
+set of lines for each Babel synset: the first line contains the synset
+id, which is followed by a number of lines, each containing a gloss
+together with its language and the Babel sense and region where it comes
+from. Babel synsets are separated by empty lines.
+
+---------- REFERENCES ----------
+
+If you want to refer to BabelNet in your scientific work, please cite
+this paper:
+
+Navigli, R. and Ponzetto, S. P. (2012a): BabelNet: The Automatic
+Construction, Evaluation and Application of a Wide-Coverage Multilingual
+Semantic Network. Artificial Intelligence, 193, 217-250.
+
+If you want to refer to the BabelNet dump, API or BabelNetXplorer (our
+Web-based GUI for BabelNet available at http://babelnet.org), please
+cite this paper:
+
+Navigli, R. and Ponzetto, S. P. (2012b): BabelNetXplorer: A platform for
+multilingual lexical knowledge base access and exploration. In:
+Companion Volume to the Proceedings of the 21st World Wide Web
+Conference, Lyon, France, 16-20 April 2012, pp. 393-396.
+
+-------
+AUTHORS
+-------
+
+Roberto Navigli, Sapienza University of Rome
+(navigli@di.uniroma1.it)
+
+Daniele Vannella, Sapienza University of Rome
+(vannella@di.uniroma1.it)
+
+Additional credits go to:
+- Simone Paolo Ponzetto for working on previous versions of BabelNet
+- Francesco Cecconi for the OmegaWiki-to-BabelNet mapping
+
+---------
+COPYRIGHT
+---------
+
+BabelNet and the Babelnet API are licensed under a Creative Commons 
+Attribution-Noncommercial-Share Alike 3.0 License. 
+See the file LICENSE for details.
+
+-------
+CONTACT
+-------
+
+Please feel free to get in touch with us for any question or problem you
+may have using the following Google group:
+
+  http://groups.google.com/group/babelnet-group
+
+---------------
+ACKNOWLEDGMENTS
+---------------
+
+BabelNet and the BabelNet API are an output of the ERC Starting Grant 
+MultiJEDI No. 259234. 
