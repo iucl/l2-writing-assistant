@@ -13,20 +13,17 @@ import kenlm
 
 import libsemeval2014task5.format as format
 import phrasetable
+import babelnet
 from phrasetable import PTEntry
 
-def best_translation(leftcontext, phrase, rightcontext, lm):
-    assert isinstance(phrase, tuple)
-    phrase_s = " ".join(phrase)
-    ptentries = phrasetable.lookup_phrase(phrase_s, "phrase-table-de-en.gz")
+def best_translation(candidates, leftcontext, rightcontext, lm):
     ## XXX: if we don't have a phrase table entry, look for the individual
     ## components of the fragment?
-    if not ptentries:
+    if not candidates:
         return PTEntry(source="OOV",target="OOV",pdirect=1,pinverse=1)
-
     lowpenalty = float("inf")
     best = None
-    for ptentry in ptentries:
+    for ptentry in candidates:
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
         print("scoring candidate:", sent)
         #lm_penalty = -lm.score(sent)
@@ -49,6 +46,21 @@ def get_argparser():
     #parser.add_argument('--lm', type=str, required=True)
     return parser
 
+def generate_candidates(phrase):
+    assert isinstance(phrase, tuple)
+    phrase_s = " ".join(phrase)
+    ptentries = phrasetable.lookup_phrase(phrase_s, "phrase-table-de-en.gz")
+
+    if not ptentries:
+        key = phrase_s.replace(' ', '_')
+        frombabelnet = babelnet.babelnet_translations(key, 'de')
+        ptentries = []
+        for (term, score) in frombabelnet:
+            entry = PTEntry(source=phrase_s,target=term,pdirect=score,pinverse=score)
+            ptentries.append(entry)
+
+    return ptentries
+
 def main():
     parser = get_argparser()
     args = parser.parse_args()
@@ -66,7 +78,9 @@ def main():
         leftcontext, fragment, rightcontext = inputfragments[0]
         assert isinstance(fragment, format.Fragment)
 
-        best = best_translation(leftcontext, fragment.value, rightcontext, None)
+        candidates = generate_candidates(fragment.value)
+
+        best = best_translation(candidates, leftcontext, rightcontext, None)
         ## XXX(alexr): this is all going to flip if/when we use a phrase table
         ## that goes in the other direction.
         translatedvalue = best.source.split()
