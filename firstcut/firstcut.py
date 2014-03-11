@@ -25,12 +25,8 @@ def best_translation(candidates, leftcontext, rightcontext, lm):
     best = None
     for ptentry in candidates:
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
-        print("scoring candidate:", sent)
-        #lm_penalty = -lm.score(sent)
-        lm_penalty = 0
-        print("lm_penalty:", lm_penalty)
+        lm_penalty = -lm.score(sent)
         pt_penalty = -math.log(ptentry.pdirect, 10)
-        print("pt_penalty:", pt_penalty)
         penalty = lm_penalty + pt_penalty
         if penalty < lowpenalty:
             lowpenalty = penalty
@@ -43,17 +39,21 @@ def get_argparser():
     parser = argparse.ArgumentParser(description='firstcut')
     parser.add_argument('--infn', type=str, required=True)
     parser.add_argument('--outfn', type=str, required=True)
-    #parser.add_argument('--lm', type=str, required=True)
+    parser.add_argument('--lm', type=str, required=True)
+    parser.add_argument('--source', type=str, required=True)
+    parser.add_argument('--target', type=str, required=True)
     return parser
 
-def generate_candidates(phrase):
+def generate_candidates(phrase, args):
     assert isinstance(phrase, tuple)
     phrase_s = " ".join(phrase)
-    ptentries = phrasetable.lookup_phrase(phrase_s, "phrase-table-de-en.gz")
+
+    pt_filename = "phrase-table-{0}-{1}.gz".format(args.source, args.target)
+    ptentries = phrasetable.lookup_phrase(phrase_s, pt_filename)
 
     if not ptentries:
         key = phrase_s.replace(' ', '_')
-        frombabelnet = babelnet.babelnet_translations(key, 'de')
+        frombabelnet = babelnet.babelnet_translations(key, args.target)
         ptentries = []
         for (term, score) in frombabelnet:
             entry = PTEntry(source=phrase_s,target=term,pdirect=score,pinverse=score)
@@ -70,7 +70,7 @@ def main():
     reader = format.Reader(inputfilename)
     writer = format.Writer(outputfilename, reader.L1, reader.L2)
 
-    #lm = kenlm.LanguageModel(args.lm)
+    lm = kenlm.LanguageModel(args.lm)
 
     for sentencepair in reader:
         inputfragments = list(sentencepair.inputfragments())
@@ -78,9 +78,9 @@ def main():
         leftcontext, fragment, rightcontext = inputfragments[0]
         assert isinstance(fragment, format.Fragment)
 
-        candidates = generate_candidates(fragment.value)
+        candidates = generate_candidates(fragment.value, args)
 
-        best = best_translation(candidates, leftcontext, rightcontext, None)
+        best = best_translation(candidates, leftcontext, rightcontext, lm)
         ## XXX(alexr): this is all going to flip if/when we use a phrase table
         ## that goes in the other direction.
         translatedvalue = best.source.split()
