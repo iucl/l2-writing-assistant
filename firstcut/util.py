@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+import sys
+def dprint(*a,**aa):
+    print(file=sys.stderr, *a, **aa)
+
 def allsplits(ls):
     """Given a list, return all of the ways to split that list into sublists.
     For example, given [1,2,3] should return in some order:

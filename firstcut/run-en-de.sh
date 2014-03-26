@@ -5,4 +5,5 @@ python3 firstcut.py \
   --outfn ./theoutput \
   --lm /space/trykenlm/kenlm/europarl.binary \
   --weights ./SAMPLE.weights \
+  --zmert True \
   #--lm /space/german-wikipedia/german.lm \

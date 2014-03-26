@@ -15,26 +15,28 @@ import libsemeval2014task5.format as format
 import phrasetable
 import babelnet
 from phrasetable import PTEntry
+from util import dprint
 
 def score_candidates(candidates, weights, leftcontext, rightcontext, lm):
     """Return (penalty,candidate) tuples."""
     out = []
     for ptentry in candidates:
         penalty = 0
-        print("SOURCE", ptentry.source)
-        print("TARGET", ptentry.target)
+        dprint("SOURCE", ptentry.source)
+        dprint("TARGET", ptentry.target)
         ## XXX: source/target is going to flip with the new phrase tables
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
         lm_penalty = -lm.score(sent)
         pt_direct = -math.log(ptentry.pdirect, 10)
         pt_inverse = -math.log(ptentry.pinverse, 10)
-        print("LM penalty", lm_penalty)
-        print("DIRECT penalty", pt_direct)
-        print("INVERSE penalty", pt_inverse)
+        scores = (lm_penalty, pt_direct, pt_inverse)
+        dprint("LM penalty", lm_penalty)
+        dprint("DIRECT penalty", pt_direct)
+        dprint("INVERSE penalty", pt_inverse)
         penalty += (weights["LM"] * lm_penalty)
         penalty += (weights["DIRECT"] * pt_direct)
         penalty += (weights["INVERSE"] * pt_inverse)
-        out.append((penalty, ptentry))
+        out.append((penalty, ptentry, scores))
     return out
 
 def generate_candidates(phrase, args):
@@ -109,16 +111,26 @@ def main():
 
         scored = score_candidates(candidates, weights, leftcontext, rightcontext, lm)
         scored.sort()
-        print(scored)
-        translatedvalue = scored[0][1].source.split() ## best.source.split()
 
+        translatedvalue = scored[0][1].source.split()
         translatedfragment = format.Fragment(tuple(translatedvalue), fragment.id)
         sentencepair.output = sentencepair.replacefragment(fragment,
                                                            translatedfragment,
                                                            sentencepair.input)
-        writer.write(sentencepair)
-        print("Input: " + sentencepair.inputstr(True,"blue"))
-        print("Output: " + sentencepair.outputstr(True,"yellow"))
+
+        if zmert:
+            ### XXX: this is going to need to output the n-best
+            strings = [" ".join(item.value) if type(item) is format.Fragment
+                                            else item
+                       for item in sentencepair.output]
+            text = " ".join(strings)
+            scores = " ".join([str(score) for score in scored[0][2]])
+            out = "{0} ||| {1} ||| {2}".format(sentencepair.id, text, scores)
+            print(out)
+        else:
+            writer.write(sentencepair)
+            print("Input: " + sentencepair.inputstr(True,"blue"))
+            print("Output: " + sentencepair.outputstr(True,"yellow"))
 
     writer.close()
     reader.close()
