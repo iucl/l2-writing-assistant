@@ -16,7 +16,7 @@ import phrasetable
 import babelnet
 from phrasetable import PTEntry
 
-def best_translation(candidates, leftcontext, rightcontext, lm):
+def best_translation(candidates, weights, leftcontext, rightcontext, lm):
     ## XXX: if we don't have a phrase table entry, look for the individual
     ## components of the fragment?
     if not candidates:
@@ -27,7 +27,9 @@ def best_translation(candidates, leftcontext, rightcontext, lm):
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
         lm_penalty = -lm.score(sent)
         pt_penalty = -math.log(ptentry.pdirect, 10)
-        penalty = lm_penalty + pt_penalty
+        penalty = 0
+        penalty += (weights["LM"] * lm_penalty)
+        penalty += (weights["PT"] * pt_penalty)
         if penalty < lowpenalty:
             lowpenalty = penalty
             best = ptentry
@@ -42,6 +44,7 @@ def get_argparser():
     parser.add_argument('--lm', type=str, required=True)
     parser.add_argument('--source', type=str, required=True)
     parser.add_argument('--target', type=str, required=True)
+    parser.add_argument('--weights', type=str, required=True)
     return parser
 
 def generate_candidates(phrase, args):
@@ -61,11 +64,24 @@ def generate_candidates(phrase, args):
 
     return ptentries
 
+def load_weights(weightsfn):
+    out = {}
+    for line in open(weightsfn):
+        line = line.strip()
+        name,weight = line.split()
+        name = name.strip()
+        weight = float(weight.strip())
+        out[name] = weight
+    return out
+
 def main():
     parser = get_argparser()
     args = parser.parse_args()
     inputfilename = args.infn
     outputfilename = args.outfn
+    weightsfn = args.weights
+
+    weights = load_weights(weightsfn)
 
     reader = format.Reader(inputfilename)
     writer = format.Writer(outputfilename, reader.L1, reader.L2)
@@ -80,7 +96,7 @@ def main():
 
         candidates = generate_candidates(fragment.value, args)
 
-        best = best_translation(candidates, leftcontext, rightcontext, lm)
+        best = best_translation(candidates, weights, leftcontext, rightcontext, lm)
         ## XXX(alexr): this is all going to flip if/when we use a phrase table
         ## that goes in the other direction.
         translatedvalue = best.source.split()
