@@ -16,38 +16,30 @@ import phrasetable
 import babelnet
 from phrasetable import PTEntry
 
-def best_translation(candidates, weights, leftcontext, rightcontext, lm):
-    ## XXX: if we don't have a phrase table entry, look for the individual
-    ## components of the fragment?
-    if not candidates:
-        return PTEntry(source="OOV",target="OOV",pdirect=1,pinverse=1)
-    lowpenalty = float("inf")
-    best = None
+def score_candidates(candidates, weights, leftcontext, rightcontext, lm):
+    """Return (penalty,candidate) tuples."""
+    out = []
     for ptentry in candidates:
+        penalty = 0
+        print("SOURCE", ptentry.source)
+        print("TARGET", ptentry.target)
+        ## XXX: source/target is going to flip with the new phrase tables
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
         lm_penalty = -lm.score(sent)
-        pt_penalty = -math.log(ptentry.pdirect, 10)
-        penalty = 0
+        pt_direct = -math.log(ptentry.pdirect, 10)
+        pt_inverse = -math.log(ptentry.pinverse, 10)
+        print("LM penalty", lm_penalty)
+        print("DIRECT penalty", pt_direct)
+        print("INVERSE penalty", pt_inverse)
         penalty += (weights["LM"] * lm_penalty)
-        penalty += (weights["PT"] * pt_penalty)
-        if penalty < lowpenalty:
-            lowpenalty = penalty
-            best = ptentry
-    assert best
-    return best
-
-def get_argparser():
-    """Build the argument parser for main."""
-    parser = argparse.ArgumentParser(description='firstcut')
-    parser.add_argument('--infn', type=str, required=True)
-    parser.add_argument('--outfn', type=str, required=True)
-    parser.add_argument('--lm', type=str, required=True)
-    parser.add_argument('--source', type=str, required=True)
-    parser.add_argument('--target', type=str, required=True)
-    parser.add_argument('--weights', type=str, required=True)
-    return parser
+        penalty += (weights["DIRECT"] * pt_direct)
+        penalty += (weights["INVERSE"] * pt_inverse)
+        out.append((penalty, ptentry))
+    return out
 
 def generate_candidates(phrase, args):
+    ## XXX: if we don't have a phrase table entry, look for the individual
+    ## components of the fragment?
     assert isinstance(phrase, tuple)
     phrase_s = " ".join(phrase)
 
@@ -62,6 +54,10 @@ def generate_candidates(phrase, args):
             entry = PTEntry(source=phrase_s,target=term,pdirect=score,pinverse=score)
             ptentries.append(entry)
 
+    if not ptentries:
+        oov = PTEntry(source="OOV",target="OOV",pdirect=1,pinverse=1)
+        ptentries.append(oov)
+
     return ptentries
 
 def load_weights(weightsfn):
@@ -74,6 +70,18 @@ def load_weights(weightsfn):
         out[name] = weight
     return out
 
+def get_argparser():
+    """Build the argument parser for main."""
+    parser = argparse.ArgumentParser(description='firstcut')
+    parser.add_argument('--infn', type=str, required=True)
+    parser.add_argument('--outfn', type=str, required=True)
+    parser.add_argument('--lm', type=str, required=True)
+    parser.add_argument('--source', type=str, required=True)
+    parser.add_argument('--target', type=str, required=True)
+    parser.add_argument('--weights', type=str, required=True)
+    parser.add_argument('--zmert', type=bool, default=False, required=False)
+    return parser
+
 def main():
     parser = get_argparser()
     args = parser.parse_args()
@@ -81,6 +89,9 @@ def main():
     outputfilename = args.outfn
     weightsfn = args.weights
 
+    zmert = args.zmert ## if true, output in zmert output format
+
+    ## load weights for our different features
     weights = load_weights(weightsfn)
 
     reader = format.Reader(inputfilename)
@@ -96,23 +107,16 @@ def main():
 
         candidates = generate_candidates(fragment.value, args)
 
-        best = best_translation(candidates, weights, leftcontext, rightcontext, lm)
-        ## XXX(alexr): this is all going to flip if/when we use a phrase table
-        ## that goes in the other direction.
-        translatedvalue = best.source.split()
+        scored = score_candidates(candidates, weights, leftcontext, rightcontext, lm)
+        scored.sort()
+        print(scored)
+        translatedvalue = scored[0][1].source.split() ## best.source.split()
 
-        # create a new fragment for the new value, it must carry the same ID
-        translatedfragment = format.Fragment(tuple(translatedvalue),
-                                             fragment.id)
-
-        #Now we can set the system output by copying the input sentence
-        #(the context after all will stay the same, we only change the fragment)
-        #And then replacing the old fragment with the translated one.
+        translatedfragment = format.Fragment(tuple(translatedvalue), fragment.id)
         sentencepair.output = sentencepair.replacefragment(fragment,
                                                            translatedfragment,
                                                            sentencepair.input)
         writer.write(sentencepair)
-
         print("Input: " + sentencepair.inputstr(True,"blue"))
         print("Output: " + sentencepair.outputstr(True,"yellow"))
 
