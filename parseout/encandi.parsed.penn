@@ -1,0 +1,24 @@
+(ROOT
+  (S
+    (ADVP (RB Obviously))
+    (NP (JJ Malaysian) (NN Airline))
+    (VP (VBZ is)
+      (VP (VBG lying)))
+    (. .)))
+
+(ROOT
+  (S
+    (NP (PRP They))
+    (VP (VBP do) (RB not)
+      (VP (VB have)
+        (NP
+          (NP (DT any) (NN evidence,))
+          (SBAR
+            (S
+              (NP (DT the) (NN world))
+              (VP (MD will) (RB not)
+                (VP (VB give)
+                  (PRT (RP up))
+                  (NP (DT the) (NN investigation)))))))))
+    (. .)))
+
