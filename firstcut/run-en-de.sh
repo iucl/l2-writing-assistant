@@ -5,4 +5,4 @@ python3 firstcut.py \
   --outfn ./theoutput \
   --lm /space/german-wikipedia/german.blm \
   --pt ./phrase-table-en-de.gz \
-  --weights mert-en-de/weights.weights.ZMERT.final \
+  --weights mert-en-de/weights.ZMERT.final \

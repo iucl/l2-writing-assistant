@@ -8,7 +8,7 @@
 -ipi	20                      # number of intermediate initial points per iteration
 -cmd	./SDecoder_cmd          # file containing commands to run decoder
 -decOut	nbest.out               # file prodcued by decoder
--dcfg	weights.weights        # decoder config file
+-dcfg	weights        # decoder config file
 -N	10                      # size of N-best list generated each iteration
 -v	1                       # verbosity level (0-2; higher value => more verbose)
 -seed   12341234                # random number generator seed
