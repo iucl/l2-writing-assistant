@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
 import sys
+
+DPRINT=False
 def dprint(*a,**aa):
-    print(file=sys.stderr, *a, **aa)
+    if DPRINT:
+        print(file=sys.stderr, *a, **aa)
 
 def allsplits(ls):
     """Given a list, return all of the ways to split that list into sublists.

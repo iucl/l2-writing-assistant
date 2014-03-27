@@ -6,6 +6,9 @@ table.
 import gzip
 import sys
 from collections import namedtuple
+from collections import defaultdict
+
+PHRASETABLE = defaultdict(list)
 
 def get_lines_source(fn, phrase):
     return get_lines(fn, phrase, True)
@@ -55,6 +58,22 @@ def lookup_phrase(phrase, pt_fn):
     lines = get_lines_target(pt_fn, phrase)
     ptentries = lines_to_ptentries(lines)
     return ptentries
+
+def lookup(phrase):
+    return PHRASETABLE[phrase]
+
+def set_phrase_table(ptfn):
+    with gzip.open(ptfn) as infile:
+        for line in infile:
+            line = line.decode('utf-8')
+            parts = line.split("|||", maxsplit=3)
+            source, target, scores, etc = [s.strip() for s in parts]
+            scoreparts = scores.split()
+            pinverse,weighti,pdirect,weightd = [float(s) for s in scoreparts]
+            entry = PTEntry(source,target,pdirect,pinverse)
+
+            ## XXX: will need to be reversed
+            PHRASETABLE[target].append(entry)
 
 def main():
     ptentries = lookup_phrase(sys.argv[1], sys.argv[2])

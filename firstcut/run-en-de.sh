@@ -4,6 +4,7 @@ python3 firstcut.py \
   --infn ../trialdata/en-de.trial.xml \
   --outfn ./theoutput \
   --lm /space/trykenlm/kenlm/europarl.binary \
+  --pt ./phrase-table-en-de.gz \
   --weights ./SAMPLE.weights \
   --zmert True \
   #--lm /space/german-wikipedia/german.lm \

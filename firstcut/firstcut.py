@@ -45,8 +45,8 @@ def generate_candidates(phrase, args):
     assert isinstance(phrase, tuple)
     phrase_s = " ".join(phrase)
 
-    pt_filename = "phrase-table-{0}-{1}.gz".format(args.source, args.target)
-    ptentries = phrasetable.lookup_phrase(phrase_s, pt_filename)
+    #pt_filename = "phrase-table-{0}-{1}.gz".format(args.source, args.target)
+    ptentries = phrasetable.lookup(phrase_s)
 
     if not ptentries:
         key = phrase_s.replace(' ', '_')
@@ -78,6 +78,7 @@ def get_argparser():
     parser.add_argument('--infn', type=str, required=True)
     parser.add_argument('--outfn', type=str, required=True)
     parser.add_argument('--lm', type=str, required=True)
+    parser.add_argument('--pt', type=str, required=True)
     parser.add_argument('--source', type=str, required=True)
     parser.add_argument('--target', type=str, required=True)
     parser.add_argument('--weights', type=str, required=True)
@@ -100,6 +101,7 @@ def main():
     writer = format.Writer(outputfilename, reader.L1, reader.L2)
 
     lm = kenlm.LanguageModel(args.lm)
+    phrasetable.set_phrase_table(args.pt)
 
     for sentencepair in reader:
         inputfragments = list(sentencepair.inputfragments())
