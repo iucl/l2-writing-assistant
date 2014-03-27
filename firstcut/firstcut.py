@@ -22,17 +22,17 @@ def score_candidates(candidates, weights, leftcontext, rightcontext, lm):
     out = []
     for ptentry in candidates:
         penalty = 0
-        dprint("SOURCE", ptentry.source)
-        dprint("TARGET", ptentry.target)
+        #dprint("SOURCE", ptentry.source)
+        #dprint("TARGET", ptentry.target)
         ## XXX: source/target is going to flip with the new phrase tables
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
         lm_penalty = -lm.score(sent)
         pt_direct = -math.log(ptentry.pdirect, 10)
         pt_inverse = -math.log(ptentry.pinverse, 10)
         scores = (lm_penalty, pt_direct, pt_inverse)
-        dprint("LM penalty", lm_penalty)
-        dprint("DIRECT penalty", pt_direct)
-        dprint("INVERSE penalty", pt_inverse)
+        #dprint("LM penalty", lm_penalty)
+        #dprint("DIRECT penalty", pt_direct)
+        #dprint("INVERSE penalty", pt_inverse)
         penalty += (weights["LM"] * lm_penalty)
         penalty += (weights["DIRECT"] * pt_direct)
         penalty += (weights["INVERSE"] * pt_inverse)
@@ -96,6 +96,7 @@ def main():
 
     ## load weights for our different features
     weights = load_weights(weightsfn)
+    dprint(weights)
 
     reader = format.Reader(inputfilename)
     writer = format.Writer(outputfilename, reader.L1, reader.L2)
@@ -121,14 +122,23 @@ def main():
                                                            sentencepair.input)
 
         if zmert:
-            ### XXX: this is going to need to output the n-best
-            strings = [" ".join(item.value) if type(item) is format.Fragment
-                                            else item
-                       for item in sentencepair.output]
-            text = " ".join(strings)
-            scores = " ".join([str(score) for score in scored[0][2]])
-            out = "{0} ||| {1} ||| {2}".format(sentencepair.id, text, scores)
-            print(out)
+            ### output the n-best translations in ZMERT format
+            for cand in scored[:10]:
+                translatedvalue = cand[1].source.split()
+                translatedfragment = format.Fragment(tuple(translatedvalue),
+                                                     fragment.id)
+                sentencepair.output = \
+                    sentencepair.replacefragment(fragment, translatedfragment,
+                                                 sentencepair.input)
+                strings = [" ".join(item.value) if type(item) is format.Fragment
+                                                else item
+                           for item in sentencepair.output]
+                text = " ".join(strings)
+                scores = " ".join([str(score) for score in cand[2]])
+                out = "{0} ||| {1} ||| {2}".format(int(sentencepair.id) - 1,
+                                                   text,
+                                                   scores)
+                print(out)
         else:
             writer.write(sentencepair)
             print("Input: " + sentencepair.inputstr(True,"blue"))

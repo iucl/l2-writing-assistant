@@ -1,0 +1,7 @@
+cands_file=cand_database.txt
+cands_per_sen=50
+top_n=10
+
+LM 0.01
+first model 0.2
+second model -0.1

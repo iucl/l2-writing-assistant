@@ -3,8 +3,6 @@ python3 firstcut.py \
   --target de \
   --infn ../trialdata/en-de.trial.xml \
   --outfn ./theoutput \
-  --lm /space/trykenlm/kenlm/europarl.binary \
+  --lm /space/german-wikipedia/german.blm \
   --pt ./phrase-table-en-de.gz \
-  --weights ./SAMPLE.weights \
-  --zmert True \
-  #--lm /space/german-wikipedia/german.lm \
+  --weights mert-en-de/weights.weights.ZMERT.final \
