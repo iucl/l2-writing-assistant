@@ -5,7 +5,7 @@ en_cmd = """
 de_cmd = """
 java -cp ../mate/anna-3.3.jar is2.util.Split {0} > {1}.split
 
-java -Xmx7G -Xms1G -cp ../anna-3.3.jar is2.lemmatizer.Lemmatizer -model ../mate/german/lemma-ger-3.6.model -test {2}.split -out {3}.lema
+java -Xmx7G -Xms1G -cp ../mate/anna-3.3.jar is2.lemmatizer.Lemmatizer -model ../mate/german/lemma-ger-3.6.model -test {2}.split -out {3}.lema
 
 java -Xmx7G -Xms1G -cp ../mate/anna-3.3.jar is2.tag.Tagger -model ../mate/german/tag-ger-3.6.model -test {4}.lema -out {5}.tag
 

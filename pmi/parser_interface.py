@@ -50,7 +50,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
 	PARPATH + filename,PARPATH + filename,\
 	PARPATH + filename,PARPATH + filename)
 
-        if self.lang = "es":
+        if self.lang == "es":
             cmd = es_cmd.format(PARPATH + filename,PARPATH + filename,\
         PARPATH + filename,PARPATH + filename, \
         PARPATH + filename,PARPATH + filename,\
