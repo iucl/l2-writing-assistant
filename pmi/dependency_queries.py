@@ -27,7 +27,12 @@ def get_count_head_dep_deprel(conn, head, dep, deprel):
     out = c.fetchone()
 
     print("###from the DB file", out)
-    return out[0] if out else 0
+    if out!=None: 
+        print("kkk")
+        return out[0] 
+    else: 
+        print("ppp")
+        return 0
 
 def get_count_head_dep(conn, head, dep):
     """Return the number of times we've seen this head,dep tuple."""
@@ -36,7 +41,11 @@ def get_count_head_dep(conn, head, dep):
     param = (head, dep)
     c.execute(sql, param)
     out = c.fetchone()
-    return out[0] if out else 0
+    if out!=None:
+        return out[0]
+    else:
+        return 0
+
 
 def get_count_head_deprel(conn, head, deprel):
     """Return the number of times we've seen this head,deprel tuple."""
@@ -45,7 +54,13 @@ def get_count_head_deprel(conn, head, deprel):
     param = (head, deprel)
     c.execute(sql, param)
     out = c.fetchone()
-    return out[0] if out else 0
+    if out!=None:
+        print(out,out[0])
+        return out[0]
+    else:
+        print("EEEE1")
+        return 0
+
 
 def get_count_dep_deprel(conn, dep, deprel):
     """Return the number of times we've seen this dep,deprel tuple."""
@@ -54,7 +69,13 @@ def get_count_dep_deprel(conn, dep, deprel):
     param = (dep, deprel)
     c.execute(sql, param)
     out = c.fetchone()
-    return out[0] if out else 0
+    if out!=None:
+        print(out,out[0])
+        return out[0]
+    else:
+        print("EEEE2")
+        return 0
+
 
 def get_count_head(conn, head):
     """Return the number of times we've seen this head, ignoring deprel."""
@@ -63,7 +84,11 @@ def get_count_head(conn, head):
     param = (head,)
     c.execute(sql, param)
     out = c.fetchone()
-    return out[0] if out else 0
+    if out!=None:
+        return out[0]
+    else:
+        return 0
+
 
 def get_count_dep(conn, dep):
     """Return the number of times we've seen this dep, ignoring deprel."""
@@ -72,7 +97,10 @@ def get_count_dep(conn, dep):
     param = (dep,)
     c.execute(sql, param)
     out = c.fetchone()
-    return out[0] if out else 0
+    if out!=None:
+        return out[0]
+    else:
+        return 0
 
 def main():
     conn = sqlite3.connect("en-pos.db")
