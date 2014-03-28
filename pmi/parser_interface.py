@@ -1,5 +1,6 @@
 
-
+import commands
+from commands import *
 import codecs, sys, re
 import os
 PARPATH = "../parseout/"##parser path
@@ -32,7 +33,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         call the parser from command, and remember the filename"""
         ##make training format
         sentS_list = [" ".join(x) + "\n" for x in sent_list]##A list of sentence strings.
-        filename = self.lang+"candi.parsed"
+        filename = self.lang+"candi"
 
         OUT = codecs.open(PARPATH + filename, 'w', encoding='utf-8')
         #OUT = open(PARPATH + filename,"w")
@@ -40,12 +41,22 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         OUT.close()
         
         ##parse it
-        cmd = """
-        java -Xmx6G -Xms600M -cp ../stanford/stanford-parser.jar edu.stanford.nlp.parser.lexparser.LexicalizedParser -writeOutputFiles -outputFilesExtension penn -tokenized -sentences newline -escaper edu.stanford.nlp.process.PTBEscapingProcessor -outputFormat penn -outputFormatOptions CCPropagatedDependencies -maxLength 35 ../stanford/models/englishPCFG.ser.gz {0}
-        java -Xmx6G -Xms600M -cp ../stanford/stanford-parser.jar edu.stanford.nlp.trees.EnglishGrammaticalStructure -conllx -CCprocessed -treeFile {1}{2}.penn > {3}{4}.conll
-        """.format(PARPATH + filename,PARPATH,PARPATH + filename,PARPATH,PARPATH + filename )
-        os.system(cmd)
+        if self.lang == "en":
+            cmd = en_cmd.format(PARPATH + filename,PARPATH,PARPATH + filename,PARPATH,PARPATH + filename )
 
+        if self.lang == "de":
+            cmd = de_cmd.format(PARPATH + filename,PARPATH + filename,\
+ 	PARPATH + filename,PARPATH + filename, \
+	PARPATH + filename,PARPATH + filename,\
+	PARPATH + filename,PARPATH + filename)
+
+        if self.lang = "es":
+            cmd = es_cmd.format(PARPATH + filename,PARPATH + filename,\
+        PARPATH + filename,PARPATH + filename, \
+        PARPATH + filename,PARPATH + filename,\
+        PARPATH + filename,PARPATH + filename)
+
+        os.system(cmd)
         ##Now read the parse and make it into a dictionary
         parsed_sents = self.read_sents(filename + ".conll")
 
