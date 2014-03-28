@@ -16,7 +16,17 @@ def pickle2txt(name):
     OUT.close()
     print("writing {} is done!", name)
 
+def read_pic():
+    names = []
+    IN = open("de_small","r")
+    lines = IN.readlines()
+    for line in lines:
+        eles = line.strip().split(" ")
+        names += eles
 
+    print names
+    pickle.dump(names,open("de_small.pickle","wb"))
 
-name = sys.argv[1]
-pickle2txt(name) 
+read_pic()
+#name = sys.argv[1]
+#pickle2txt(name) 

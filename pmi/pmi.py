@@ -3,10 +3,10 @@ from collections import defaultdict
 
 import dependency_queries as dbtool ##this is the code from Alex.
 
-DBPATH = "dependency-dbs/"
+DBPATH = "../dependency-dbs/"
 ##use python class. 
 ##So every language can be an instance of it. 
-import sqlite3
+import sqlite3 as sql
 
 class PMI:
 
@@ -17,8 +17,8 @@ class PMI:
 
         ##Now we are not using pickles, we use the database prepared by Alex.
         self.lang = lang
-        self.posdb = sqlite3.connect(DBPATH + "{}-pos.db".format(lang))
-        self.lexdb = sqlite3.connent(DBPATH + "{}-lex.db".format(lang))
+        self.posdb = sql.connect(DBPATH + "{0}-pos.db".format(lang))
+        #self.lexdb = sqlite3.connect(DBPATH + "{0}-lex.db".format(lang))
 
         print("Database for {} has been loaded!".format(lang))
 
@@ -27,9 +27,9 @@ class PMI:
         ##Question:::  lowercases????
 
         ##This is not the Backup version. 
-        numerator = get_count_head_dep_deprel(self.lexdb, head, dep, label)
-        demon1 = get_count_head_deprel(self.lexdb, head, label)
-        demon2 = get_count_dep_deprel(self.lexdb, dep, label)
+        numerator = dbtool.get_count_head_dep_deprel(self.lexdb, head, dep, label)
+        demon1 = dbtool.get_count_head_deprel(self.lexdb, head, label)
+        demon2 = dbtool.get_count_dep_deprel(self.lexdb, dep, label)
 
         if (demon1 + demon2) ==0:
             return 0
@@ -41,9 +41,9 @@ class PMI:
         ##Question:::  lowercases????
 
         ##This is not the Backup version.
-        numerator = get_count_head_dep(self.lexdb, head, dep, label)
-        demon1 = get_count_head(self.lexdb, head, label)
-        demon2 = get_count_dep(self.lexdb, dep, label)
+        numerator = dbtool.get_count_head_dep(self.lexdb, head, dep, label)
+        demon1 = dbtool.get_count_head(self.lexdb, head, label)
+        demon2 = dbtool.get_count_dep(self.lexdb, dep, label)
 
         if (demon1 + demon2) ==0:
             return 0
@@ -57,9 +57,11 @@ class PMI:
         ##Question:::  lowercases????
 
         ##This is not the Backup version.
-        numerator = get_count_head_dep_deprel(self.posdb, head, dep, label)
-        demon1 = get_count_head_deprel(self.posdb, head, label)
-        demon2 = get_count_dep_deprel(self.posdb, dep, label)
+        numerator = dbtool.get_count_head_dep_deprel(self.posdb, head, dep, label)
+        demon1 = dbtool.get_count_head_deprel(self.posdb, head, label)
+        demon2 = dbtool.get_count_dep_deprel(self.posdb, dep, label)
+
+        print(demon1,demon2, "####")
 
         if (demon1 + demon2) ==0:
             return 0
@@ -71,9 +73,9 @@ class PMI:
         ##Question:::  lowercases????
 
         ##This is not the Backup version.
-        numerator = get_count_head_dep(self.posdb, head, dep, label)
-        demon1 = get_count_head(self.posdb, head, label)
-        demon2 = get_count_dep(self.posdb, dep, label)
+        numerator = dbtool.get_count_head_dep(self.posdb, head, dep, label)
+        demon1 = dbtool.get_count_head(self.posdb, head, label)
+        demon2 = dbtool.get_count_dep(self.posdb, dep, label)
 
         if (demon1 + demon2) ==0:
             return 0
