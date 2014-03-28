@@ -32,7 +32,13 @@ print pos
 pmi_cls = PMI("en")
 ##Do this for each sentence in the training/testing data:
 ##suppose the candidate is "amo"
+score =   pmi_cls.sim_pos(\
+[  ["nn","adj","amod"],
+   ["nnp","adj","amod"],
+   ["nns","adj","amod"]
+]
+)
 
-#lexTrip,posTrip = es_parse.find_rels(["me","amo","Juana"],["amo"])  ##this is a string
+print(score)
 ##Intialize PMI, and PMI calles the database file.
 
