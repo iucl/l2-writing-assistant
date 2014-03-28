@@ -18,25 +18,25 @@ from phrasetable import PTEntry
 from util import dprint
 
 def score_candidates(candidates, weights, leftcontext, rightcontext, lm):
-    """Return (penalty,candidate) tuples."""
+    """Return (score,candidate,scores) tuples, where score is the weighted
+    total and scores are the individual unweighted scores.."""
     out = []
     for ptentry in candidates:
-        penalty = 0
+        score = 0
         #dprint("SOURCE", ptentry.source)
         #dprint("TARGET", ptentry.target)
         ## XXX: source/target is going to flip with the new phrase tables
         sent = (leftcontext + " " + ptentry.source + " " + rightcontext).lower()
-        lm_penalty = -lm.score(sent)
-        pt_direct = -math.log(ptentry.pdirect, 10)
-        pt_inverse = -math.log(ptentry.pinverse, 10)
+        lm_penalty = lm.score(sent)
+        pt_direct = math.log(ptentry.pdirect, 10)
+        pt_inverse = math.log(ptentry.pinverse, 10)
+
         scores = (lm_penalty, pt_direct, pt_inverse)
-        #dprint("LM penalty", lm_penalty)
-        #dprint("DIRECT penalty", pt_direct)
-        #dprint("INVERSE penalty", pt_inverse)
-        penalty += (weights["LM"] * lm_penalty)
-        penalty += (weights["DIRECT"] * pt_direct)
-        penalty += (weights["INVERSE"] * pt_inverse)
-        out.append((penalty, ptentry, scores))
+
+        score += (weights["LM"] * lm_penalty)
+        score += (weights["DIRECT"] * pt_direct)
+        score += (weights["INVERSE"] * pt_inverse)
+        out.append((score, ptentry, scores))
     return out
 
 def generate_candidates(phrase, args):
@@ -113,7 +113,7 @@ def main():
         candidates = generate_candidates(fragment.value, args)
 
         scored = score_candidates(candidates, weights, leftcontext, rightcontext, lm)
-        scored.sort()
+        scored.sort(reverse=True)
 
         translatedvalue = scored[0][1].source.split()
         translatedfragment = format.Fragment(tuple(translatedvalue), fragment.id)
