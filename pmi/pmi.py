@@ -1,80 +1,130 @@
 import pickle
 from collections import defaultdict
 
+import dependency_queries as dbtool ##this is the code from Alex.
+
+DBPATH = "dependency-dbs/"
 ##use python class. 
 ##So every language can be an instance of it. 
+import sqlite3
 
 class PMI:
 
     def __init__(self,lang):
         ##the constructor
-        self.pos_dep = pickle.load(open(lang+ ".pos.dep.pickle","rb"))
-        self.pos_all = pickle.load(open(lang+ ".pos.all.pickle","rb"))
+        #self.pos_dep = pickle.load(open(lang+ ".pos.dep.pickle","rb"))
+        #self.pos_all = pickle.load(open(lang+ ".pos.all.pickle","rb"))
 
-        ##these two are not ready yet.
-        #wrd_dep = pickle.load(open(lang+ ".wrd.dep.pickle","rb"))
-        #wrd_all = pickle.load(open(lang+ ".wrd.all.pickle","rb"))
+        ##Now we are not using pickles, we use the database prepared by Alex.
+        self.lang = lang
+        self.posdb = sqlite3.connect(DBPATH + "{}-pos.db".format(lang))
+        self.lexdb = sqlite3.connent(DBPATH + "{}-lex.db".format(lang))
 
-        print("Pickles for {} has been loaded!".format(lang))
+        print("Database for {} has been loaded!".format(lang))
 
-    def sim_wrd_ea(self):  ##similarity based on dependency of words
+    def sim_lex_ea(self,head,dep,label):  ##similarity based on dependency of words
         ##handle special cases, if some counts are zero, there will be lookup error
         ##Question:::  lowercases????
 
-        try:
-            num = self.pos_dep[(head,dep,label)]
-        except:
-            num = 0
-        try:
-            demon1 = self.pos_all[(head,label,"head")]
-        except:
-            demon1 = 0
-        try:
-            demon2 = self.pos_all(dep,label,"dep")
-        except:
-            demon2 = 0
-        if (demon1 + demon2) == 0: return 0
-        else: return num/ (demon1 + demon2)
+        ##This is not the Backup version. 
+        numerator = get_count_head_dep_deprel(self.lexdb, head, dep, label)
+        demon1 = get_count_head_deprel(self.lexdb, head, label)
+        demon2 = get_count_dep_deprel(self.lexdb, dep, label)
 
-    def sim_pos_ea(self,head,dep,label):
+        if (demon1 + demon2) ==0:
+            return 0
+        else:
+            return 1.0* numerator/ (demon1 + demon2) 
 
+    def sim_lex_bk(self,head,dep,label):  ##similarity based on dependency of words
         ##handle special cases, if some counts are zero, there will be lookup error
         ##Question:::  lowercases????
 
-        try:
-            num = self.pos_dep[(head,dep,label)]
-        except:
-            num = 0
-        try:
-            demon1 = self.pos_all[(head,label,"head")]
-        except:
-            demon1 = 0
-        try:
-            demon2 = self.pos_all(dep,label,"dep")
-        except:
-            demon2 = 0
-        if (demon1 + demon2) == 0: return 0
-        else: return num/ (demon1 + demon2)
+        ##This is not the Backup version.
+        numerator = get_count_head_dep(self.lexdb, head, dep, label)
+        demon1 = get_count_head(self.lexdb, head, label)
+        demon2 = get_count_dep(self.lexdb, dep, label)
 
-    def sim_pos(self,deplist,lang,mode):  ## the input is a list of dependencies.
+        if (demon1 + demon2) ==0:
+            return 0
+        else:
+            return 1.0* numerator/ (demon1 + demon2)
+
+
+
+    def sim_pos_ea(self,head,dep,label):  ##similarity based on dependency of words
+        ##handle special cases, if some counts are zero, there will be lookup error
+        ##Question:::  lowercases????
+
+        ##This is not the Backup version.
+        numerator = get_count_head_dep_deprel(self.posdb, head, dep, label)
+        demon1 = get_count_head_deprel(self.posdb, head, label)
+        demon2 = get_count_dep_deprel(self.posdb, dep, label)
+
+        if (demon1 + demon2) ==0:
+            return 0
+        else:
+            return 1.0* numerator/ (demon1 + demon2)
+
+    def sim_pos_ea_bk(self,head,dep,label):  ##similarity based on dependency of words
+        ##handle special cases, if some counts are zero, there will be lookup error
+        ##Question:::  lowercases????
+
+        ##This is not the Backup version.
+        numerator = get_count_head_dep(self.posdb, head, dep, label)
+        demon1 = get_count_head(self.posdb, head, label)
+        demon2 = get_count_dep(self.posdb, dep, label)
+
+        if (demon1 + demon2) ==0:
+            return 0
+        else:
+            return 1.0* numerator/ (demon1 + demon2)
+
+
+    def sim_pos(self,triples):  ## the input is a list of dependencies.
         ##should look up each label, and then average the result.
-        length = 0  ##if there is a root for English, then ignore it. 
+        ##if there is a root for English, then ignore it. 
+        assert len(triples) > 0
         sim_sum = 0
-        for triple in deplist:
+        for triple in triples:
+
             head,dep,label = triple
-            if lang == "en" and label == "root":  ### XXX Question, what should this be??
-                continue
-            else:
-                if mode == "pos":
-                    sim_sum += sim_pos_ea(head,dep,label)
-                else:
-                    sim_sum += sim_wrd_ea(head,dep,label)
-                length +=1
+            sim_sum += self.sim_pos_ea(head,dep,label)
 
-        return sim_sum/length
+        return sim_sum*1.0/len(triples)
+
+    def sim_lex(self,triples):
+        assert len(triples) > 0
+        sim_sum = 0
+        for triple in triples:
+
+            head,dep,label = triple
+            sim_sum += self.sim_lex_ea(head,dep,label)
+
+        return sim_sum*1.0/len(triples)
 
 
+    def sim_pos_bk(self,triples):  ## the input is a list of dependencies.
+        ##should look up each label, and then average the result.
+        ##if there is a root for English, then ignore it.
+        assert len(triples) > 0
+        sim_sum = 0
+        for triple in triples:
 
+            head,dep,label = triple
+            sim_sum += self.sim_pos_ea_bk(head,dep,label)
+
+        return sim_sum*1.0/len(triples)
+
+    def sim_lex_bk(self,triples):
+        assert len(triples) > 0
+        sim_sum = 0
+        for triple in triples:
+
+            head,dep,label = triple
+            sim_sum += self.sim_lex_ea_bk(head,dep,label)
+
+        return sim_sum*1.0/len(triples)
 
 
 
