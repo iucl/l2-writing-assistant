@@ -4,5 +4,5 @@ python3 firstcut.py \
   --infn ../trialdata/en-de.trial.xml \
   --outfn ./theoutput \
   --lm /space/german-wikipedia/german.blm \
-  --pt ./phrase-table-en-de.gz \
+  --pt /space/phrasetables-db/en-de.db \
   --weights mert-en-de/weights.ZMERT.final \

@@ -49,11 +49,9 @@ def generate_split_candidates(phrase):
     for split in splits:
         split_strings = [" ".join(entry) for entry in split]
         if all(phrasetable.lookup(entry) for entry in split_strings):
-            dprint("THEY ARE ALL IN THERE")
             found = [phrasetable.lookup(entry) for entry in split_strings]
 
-            for assignment in itertools.product(found):
-                print(assignment)
+            for assignment in itertools.product(*found):
                 target = " ".join(pte.target for pte in assignment)
                 pdirects = [pte.pdirect for pte in assignment]
                 pinverses = [pte.pinverse for pte in assignment]
@@ -66,8 +64,8 @@ def generate_split_candidates(phrase):
                                 pdirect=product_pdirect,
                                 pinverse=product_pinverse)
                 ptentries.append(entry)
-    print(ptentries)
-    sys.exit(0)
+    ## XXX: this can generate way too many possibilities; consider filtering at
+    ## this point.
     return ptentries
 
 def generate_candidates(phrase, args):
