@@ -113,7 +113,7 @@ class PMI:
         demon1_c = find_head_deprel(self.cache,head,label)
         if demon1_c == "empty":
             demon1 = dbtool.get_count_head_deprel(self.posdb, head, label)
-            cache_head_deprel(self.cache,demon1,head,deprel)
+            cache_head_deprel(self.cache,demon1,head,label)
         else:
             demon1 = demon1_c
 

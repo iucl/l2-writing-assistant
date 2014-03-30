@@ -10,7 +10,10 @@ import functools
 import itertools
 import math
 import operator
+import os
 import sys
+
+from collections import defaultdict
 
 import kenlm
 
@@ -21,16 +24,27 @@ from phrasetable import PTEntry
 from util import dprint
 from util import allsplits
 
-def score_candidates(candidates, weights, leftcontext, rightcontext, lm):
+import parser_interface
+import query_cache
+import pmi 
+
+def score_candidates(candidates, weights, leftcontext, rightcontext, lm, parser,
+                     pmi_cls):
     """Return (score,candidate,scores) tuples, where score is the weighted
     total and scores are the individual unweighted scores.."""
     out = []
-    for ptentry in candidates:
+    for ptentry,listofwords in candidates:
         score = 0
-        sent = (leftcontext + " " + ptentry.target + " " + rightcontext).lower()
+        sent = " ".join(listofwords)
+        ## (leftcontext + " " + ptentry.target + " " + rightcontext).lower()
         lm_penalty = lm.score(sent)
         pt_direct = math.log(ptentry.pdirect, 10)
         pt_inverse = math.log(ptentry.pinverse, 10)
+
+        lex,pos = parser.find_rels(listofwords, ptentry.target.split())
+        score_lex =   pmi_cls.sim_lex(lex)
+        score_pos =   pmi_cls.sim_pos(pos)
+        print("LEX AND POS:", score_lex, score_pos)
 
         scores = (lm_penalty, pt_direct, pt_inverse)
 
@@ -71,7 +85,8 @@ def generate_split_candidates(phrase):
     return ptentries
 
 def generate_candidates(phrase, args):
-    """Given a phrase and the cmdline args, """
+    """Given a phrase and the cmdline args, return a list of appropriate
+    PTEntrys"""
     assert isinstance(phrase, tuple)
 
     phrase_s = " ".join(phrase)
@@ -97,6 +112,49 @@ def generate_candidates(phrase, args):
 
     return ptentries
 
+def read_sentencepairs(reader):
+    """Load up all the sentencepair objects and put them in a dictionary."""
+    out = {}
+    for sentencepair in reader:
+        out[int(sentencepair.id)] = sentencepair
+    return out
+
+def sentences_and_candidates(sentencepairs, args):
+    """Generate a dictionary mapping from sentid to
+     a list of (cand,candsentence) pairs
+    ... where cand is a PTEntry and candsentence is the complete sentence as a
+    list of words.
+    """
+    out = defaultdict(list)
+    for sentid in sentencepairs:
+        sentencepair = sentencepairs[sentid]
+        inputfragments = list(sentencepair.inputfragments())
+        assert len(inputfragments) == 1
+        leftcontext, fragment, rightcontext = inputfragments[0]
+        assert isinstance(fragment, format.Fragment)
+
+        candidates = generate_candidates(fragment.value, args)
+        for cand in candidates:
+            translatedvalue = cand.target.split()
+            translatedfragment = format.Fragment(tuple(translatedvalue),
+                                                 fragment.id)
+            sentencepair.output = \
+                sentencepair.replacefragment(fragment, translatedfragment,
+                                             sentencepair.input)
+            completesentence = []
+            for item in sentencepair.output:
+                if type(item) is str:
+                    completesentence.append(item)
+                elif type(item) is format.Fragment:
+                    completesentence.extend(item.value)
+                else:
+                    assert False, "this should never happen"
+            ## XXX: senselessly limit the number of candidates.
+            if len(out[int(sentencepair.id)]) < 10:
+                out[int(sentencepair.id)].append((cand, completesentence))
+            # out[int(sentencepair.id)].append((cand, completesentence))
+    return out
+
 def load_weights(weightsfn):
     out = {}
     for line in open(weightsfn):
@@ -121,8 +179,8 @@ def get_argparser():
     return parser
 
 def main():
-    parser = get_argparser()
-    args = parser.parse_args()
+    argparser = get_argparser()
+    args = argparser.parse_args()
     inputfilename = args.infn
     outputfilename = args.outfn
     weightsfn = args.weights
@@ -139,15 +197,43 @@ def main():
     lm = kenlm.LanguageModel(args.lm)
     phrasetable.set_phrase_table(args.pt)
 
-    for sentencepair in reader:
+    ## dictionary from sentid to [(cand,candsentence) ...]
+    sentencepairs = read_sentencepairs(reader)
+    sent_cand_pairs = sentences_and_candidates(sentencepairs, args)
+
+    sentids = sorted(list(sent_cand_pairs.keys()))
+    sentids = sentids[:5]
+
+    allsentences = []
+    for sentid in sentids:
+        for (cand,candsentence) in sent_cand_pairs[sentid]:
+            allsentences.append(candsentence)
+    parser = parser_interface.Pcandidates("en", "nl-en-devel")
+
+    parsecache = parser_interface.PARPATH + "nl-en-devel.conll"
+    if os.path.exists(parsecache):
+        parser.load_new_parse(parsecache, allsentences)
+    else:
+        parser.do_new_parse(allsentences)
+    pmi_cls = pmi.PMI("en")
+
+    for sentid in sentids:
+        sentencepair = sentencepairs[sentid]
+        ## now we have a list of (ptentry, list_of_words)
+        candidates = sent_cand_pairs[sentid]
+
         inputfragments = list(sentencepair.inputfragments())
         assert len(inputfragments) == 1
         leftcontext, fragment, rightcontext = inputfragments[0]
         assert isinstance(fragment, format.Fragment)
 
-        candidates = generate_candidates(fragment.value, args)
-
-        scored = score_candidates(candidates, weights, leftcontext, rightcontext, lm)
+        scored = score_candidates(candidates,
+                                  weights,
+                                  leftcontext,
+                                  rightcontext,
+                                  lm,
+                                  parser,
+                                  pmi_cls)
         scored.sort(reverse=True)
 
         translatedvalue = scored[0][1].target.split()
@@ -157,6 +243,7 @@ def main():
                                                            sentencepair.input)
 
         if zmert:
+            ## TODO: pull this out into a function
             ### output the n-best translations in ZMERT format
             for cand in scored[:10]:
                 translatedvalue = cand[1].target.split()
@@ -179,6 +266,7 @@ def main():
             print("Input: " + sentencepair.inputstr(True,"blue"))
             print("Output: " + sentencepair.outputstr(True,"yellow"))
 
+    pmi_cls.dump_cache()
     writer.close()
     reader.close()
 

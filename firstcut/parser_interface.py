@@ -9,10 +9,11 @@ PARPATH = "../parseout/"##parser path
 #EN_MODE = "wiki"
     
 class Pcandidates:  ##this class parses all the candidate sentences for a language
-    def __init__(self,lang):
+    def __init__(self, lang, fn):
         """ To initialize, input is the language """
         self.lang = lang
-        self.outputname = ""
+        self.outputname = fn
+        ##self.fn = fn
         self.parse_lookup = {}
         
     def read_sents(self,filename): ##wt for "whole text"; should be the entire conll file read in as a single string.
@@ -33,7 +34,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         call the parser from command, and remember the filename"""
         ##make training format
         sentS_list = [" ".join(x) + "\n" for x in sent_list]##A list of sentence strings.
-        filename = self.lang+"candi"
+        filename = self.outputname##self.lang+"candi"
 
         OUT = codecs.open(PARPATH + filename, 'w', encoding='utf-8')
         #OUT = open(PARPATH + filename,"w")
@@ -70,7 +71,8 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
             #print "key*****",sent_key
             self.parse_lookup[sent_key.strip()] = parsed_sents[i]
         
-        self.outputname = filename
+        ##fixed, take in the outname
+        ##self.outputname = filename
 
         #print self.parse_lookup.keys(), "keys******\n\n"
 
@@ -79,7 +81,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         self.parse_lookup = {"foo":1}
 
         ##Now read the parse and make it into a dictionary
-        parsed_sents = read_sents(filename + ".conll")
+        parsed_sents = self.read_sents(filename)
         assert len(parsed_sents) == len(sent_list)  ##the number of sentences have to match!!
         for i in range(len(sent_list)):
             sent_key = " ".join(sent_list[i])
