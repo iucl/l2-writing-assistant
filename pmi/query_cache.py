@@ -29,10 +29,26 @@ def cache_dep( handle, count, dep):
     handle.update(newstuff)
 
 ##Loading and dumping for English, Spanish, and German
+##load
+def load_en():
+    en = pickle.load(open(PICPATH + "en.cache","rb"))
+    return en
 
-##laod
+def load_de():
+    es = pickle.load(open(PICPATH + "es.cache","rb"))
+    return es
 
+def load_es():
+    de = pickle.load(open(PICPATH + "de.cache","rb"))
+    return de
 ##dump
+def dump_en(pic):
+    pickle.dump(pic,open(PICPATH + "en.cache","wb"))
+def dump_es(pic):
+    pickle.dump(pic,open(PICPATH + "es.cache","wb"))
+def dump_de(pic):
+    pickle.dump(pic,open(PICPATH + "de.cache","wb"))
+
 
 ##Now this is loading the chaches.
 def find_head_dep_deprel( handle,head, dep, deprel):
@@ -40,14 +56,14 @@ def find_head_dep_deprel( handle,head, dep, deprel):
     try: 
         count = handle[("<head-dep-deprel>",head,dep,deprel)]
     except:
-        count = 0
+        count = "empty"
     return count
 
 def find_head_dep( handle, head, dep):
     try:
-	count = handle[("<head-dep>",head,dep)]
+        count = handle[("<head-dep>",head,dep)]
     except:
-        count = 0
+        count = "empty"
     return count
 
 
@@ -55,28 +71,28 @@ def find_head_deprel(handle, head, deprel):
     try:
         count = handle[("<head-deprel>",head,deprel)]
     except:
-        count = 0
+        count = "empty"
     return count
 
 def find_dep_deprel( handle, dep, deprel):
     try:
         count = handle[("<dep-deprel>",dep,deprel)]
     except:
-        count = 0
+        count = "empty"
     return count
 
 def find_head( handle, head):
     try:
         count = handle[("<head>",head)]
     except:
-        count = 0
+        count = "empty"
     return count
 
 def find_dep( handle, dep):
     try:
         count = handle[("<dep>",dep)]
     except:
-        count = 0
+        count = "empty"
     return count
 
     
@@ -87,4 +103,4 @@ def main():
     output = get_count_head_dep_deprel(conn, "FNORD", "QQQQQZM", "tmod")
     print(output)
 
-if __name__ == "__main__": main()
+#if __name__ == "__main__": main()
