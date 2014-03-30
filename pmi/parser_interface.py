@@ -5,8 +5,7 @@ import codecs, sys, re
 import os
 PARPATH = "../parseout/"##parser path
 ###!!!! The input has be a list of words
-####   the input has to contain all the commas, periods...
-EN_MODE = "google"
+####   the input has to contain all the commas, periods..
 #EN_MODE = "wiki"
     
 class Pcandidates:  ##this class parses all the candidate sentences for a language

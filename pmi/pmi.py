@@ -10,7 +10,8 @@ DBPATH = "/space/dependency-dbs/"
 ##use python class. 
 ##So every language can be an instance of it. 
 import sqlite3 as sql
-
+import commands
+from commands import *
 
 ###Now, before we do any query, find the cache first. If 
 ### the return is 0, query the database, and update the cache.
@@ -24,9 +25,13 @@ class PMI:
         ##Now we are not using pickles, we use the database prepared by Alex.
         self.lang = lang
         exec("self.cache = load_{0}()".format(lang))  ##just load the cached pickle for this language.
-        print(self.cache, "RRRRRR")
-        self.posdb = sql.connect(DBPATH + "{0}-pos.db".format(lang))
-        self.lexdb = sql.connect(DBPATH + "{0}-lex.db".format(lang))
+        #print(self.cache, "RRRRRR")
+        if EN_MODE != "wiki":
+            wikipath = ""
+        else:
+            wikipath = "english-wikipedia"
+        self.posdb = sql.connect(DBPATH + wikipath +  "{0}-pos.db".format(lang))
+        self.lexdb = sql.connect(DBPATH + wikipath + "{0}-lex.db".format(lang))
 
 
         print("Database for {} has been loaded!".format(lang))
@@ -93,6 +98,10 @@ class PMI:
         else:
             return 1.0* numerator/ (demon1 + demon2)
 
+    def sim_pos_ea(self,head,dep,label):  ##similarity based on dependency of words
+        num_c = find_head_dep_deprel(self.cache,head,dep,label)
+        if num_c =="empty":
+            numerator = dbtool.get_count_head_dep_deprel(self.posdb, head, dep, label)
     def sim_pos_ea(self,head,dep,label):  ##similarity based on dependency of words
         num_c = find_head_dep_deprel(self.cache,head,dep,label)
         if num_c =="empty":
@@ -194,10 +203,6 @@ class PMI:
             sim_sum += self.sim_lex_ea_bk(head,dep,label)
 
         return sim_sum*1.0/len(triples)
-
-
-
-
 
 
 
