@@ -1,4 +1,10 @@
-en_cmd = """
+en_cmd_google = """
+java -Xmx6G -Xms600M -cp ../stanford/stanford-parser.jar edu.stanford.nlp.parser.lexparser.LexicalizedParser -writeOutputFiles -outputFilesExtension penn -tokenized -sentences newline -escaper edu.stanford.nlp.process.PTBEscapingProcessor -outputFormat penn -outputFormatOptions basicDependencies ../stanford/models/englishPCFG.ser.gz {0}
+java -Xmx6G -Xms600M -cp ../stanford/stanford-parser.jar edu.stanford.nlp.trees.EnglishGrammaticalStructure -conllx -basic -treeFile {1}{2}.penn > {3}{4}.conll
+"""
+
+
+en_cmd_wiki = """
         java -Xmx6G -Xms600M -cp ../stanford/stanford-parser.jar edu.stanford.nlp.parser.lexparser.LexicalizedParser -writeOutputFiles -outputFilesExtension penn -tokenized -sentences newline -escaper edu.stanford.nlp.process.PTBEscapingProcessor -outputFormat penn -outputFormatOptions CCPropagatedDependencies -maxLength 35 ../stanford/models/englishPCFG.ser.gz {0}
         java -Xmx6G -Xms600M -cp ../stanford/stanford-parser.jar edu.stanford.nlp.trees.EnglishGrammaticalStructure -conllx -CCprocessed -treeFile {1}{2}.penn > {3}{4}.conll"""
 
