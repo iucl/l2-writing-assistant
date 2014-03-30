@@ -64,8 +64,10 @@ def generate_split_candidates(phrase):
                                 pdirect=product_pdirect,
                                 pinverse=product_pinverse)
                 ptentries.append(entry)
-    ## XXX: this can generate way too many possibilities; consider filtering at
-    ## this point.
+
+                ## XXX: magic number, or maybe "tunable hyperparameter".
+                if len(ptentries) == 10000:
+                    return ptentries
     return ptentries
 
 def generate_candidates(phrase, args):
