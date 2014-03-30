@@ -5,27 +5,25 @@ from __future__ import print_function, unicode_literals, division, absolute_impo
 import argparse
 import sys
 import os
-import subprocess
 import io
 
 from libsemeval2014task5.format import Reader
-from libsemeval2014task5.common import log, runcmd, red, green, blue, yellow, white
+from libsemeval2014task5.common import log, runcmd, red, yellow, white
 
 
-VERSION = "1.0" #Expect an update sooner or late!
+VERSION = "2.0"
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluation")
     parser.add_argument('--mtevaldir',type=str, help="Path to MT evaluation scripts",action='store',default="")
     parser.add_argument('--ref',type=str,help='Reference file', action='store',required=True)
     parser.add_argument('--out',type=str,help='Output file', action='store',required=True)
-    parser.add_argument('--debug','-d', help="Debug", action='store_true', default=False)
     parser.add_argument('--workdir','-w',type=str,help='Work directory', action='store',default=".")
     parser.add_argument('-i',dest='casesensitive',help='Measure translation accuracy without regard for case',action='store_false',default=True)
-    parser.add_argument('-a',dest='alternatives',help='Evaluate against alternatives as well (otherwise evaluation will be only against the best/selected option and alternatives will be ignored)',action='store_true',default=False)
+    parser.add_argument('-a',dest='oof',help='Out of five evaluation, considers up to four additional alternatives in system output',action='store_true',default=False)
     args = parser.parse_args()
 
-    totalavgaccuracy, totalwordavgaccuracy, totalavgrecall, matrexsrcfile, matrextgtfile, matrexoutfile = evaluate(Reader(args.ref), Reader(args.out), args.mtevaldir, args.workdir, args.casesensitive, args.alternatives)
+    totalavgaccuracy, totalwordavgaccuracy, totalavgrecall, matrexsrcfile, matrextgtfile, matrexoutfile = evaluate(Reader(args.ref), Reader(args.out), args.mtevaldir, args.workdir, args.casesensitive, args.oof)
 
     outprefix = '.'.join(args.out.split('.')[:-1])
 
@@ -33,7 +31,73 @@ def main():
         mtscore(args.mtevaldir, matrexsrcfile, matrextgtfile, matrexoutfile, totalavgaccuracy, totalwordavgaccuracy, totalavgrecall, outprefix, args.workdir)
 
 
-def evaluate(ref, out, mtevaldir, workdir, casesensitive=True, alternatives=False):
+def comparefragments(outfragment, reffragment, casesensitive, oof):
+    global matches, wordmatches, misses, wordmisses, missedrecall
+    if casesensitive:
+        eq = lambda x,y: " ".join(x) == " ".join(y)
+    else:
+        eq = lambda x,y: " ".join(x).lower() == " ".join(y).lower()
+
+
+    if not outfragment.value or len(outfragment.value) == 0:
+        missedrecall += 1
+        misses += 1
+        wordmisses += 1
+        return 0
+    else:
+        outvalues = [outfragment.value]
+        if oof and outfragment.alternatives:
+            for alt in outfragment.alternatives[:4]:
+                outvalues.append( alt.value )
+
+        refvalues = [reffragment.value]
+        for alt in reffragment.alternatives:
+            refvalues.append( alt.value )
+
+
+        wordmatchscores = []
+
+        for outvalue in outvalues:
+            for refvalue in refvalues:
+                if eq(outvalue, refvalue):
+                    wordmatchscore = 1
+                elif len(outvalue) >= len(refvalue):
+                    partialmatch = False
+                    for i in range(0, len(outvalue)):
+                        if eq(outvalue[i:i+len(refvalue)], refvalue):
+                            partialmatch = True
+                            break
+                    if partialmatch:
+                        wordmatchscore = len(refvalue) / len(outvalue)
+                    else:
+                        wordmatchscore = 0
+                elif len(outvalue) < len(refvalue):
+                    partialmatch = False
+                    for i in range(0, len(refvalue)):
+                        if eq(refvalue[i:i+len(outvalue)], outvalue):
+                            partialmatch = True
+                            break
+                    if partialmatch:
+                        wordmatchscore = len(outvalue) / len(refvalue)
+                    else:
+                        wordmatchscore = 0
+                wordmatchscores.append(wordmatchscore)
+
+        wordmatchscore = max(wordmatchscores)
+        wordmatches += wordmatchscore
+        wordmisses += (1 - wordmatchscore)
+        if wordmatchscore == 1:
+            matches += 1
+        else:
+            misses += 1
+        return wordmatchscore
+
+
+
+
+
+def evaluate(ref, out, mtevaldir, workdir, casesensitive=True, oof=False):
+    global matches, wordmatches, misses, wordmisses, missedrecall
     ref_it = iter(ref)
     out_it = iter(out)
 
@@ -42,10 +106,6 @@ def evaluate(ref, out, mtevaldir, workdir, casesensitive=True, alternatives=Fals
     wordaccuracies = []
     recalls = []
 
-    if casesensitive:
-        eq = lambda x,y: x == y
-    else:
-        eq = lambda x,y: " ".join(x).lower() == " ".join(y).lower()
 
     matrexsrcfile = out.filename.replace('.xml','') + '.matrex-src.xml'
     matrextgtfile = out.filename.replace('.xml','') + '.matrex-ref.xml'
@@ -89,6 +149,7 @@ def evaluate(ref, out, mtevaldir, workdir, casesensitive=True, alternatives=Fals
         wordmisses = 0
         missedrecall = 0
 
+
         outputfragments = out_s.outputfragmentsdict()
         reffragments = ref_s.reffragmentsdict()
         for inputfragment in ref_s.inputfragmentsdict().values():
@@ -98,56 +159,17 @@ def evaluate(ref, out, mtevaldir, workdir, casesensitive=True, alternatives=Fals
             if not inputfragment.id in outputfragments:
                 print("WARNING: Input fragment " + str(inputfragment.id) + " in sentence " + str(ref_s.id) + " is not translated!", file=sys.stderr)
                 misses += 1
+                wordmisses += 1
+                missedrecall += 1
             else:
-                if eq(reffragments[inputfragment.id].value, outputfragments[inputfragment.id].value):
-                    matches += 1
-                    wordmatches += 1
-                elif alternatives and outputfragments[inputfragment.id].alternatives:
-                    for alt in outputfragments[inputfragment.id].alternatives:
-                        if eq(reffragments[inputfragment.id].value, alt.value):
-                            matches += 1
-                            wordmatches += 1
-                            break
-                else:
-                    #TODO: compute partial match against alternatives
-                    misses += 1
-                    if len(outputfragments[inputfragment.id]) == 0:
-                        #missing output
-                        wordmisses += 1
-                        missedrecall += 1
-                    elif len(reffragments[inputfragment.id].value) > len(outputfragments[inputfragment.id].value):
-                        partialmatch = False
-                        for i in range(0, len(reffragments[inputfragment.id].value)):
-                            if eq(reffragments[inputfragment.id].value[i:i+len(outputfragments[inputfragment.id].value)], outputfragments[inputfragment.id].value):
-                                partialmatch = True
-                                break
-                        if partialmatch:
-                            p = len(outputfragments[inputfragment.id].value) / len(reffragments[inputfragment.id].value)
-                            wordmatches += p
-                            wordmisses += 1 - p
-                        else:
-                            wordmisses += 1
-                    elif len(reffragments[inputfragment.id].value) < len(outputfragments[inputfragment.id].value):
-                        partialmatch = False
-                        for i in range(0, len(outputfragments[inputfragment.id].value)):
-                            if eq(outputfragments[inputfragment.id].value[i:i+len(reffragments[inputfragment.id].value)], reffragments[inputfragment.id].value):
-                                partialmatch = True
-                                break
-                        if partialmatch:
-                            p = len(reffragments[inputfragment.id].value) / len(outputfragments[inputfragment.id].value)
-                            wordmatches += p
-                            wordmisses += 1 - p
-                        else:
-                            wordmisses += 1
-                    else:
-                        wordmisses += 1
-
+                comparefragments( outputfragments[inputfragment.id], reffragments[inputfragment.id], casesensitive, oof)
 
             if missedrecall == matches +misses:
                 recall = 0.0
             else:
                 recall = (matches+misses)/((matches+misses)-missedrecall)
-            print("Recall for sentence " + str(ref_s.id) + " = " + str(recall))
+
+            print("Recall for sentence " + str(ref_s.id) + " = " + str(recall)  )
             recalls.append(recall)
 
             accuracy = matches/(matches+misses)
