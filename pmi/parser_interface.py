@@ -5,8 +5,8 @@ import codecs, sys, re
 import os
 PARPATH = "../parseout/"##parser path
 ###!!!! The input has be a list of words
-####   the input has to contain all the commas, periods...
-
+####   the input has to contain all the commas, periods..
+#EN_MODE = "wiki"
     
 class Pcandidates:  ##this class parses all the candidate sentences for a language
     def __init__(self,lang):
@@ -42,7 +42,10 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         
         ##parse it
         if self.lang == "en":
-            cmd = en_cmd.format(PARPATH + filename,PARPATH,PARPATH + filename,PARPATH,PARPATH + filename )
+            if EN_MODE == "google":
+                cmd = en_cmd_google.format(PARPATH + filename,PARPATH,PARPATH + filename,PARPATH,PARPATH + filename )
+            else:
+                cmd = en_cmd_wiki.format(PARPATH + filename,PARPATH,PARPATH + filename,PARPATH,PARPATH + filename )
 
         if self.lang == "de":
             cmd = de_cmd.format(PARPATH + filename,PARPATH + filename,\
