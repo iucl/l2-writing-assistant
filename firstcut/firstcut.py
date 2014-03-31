@@ -118,7 +118,7 @@ def babelnet_candidates(phrase_s, sl, tl):
         ptentries.append(entry)
     return ptentries
 
-def generate_candidates(phrase, args):
+def generate_candidates(phrase, args, oov_lookup):
     """Given a phrase and the cmdline args, return a list of appropriate
     PTEntrys"""
     assert isinstance(phrase, tuple)
@@ -138,8 +138,14 @@ def generate_candidates(phrase, args):
         ptentries.extend(frombabelnet)
 
     if not ptentries:
-        oov = PTEntry(source="OOV",target="OOV",pdirect=1,pinverse=1)
-        ptentries.append(oov)
+        nospaces = "".join(phrase)
+        if nospaces in oov_lookup:
+            looked_up = oov_lookup[nospaces]
+            oov = PTEntry(source=phrase_s,target=looked_up,pdirect=1,pinverse=1)
+            ptentries.append(oov)
+        else:
+            oov = PTEntry(source=phrase_s,target="OOV",pdirect=1,pinverse=1)
+            ptentries.append(oov)
 
     return ptentries
 
@@ -150,7 +156,7 @@ def read_sentencepairs(reader):
         out[int(sentencepair.id)] = sentencepair
     return out
 
-def sentences_and_candidates(sentencepairs, args):
+def sentences_and_candidates(sentencepairs, args, oov_lookup):
     """Generate a dictionary mapping from sentid to
      a list of (cand,candsentence) pairs
     ... where cand is a PTEntry and candsentence is the complete sentence as a
@@ -164,7 +170,7 @@ def sentences_and_candidates(sentencepairs, args):
         leftcontext, fragment, rightcontext = inputfragments[0]
         assert isinstance(fragment, format.Fragment)
 
-        candidates = generate_candidates(fragment.value, args)
+        candidates = generate_candidates(fragment.value, args, oov_lookup)
         for cand in candidates:
             translatedvalue = cand.target.split()
             translatedfragment = format.Fragment(tuple(translatedvalue),
@@ -196,6 +202,19 @@ def load_weights(weightsfn):
         out[name] = weight
     return out
 
+def load_oovs(sl, tl):
+    here = os.path.dirname(os.path.abspath(__file__))
+    fn = here + "/{0}-{1}.tsv".format(sl,tl)
+    out = {}
+    with open(fn) as infile:
+        for line in infile:
+            line = line.strip()
+            src, trg = line.split("\t")
+            srcwords = src.split()
+            src = "".join(srcwords)
+            out[src] = trg
+    return out
+
 def get_argparser():
     """Build the argument parser for main."""
     parser = argparse.ArgumentParser(description='firstcut')
@@ -224,6 +243,9 @@ def main():
     weights = load_weights(weightsfn)
     dprint(weights)
 
+    ## load things not in the phrase table.
+    oov_lookup = load_oovs(args.source, args.target)
+
     reader = format.Reader(inputfilename)
     writer = format.Writer(outputfilename, reader.L1, reader.L2)
 
@@ -232,7 +254,7 @@ def main():
 
     ## dictionary from sentid to [(cand,candsentence) ...]
     sentencepairs = read_sentencepairs(reader)
-    sent_cand_pairs = sentences_and_candidates(sentencepairs, args)
+    sent_cand_pairs = sentences_and_candidates(sentencepairs, args, oov_lookup)
 
     sentids = sorted(list(sent_cand_pairs.keys()))
 
