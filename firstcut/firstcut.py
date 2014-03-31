@@ -41,10 +41,13 @@ def score_candidates(candidates, weights, leftcontext, rightcontext, lm, parser,
         pt_direct = math.log(ptentry.pdirect, 10)
         pt_inverse = math.log(ptentry.pinverse, 10)
 
-        lex,pos = parser.find_rels(listofwords, ptentry.target.split())
-        score_lex =   pmi_cls.sim_lex(lex)
-        score_pos =   pmi_cls.sim_pos(pos)
-        print("LEX AND POS:", score_lex, score_pos)
+        ##try:
+        ##    lex,pos = parser.find_rels(listofwords, ptentry.target.split())
+        ##except:
+        ##    continue
+        ##score_lex =   pmi_cls.sim_lex(lex)
+        ##score_pos =   pmi_cls.sim_pos(pos)
+        ##print("LEX AND POS:", score_lex, score_pos)
 
         scores = (lm_penalty, pt_direct, pt_inverse)
 
@@ -150,8 +153,8 @@ def sentences_and_candidates(sentencepairs, args):
                 else:
                     assert False, "this should never happen"
             ## XXX: senselessly limit the number of candidates.
-            if len(out[int(sentencepair.id)]) < 10:
-                out[int(sentencepair.id)].append((cand, completesentence))
+            ## if len(out[int(sentencepair.id)]) < 10:
+            out[int(sentencepair.id)].append((cand, completesentence))
             # out[int(sentencepair.id)].append((cand, completesentence))
     return out
 
@@ -176,6 +179,7 @@ def get_argparser():
     parser.add_argument('--target', type=str, required=True)
     parser.add_argument('--weights', type=str, required=True)
     parser.add_argument('--zmert', type=bool, default=False, required=False)
+    parser.add_argument('--oof', type=bool, default=False, required=False)
     return parser
 
 def main():
@@ -184,6 +188,7 @@ def main():
     inputfilename = args.infn
     outputfilename = args.outfn
     weightsfn = args.weights
+    targetlang = args.target
 
     zmert = args.zmert ## if true, output in zmert output format
 
@@ -202,20 +207,22 @@ def main():
     sent_cand_pairs = sentences_and_candidates(sentencepairs, args)
 
     sentids = sorted(list(sent_cand_pairs.keys()))
-    sentids = sentids[:5]
 
-    allsentences = []
-    for sentid in sentids:
-        for (cand,candsentence) in sent_cand_pairs[sentid]:
-            allsentences.append(candsentence)
-    parser = parser_interface.Pcandidates("en", "nl-en-devel")
+    ## TODO: turn back on for PMI
+    ##allsentences = []
+    ##for sentid in sentids:
+    ##    for (cand,candsentence) in sent_cand_pairs[sentid]:
+    ##        allsentences.append(candsentence)
+    ##
+    ##parsefn = "{0}-{1}-devel".format(args.source, args.target)
+    ##parser = parser_interface.Pcandidates(targetlang, parsefn)
 
-    parsecache = parser_interface.PARPATH + "nl-en-devel.conll"
-    if os.path.exists(parsecache):
-        parser.load_new_parse(parsecache, allsentences)
-    else:
-        parser.do_new_parse(allsentences)
-    pmi_cls = pmi.PMI("en")
+    ##parsecache = parser_interface.PARPATH + parsefn + ".conll"
+    ##if os.path.exists(parsecache):
+    ##    parser.load_new_parse(parsecache, allsentences)
+    ##else:
+    ##    parser.do_new_parse(allsentences)
+    ##pmi_cls = pmi.PMI(targetlang)
 
     for sentid in sentids:
         sentencepair = sentencepairs[sentid]
@@ -232,15 +239,9 @@ def main():
                                   leftcontext,
                                   rightcontext,
                                   lm,
-                                  parser,
-                                  pmi_cls)
+                                  None, # parser,
+                                  None) # pmi_cls)
         scored.sort(reverse=True)
-
-        translatedvalue = scored[0][1].target.split()
-        translatedfragment = format.Fragment(tuple(translatedvalue), fragment.id)
-        sentencepair.output = sentencepair.replacefragment(fragment,
-                                                           translatedfragment,
-                                                           sentencepair.input)
 
         if zmert:
             ## TODO: pull this out into a function
@@ -262,11 +263,23 @@ def main():
                                                    scores)
                 print(out)
         else:
+            translatedvalue = scored[0][1].target.split()
+            translatedfragment = format.Fragment(tuple(translatedvalue), fragment.id)
+
+            if args.oof:
+                for cand in scored[1:5]:
+                    alt = format.Alternative(tuple(cand[1].target.split()))
+                    translatedfragment.alternatives.append(alt)
+
+            sentencepair.output = sentencepair.replacefragment(fragment,
+                                                               translatedfragment,
+                                                               sentencepair.input)
+
             writer.write(sentencepair)
             print("Input: " + sentencepair.inputstr(True,"blue"))
             print("Output: " + sentencepair.outputstr(True,"yellow"))
 
-    pmi_cls.dump_cache()
+    # pmi_cls.dump_cache()
     writer.close()
     reader.close()
 

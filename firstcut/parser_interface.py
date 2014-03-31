@@ -26,7 +26,10 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         IN.close()
         sents = wholetext.split("\n\n")
         #for line in
-        sents = [x for x in sents if x.strip() != ""]
+        if self.lang == "en" and EN_MODE == "google":  ##loweercase everything.
+            sents = [x.lower() for x in sents if x.strip() != ""]
+        else:     
+            sents = [x for x in sents if x.strip() != ""]
         return sents ##sents should be a list of sentences (which are conll dependency trees)
 
     def do_new_parse(self,sent_list):  ##takes in a list of sentences we want to parse. Each sentence is represented by a list of words. 
@@ -102,7 +105,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         indices = cls_sent.word_indices(sent_rep,candidates)
         
         posTrip = cls_sent.find_rel_pos(cls_sent.posTrip,indices)
-        lexTrip = cls_sent.find_rel_pos(cls_sent.lexTrip,indices)
+        lexTrip = cls_sent.find_rel_lex(cls_sent.lexTrip,indices)
 
         return lexTrip,posTrip
 
@@ -173,7 +176,16 @@ class Psentence:  ##the class for a parsed sentence.
                     pass
                 else:  ##IF this word is the root of sentence, we would not have a label for it in English. But we would have one in
                         ## Spanish and German.
-                    found_trip.append((head,dep,label))
+                    ##okay, now for English, German, and Spanish.
+                    ##the POS arcs all have different cases.
+                    if self.lang == "en":
+                        found_trip.append((head.upper(),dep.upper(),label.lower()))
+                    elif self.lang == "es":
+                        found_trip.append((head.lower(),dep.lower(),label.lower()))
+                    elif self.lang == "de":
+                        found_trip.append((head.upper(),dep.upper(),label.upper()))
+                    else:
+                        assert False, "There is no such a language!!"
         return list(set(found_trip))
 
     def find_rel_lex(self,sent_trip,word_indices):  ##give the sentence triple, and the indices of the word.
@@ -191,7 +203,7 @@ class Psentence:  ##the class for a parsed sentence.
             if headindex in needed:
                 found_trip.append((head,dep,label))
             if depindex in needed:
-                if self.lang == "en" and headindex == "0":
+                if self.lang == "en" and EN_MODE == "google" and headindex == "0":
                     pass
                 else:  ##IF this word is the root of sentence, we would not have a label for it in English. But we would have one in
                         ## Spanish and German.
@@ -210,8 +222,8 @@ class Psentence:  ##the class for a parsed sentence.
         for line in dslist:
             dstuff = line.split()
             dkey = dstuff[0] ##the word index
-            try:dval = [dstuff[1].strip(), dstuff[5].strip(), dstuff[9].strip(), dstuff[11].strip()] ##depword, depPOS, headindex, deplabel
-            except: print (line)
+            dval = [dstuff[1].strip(), dstuff[5].strip(), dstuff[9].strip(), dstuff[11].strip()] ##depword, depPOS, headindex, deplabel
+            #except: print (line)
             dsdict[dkey] = dval ##e.g., {'1': ('When', 'ADV', '4', 'TMP'), '2': ('the', 'DT', '3', 'NMOD'), ...}
         count =1
         lextriples = []
@@ -225,6 +237,8 @@ class Psentence:  ##the class for a parsed sentence.
                 dhead = '0' ##we give it a '0' because we can't look up the head of the root (bc there is no word at index '0')
                 dheadpos = '0' ##likewise, the root has no POS, so let's call it '0'
             else:
+                ## XXX: errors can happen here due to bad parser output.
+                ## TODO: submit fix to MATE.
                 dhead = dsdict[dheadkey][0] ##headword
                 dheadpos = dsdict[dheadkey][1]
             #lextrip = ''.join([dhead, '\t', ddep, '\t', dlabel, '\t1\n']) ##headword<TAB>dependentword<TAB>label<TAB>count		

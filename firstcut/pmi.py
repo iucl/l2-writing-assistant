@@ -102,10 +102,6 @@ class PMI:
         num_c = find_head_dep_deprel(self.cache,head,dep,label)
         if num_c =="empty":
             numerator = dbtool.get_count_head_dep_deprel(self.posdb, head, dep, label)
-    def sim_pos_ea(self,head,dep,label):  ##similarity based on dependency of words
-        num_c = find_head_dep_deprel(self.cache,head,dep,label)
-        if num_c =="empty":
-            numerator = dbtool.get_count_head_dep_deprel(self.posdb, head, dep, label)
             cache_head_dep_deprel(self.cache,numerator,head,dep,label)
         else:
             numerator = num_c

@@ -26,7 +26,7 @@ en_parse.do_new_parse(["Obviously Malaysian Airline is lying .".split(),\
 ##  find the dependency triples for a candidate, given the context
 ## input1:  a sentence. as a LIST of WORDS
 ## input2:  a candiate, as a LIST of WORDS (evne there;s just one word!)
-lex,pos = en_parse.find_rels("The picturesque old houses by the harbor have been pulled down , and a hideous luxury hotel has been built there instead .".split(),"old houses".split(" "))
+lex,pos = en_parse.find_rels("The picturesque old houses by the harbor have been pulled down , and a hideous luxury hotel has been built there instead .".split(),"there instead".split(" "))
 
 ### **** step 4 ******
 ##new a PMI class for this language.
