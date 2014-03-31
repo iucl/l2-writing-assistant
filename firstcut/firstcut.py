@@ -57,7 +57,7 @@ def score_candidates(candidates, weights, leftcontext, rightcontext, lm, parser,
         out.append((score, ptentry, scores))
     return out
 
-def generate_split_candidates(phrase):
+def generate_split_candidates(phrase, sl, tl):
     ptentries = []
 
     splits = list(reversed(allsplits(list(phrase))))
@@ -65,9 +65,23 @@ def generate_split_candidates(phrase):
 
     for split in splits:
         split_strings = [" ".join(entry) for entry in split]
-        if all(phrasetable.lookup(entry) for entry in split_strings):
-            found = [phrasetable.lookup(entry) for entry in split_strings]
 
+        found = []
+        for entry in split_strings:
+            foundsomething = False
+            from_pt = phrasetable.lookup(entry)
+            if from_pt:
+                foundsomething = True
+                found.append(from_pt)
+            elif " " not in entry:
+                frombabelnet = babelnet_candidates(entry, sl, tl)
+                if frombabelnet:
+                    foundsomething = True
+                    found.append(frombabelnet)
+            if not foundsomething:
+                found.append([])
+
+        if all(found):
             for assignment in itertools.product(*found):
                 target = " ".join(pte.target for pte in assignment)
                 pdirects = [pte.pdirect for pte in assignment]
@@ -87,6 +101,23 @@ def generate_split_candidates(phrase):
                     return ptentries
     return ptentries
 
+@functools.lru_cache(maxsize=10000)
+def babelnet_candidates(phrase_s, sl, tl):
+    """Return list of PTEntry objects for the phrase."""
+    ptentries = []
+    key = phrase_s.replace(' ', '_')
+    frombabelnet = babelnet.babelnet_translations(key, sl, tl)
+    ptentries = []
+    total = sum(score for (term,score) in frombabelnet)
+    for (term, score) in frombabelnet:
+        term = term.replace('_', ' ')
+        entry = PTEntry(source=phrase_s,
+                        target=term,
+                        pdirect=score/total,
+                        pinverse=score/total)
+        ptentries.append(entry)
+    return ptentries
+
 def generate_candidates(phrase, args):
     """Given a phrase and the cmdline args, return a list of appropriate
     PTEntrys"""
@@ -97,23 +128,14 @@ def generate_candidates(phrase, args):
 
     if not ptentries:
         if len(phrase) > 1:
-            ptentries = generate_split_candidates(phrase)
+            ptentries = generate_split_candidates(phrase,
+                                                  args.source,
+                                                  args.target)
 
-    ## XXX: consider folding this into generate_split_candidates too.
     ## XXX: this seems completely correct.
     if not ptentries:
-        key = phrase_s.replace(' ', '_')
-        frombabelnet = babelnet.babelnet_translations(key, args.source,
-                                                      args.target)
-        ptentries = []
-        total = sum(score for (term,score) in frombabelnet)
-        for (term, score) in frombabelnet:
-            term = term.replace('_', ' ')
-            entry = PTEntry(source=phrase_s,
-                            target=term,
-                            pdirect=score/total,
-                            pinverse=score/total)
-            ptentries.append(entry)
+        frombabelnet = babelnet_candidates(phrase_s, args.source, args.target)
+        ptentries.extend(frombabelnet)
 
     if not ptentries:
         oov = PTEntry(source="OOV",target="OOV",pdirect=1,pinverse=1)
