@@ -100,13 +100,19 @@ def generate_candidates(phrase, args):
             ptentries = generate_split_candidates(phrase)
 
     ## XXX: consider folding this into generate_split_candidates too.
-    ## XXX: this seems wrong.
+    ## XXX: this seems completely correct.
     if not ptentries:
         key = phrase_s.replace(' ', '_')
-        frombabelnet = babelnet.babelnet_translations(key, args.target)
+        frombabelnet = babelnet.babelnet_translations(key, args.source,
+                                                      args.target)
         ptentries = []
+        total = sum(score for (term,score) in frombabelnet)
         for (term, score) in frombabelnet:
-            entry = PTEntry(source=phrase_s,target=term,pdirect=score,pinverse=score)
+            term = term.replace('_', ' ')
+            entry = PTEntry(source=phrase_s,
+                            target=term,
+                            pdirect=score/total,
+                            pinverse=score/total)
             ptentries.append(entry)
 
     if not ptentries:

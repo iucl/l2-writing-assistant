@@ -8,16 +8,16 @@ import sys
 here = os.path.dirname(os.path.realpath(__file__))
 BABELNETSCRIPT = here + "/../babelnet-api-2.0/run-print-translations.sh"
 
-def babelnet_translations(lemma, sourcelanguage):
+def babelnet_translations(lemma, sl, tl):
     text = ""
-    output = subprocess.check_output([BABELNETSCRIPT, sourcelanguage, lemma])
+    output = subprocess.check_output([BABELNETSCRIPT, sl, lemma])
     text = output.decode('utf-8')
 
     out = []
     for line in text.split("\n"):
         splitted = line.strip().split("\t")
         mylang = splitted[0].lower()
-        if mylang != lang: continue
+        if mylang != tl: continue
         scoreds = splitted[1:]
         for scored in scoreds:
             term,score = scored.split(":")
@@ -26,9 +26,10 @@ def babelnet_translations(lemma, sourcelanguage):
     return out
 
 def main():
-    lemma = sys.argv[1]
-    lang = sys.argv[2]
-    translations = babelnet_translations(lemma, lang)
+    sl = sys.argv[1]
+    tl = sys.argv[2]
+    lemma = sys.argv[3]
+    translations = babelnet_translations(lemma, sl, tl)
     print(translations)
 
 if __name__ == "__main__": main()
