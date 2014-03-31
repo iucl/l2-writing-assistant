@@ -8,9 +8,9 @@ import sys
 here = os.path.dirname(os.path.realpath(__file__))
 BABELNETSCRIPT = here + "/../babelnet-api-2.0/run-print-translations.sh"
 
-def babelnet_translations(lemma, lang):
+def babelnet_translations(lemma, sourcelanguage):
     text = ""
-    output = subprocess.check_output([BABELNETSCRIPT, lemma])
+    output = subprocess.check_output([BABELNETSCRIPT, sourcelanguage, lemma])
     text = output.decode('utf-8')
 
     out = []

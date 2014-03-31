@@ -101,13 +101,13 @@ def generate_candidates(phrase, args):
 
     ## XXX: consider folding this into generate_split_candidates too.
     ## XXX: this seems wrong.
-    ##if not ptentries:
-    ##    key = phrase_s.replace(' ', '_')
-    ##    frombabelnet = babelnet.babelnet_translations(key, args.target)
-    ##    ptentries = []
-    ##    for (term, score) in frombabelnet:
-    ##        entry = PTEntry(source=phrase_s,target=term,pdirect=score,pinverse=score)
-    ##        ptentries.append(entry)
+    if not ptentries:
+        key = phrase_s.replace(' ', '_')
+        frombabelnet = babelnet.babelnet_translations(key, args.target)
+        ptentries = []
+        for (term, score) in frombabelnet:
+            entry = PTEntry(source=phrase_s,target=term,pdirect=score,pinverse=score)
+            ptentries.append(entry)
 
     if not ptentries:
         oov = PTEntry(source="OOV",target="OOV",pdirect=1,pinverse=1)

@@ -40,8 +40,8 @@ public class PrintTranslations {
                 for (ScoredItem<String> item : translations.get(language)) {
                     System.out.print("\t"+item);
                 }
+                System.out.println();
             }
-            System.out.println();
         }
     }
     
@@ -52,10 +52,25 @@ public class PrintTranslations {
         }
         try
         {
-            String word = args[0];
-            Set<Language> languages = BabelNetConfiguration.getInstance().getBabelLanguages();
+            String word = args[1];
+            Set<Language> languages = new HashSet<Language>();
+            // = BabelNetConfiguration.getInstance().getBabelLanguages();
+
+            languages.add(Language.ES);
+            languages.add(Language.DE);
             languages.add(Language.EN);
-            testTranslations(word, Language.EN, languages.toArray(new Language[languages.size()]));
+
+            Language source;
+            if (args[0].equals("en")) {
+                source = Language.EN;
+            } else if (args[0].equals("fr")) {
+                source = Language.FR;
+            } else if (args[0].equals("nl")) {
+                source = Language.NL;
+            } else {
+                throw new Exception();
+            }
+            testTranslations(word, source, languages.toArray(new Language[languages.size()]));
         }
         catch (Exception e)
         {
