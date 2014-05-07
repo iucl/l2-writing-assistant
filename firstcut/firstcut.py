@@ -28,27 +28,16 @@ import parser_interface
 import query_cache
 import pmi 
 
-def score_candidates(candidates, weights, leftcontext, rightcontext, lm, parser,
-                     pmi_cls):
+def score_candidates(candidates, weights, leftcontext, rightcontext, lm):
     """Return (score,candidate,scores) tuples, where score is the weighted
     total and scores are the individual unweighted scores.."""
     out = []
     for ptentry,listofwords in candidates:
         score = 0
         sent = " ".join(listofwords)
-        ## (leftcontext + " " + ptentry.target + " " + rightcontext).lower()
         lm_penalty = lm.score(sent)
         pt_direct = math.log(ptentry.pdirect, 10)
         pt_inverse = math.log(ptentry.pinverse, 10)
-
-        ##try:
-        ##    lex,pos = parser.find_rels(listofwords, ptentry.target.split())
-        ##except:
-        ##    continue
-        ##score_lex =   pmi_cls.sim_lex(lex)
-        ##score_pos =   pmi_cls.sim_pos(pos)
-        ##print("LEX AND POS:", score_lex, score_pos)
-
         scores = (lm_penalty, pt_direct, pt_inverse)
 
         score += (weights["LM"] * lm_penalty)
@@ -56,6 +45,41 @@ def score_candidates(candidates, weights, leftcontext, rightcontext, lm, parser,
         score += (weights["INVERSE"] * pt_inverse)
         out.append((score, ptentry, scores))
     return out
+
+def rescore_candidates(candidates, weights, leftcontext, rightcontext, args):
+    pmi_cls = pmi.PMI(args.target)
+    parsefn = "{0}-{1}-devel".format(args.source, args.target)
+    parser = parser_interface.Pcandidates(args.target, parsefn)
+    parsecache = parser_interface.PARPATH + parsefn + ".conll"
+
+    allsentences = []
+    for (score, ptentry, scores) in candidates:
+        sentence = []
+        sentence.extend(leftcontext.split())
+        sentence.extend(ptentry.target.split())
+        sentence.extend(rightcontext.split())
+        allsentences.append(sentence)
+
+    ## XXX: make the caching work.
+    if os.path.exists(parsecache):
+        parser.load_new_parse(parsecache, allsentences)
+    else:
+        parser.do_new_parse(allsentences) 
+
+    for (score, ptentry, scores) in candidates:
+        sentence = []
+        sentence.extend(leftcontext.split())
+        sentence.extend(ptentry.target.split())
+        sentence.extend(rightcontext.split())
+
+        lex,pos = parser.find_rels(sentence, ptentry.target.split())
+        score_lex =   pmi_cls.sim_lex(lex)
+        score_pos =   pmi_cls.sim_pos(pos)
+        print("PTENTRY, LEX AND POS:", ptentry.target, score_lex, score_pos)
+        ## XXX: actually rescore here.
+
+    return candidates
+
 
 def generate_split_candidates(phrase, sl, tl):
     ptentries = []
@@ -186,10 +210,7 @@ def sentences_and_candidates(sentencepairs, args, oov_lookup):
                     completesentence.extend(item.value)
                 else:
                     assert False, "this should never happen"
-            ## XXX: senselessly limit the number of candidates.
-            ## if len(out[int(sentencepair.id)]) < 10:
             out[int(sentencepair.id)].append((cand, completesentence))
-            # out[int(sentencepair.id)].append((cand, completesentence))
     return out
 
 def load_weights(weightsfn):
@@ -258,22 +279,6 @@ def main():
 
     sentids = sorted(list(sent_cand_pairs.keys()))
 
-    ## TODO: turn back on for PMI
-    ##allsentences = []
-    ##for sentid in sentids:
-    ##    for (cand,candsentence) in sent_cand_pairs[sentid]:
-    ##        allsentences.append(candsentence)
-    ##
-    ##parsefn = "{0}-{1}-devel".format(args.source, args.target)
-    ##parser = parser_interface.Pcandidates(targetlang, parsefn)
-
-    ##parsecache = parser_interface.PARPATH + parsefn + ".conll"
-    ##if os.path.exists(parsecache):
-    ##    parser.load_new_parse(parsecache, allsentences)
-    ##else:
-    ##    parser.do_new_parse(allsentences)
-    ##pmi_cls = pmi.PMI(targetlang)
-
     for sentid in sentids:
         sentencepair = sentencepairs[sentid]
         ## now we have a list of (ptentry, list_of_words)
@@ -288,10 +293,12 @@ def main():
                                   weights,
                                   leftcontext,
                                   rightcontext,
-                                  lm,
-                                  None, # parser,
-                                  None) # pmi_cls)
+                                  lm)
         scored.sort(reverse=True)
+
+        tophundred = scored[:100]
+        scored = rescore_candidates(tophundred, weights, leftcontext,
+                                    rightcontext, args)
 
         if zmert:
             ## TODO: pull this out into a function
@@ -313,6 +320,7 @@ def main():
                                                    scores)
                 print(out)
         else:
+            print(scored[0])
             translatedvalue = scored[0][1].target.split()
             translatedfragment = format.Fragment(tuple(translatedvalue), fragment.id)
 

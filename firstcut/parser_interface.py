@@ -85,7 +85,14 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
 
         ##Now read the parse and make it into a dictionary
         parsed_sents = self.read_sents(filename)
-        assert len(parsed_sents) == len(sent_list)  ##the number of sentences have to match!!
+
+        ##the number of sentences have to match!!
+        ## assert len(parsed_sents) == len(sent_list)
+        if len(parsed_sents) != len(sent_list):
+            print("Couldn't load sentences from cache; parsing again.")
+            self.do_new_parse(sent_list)
+            return
+
         for i in range(len(sent_list)):
             sent_key = " ".join(sent_list[i])
             self.parse_lookup[sent_key.strip()] = parsed_sents[i]
