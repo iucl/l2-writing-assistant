@@ -35,18 +35,23 @@ def load_en():
     return en
 
 def load_de():
+    de = pickle.load(open(PICPATH + "de.cache","rb"))
+    print("CHECK LOADING in load_de!! size:", len(de))
+    return de
+
+def load_es():
     es = pickle.load(open(PICPATH + "es.cache","rb"))
     return es
 
-def load_es():
-    de = pickle.load(open(PICPATH + "de.cache","rb"))
-    return de
 ##dump
 def dump_en(pic):
     pickle.dump(pic,open(PICPATH + "en.cache","wb"))
+
 def dump_es(pic):
     pickle.dump(pic,open(PICPATH + "es.cache","wb"))
+
 def dump_de(pic):
+    print("CHECK DUMPING in dump_de!! size:", len(pic))
     pickle.dump(pic,open(PICPATH + "de.cache","wb"))
 
 

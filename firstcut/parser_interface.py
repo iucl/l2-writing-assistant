@@ -32,7 +32,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
             sents = [x for x in sents if x.strip() != ""]
         return sents ##sents should be a list of sentences (which are conll dependency trees)
 
-    def do_new_parse(self,sent_list):  ##takes in a list of sentences we want to parse. Each sentence is represented by a list of words. 
+    def do_new_parse(self, sent_list, sentid):  ##takes in a list of sentences we want to parse. Each sentence is represented by a list of words. 
         """ Calling this function will parse all the sentences. It should make the training of CONNL format first
         call the parser from command, and remember the filename"""
         ##make training format
@@ -90,7 +90,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         ## assert len(parsed_sents) == len(sent_list)
         if len(parsed_sents) != len(sent_list):
             print("Couldn't load sentences from cache; parsing again.")
-            self.do_new_parse(sent_list)
+            assert False, "this shouldn't happen"
             return
 
         for i in range(len(sent_list)):

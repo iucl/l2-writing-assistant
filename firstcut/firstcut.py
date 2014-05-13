@@ -46,11 +46,16 @@ def score_candidates(candidates, weights, leftcontext, rightcontext, lm):
         out.append((score, ptentry, scores))
     return out
 
-def rescore_candidates(candidates, weights, leftcontext, rightcontext, args):
+def nonzero(num):
+    """Because smoothing is for wimps."""
+    return max(num, 1e-15)
+
+def rescore_candidates(candidates, weights, leftcontext, rightcontext, sentid, args):
     pmi_cls = pmi.PMI(args.target)
-    parsefn = "{0}-{1}-devel".format(args.source, args.target)
+    parsefn = "{0}-{1}-{2}-devel".format(args.source, args.target, sentid)
     parser = parser_interface.Pcandidates(args.target, parsefn)
     parsecache = parser_interface.PARPATH + parsefn + ".conll"
+    newcandidates = []
 
     allsentences = []
     for (score, ptentry, scores) in candidates:
@@ -64,7 +69,7 @@ def rescore_candidates(candidates, weights, leftcontext, rightcontext, args):
     if os.path.exists(parsecache):
         parser.load_new_parse(parsecache, allsentences)
     else:
-        parser.do_new_parse(allsentences) 
+        parser.do_new_parse(allsentences, sentid) 
 
     for (score, ptentry, scores) in candidates:
         sentence = []
@@ -73,12 +78,21 @@ def rescore_candidates(candidates, weights, leftcontext, rightcontext, args):
         sentence.extend(rightcontext.split())
 
         lex,pos = parser.find_rels(sentence, ptentry.target.split())
-        score_lex =   pmi_cls.sim_lex(lex)
-        score_pos =   pmi_cls.sim_pos(pos)
-        print("PTENTRY, LEX AND POS:", ptentry.target, score_lex, score_pos)
-        ## XXX: actually rescore here.
+        score_lex = nonzero(pmi_cls.sim_lex(lex))
+        score_pos = nonzero(pmi_cls.sim_pos(pos))
 
-    return candidates
+        logprob_lex = math.log(score_lex, 10)
+        logprob_pos = math.log(score_pos, 10)
+
+        print("PTENTRY, LEX AND POS:", ptentry.target, score_lex, score_pos)
+
+        score += (weights["PMI_LEX"] * logprob_lex)
+        score += (weights["PMI_POS"] * logprob_pos)
+        scores = scores + (logprob_lex, logprob_pos)
+        newcandidates.append((score, ptentry, scores))
+    pmi_cls.dump_cache()
+
+    return newcandidates
 
 
 def generate_split_candidates(phrase, sl, tl):
@@ -298,7 +312,7 @@ def main():
 
         tophundred = scored[:100]
         scored = rescore_candidates(tophundred, weights, leftcontext,
-                                    rightcontext, args)
+                                    rightcontext, sentid, args)
 
         if zmert:
             ## TODO: pull this out into a function
@@ -337,7 +351,6 @@ def main():
             print("Input: " + sentencepair.inputstr(True,"blue"))
             print("Output: " + sentencepair.outputstr(True,"yellow"))
 
-    # pmi_cls.dump_cache()
     writer.close()
     reader.close()
 
