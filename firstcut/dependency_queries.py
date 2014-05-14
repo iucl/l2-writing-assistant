@@ -19,7 +19,6 @@ import sqlite3
 
 def get_count_head_dep_deprel(conn, head, dep, deprel):
     """Return the number of times we've seen this head,dep,deprel triple."""
-    # print("\t***Querying... 22",head,dep,deprel)
     c = conn.cursor()
     sql = ("""select count from Counts
            where head = ? and dep = ? and deprel = ?""")
@@ -27,17 +26,13 @@ def get_count_head_dep_deprel(conn, head, dep, deprel):
     c.execute(sql, param)
     out = c.fetchone()
 
-    print("###from the DB file", out)
     if out!=None and out[0] != None: 
-        # print("kkk")
         return out[0] 
     else: 
-        # print("ppp")
         return 0
 
 def get_count_head_dep(conn, head, dep):
     """Return the number of times we've seen this head,dep tuple."""
-    # print("\t***Querying... 41",head,dep)
     c = conn.cursor()
     sql = "select sum(count) from Counts where head = ? and dep = ?"
     param = (head, dep)
@@ -50,32 +45,26 @@ def get_count_head_dep(conn, head, dep):
 
 def get_count_head_deprel(conn, head, deprel):
     """Return the number of times we've seen this head,deprel tuple."""
-    # print("\t***Querying... 56",head,deprel)
     c = conn.cursor()
     sql = "select sum(count) from Counts where head = ? and deprel = ?"
     param = (head, deprel)
     c.execute(sql, param)
     out = c.fetchone()
     if out!=None and out[0] != None:
-        # print(out,out[0], "58")
         return out[0]
     else:
-        # print("EEEE1")
         return 0
 
 def get_count_dep_deprel(conn, dep, deprel):
     """Return the number of times we've seen this dep,deprel tuple."""
-    # print("\t***Querying... 73",dep,deprel)
     c = conn.cursor()
     sql = ("select sum(count) from Counts where dep = ? and deprel = ?")
     param = (dep, deprel)
     c.execute(sql, param)
     out = c.fetchone()
     if out!=None and  out[0] != None:
-        print(out,out[0],"73")
         return out[0]
     else:
-        # print("EEEE2")
         return 0
 
 def get_count_head(conn, head):

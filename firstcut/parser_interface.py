@@ -87,13 +87,18 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         self.outputname = filename
         self.parse_lookup = {"foo":1}
 
+        if (filename.endswith(".conll") and
+            not filename.endswith(".conll.conll")):
+            filename = filename + ".conll"
+
         ##Now read the parse and make it into a dictionary
         parsed_sents = self.read_sents(filename)
 
         ##the number of sentences have to match!!
         ## assert len(parsed_sents) == len(sent_list)
         if len(parsed_sents) != len(sent_list):
-            assert False, "this shouldn't happen"
+            assert False, "this shouldn't happen for {0} want {1} got {2}".format(
+                filename, len(sent_list), len(parsed_sents))
             return
 
         for i in range(len(sent_list)):
