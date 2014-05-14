@@ -37,6 +37,14 @@ Yoav Goldberg and Jon Orwant.
 \newblock In {\em Second Joint Conference on Lexical and Computational
   Semantics (*SEM)}, pages 241--247, Atlanta, GA.
 
+\bibitem[\protect\citename{Heafield}2011]{heafield:kenlm:11}
+Kenneth Heafield.
+\newblock 2011.
+\newblock {KenLM:} faster and smaller language model queries.
+\newblock In {\em Proceedings of the {EMNLP} 2011 Sixth Workshop on Statistical
+  Machine Translation}, pages 187--197, Edinburgh, Scotland, United Kingdom,
+  July.
+
 \bibitem[\protect\citename{Klein and Manning}2003]{klein:manning:03}
 Dan Klein and Christopher Manning.
 \newblock 2003.
@@ -73,5 +81,12 @@ J\"org Tiedemann.
 \newblock Parallel data, tools and interfaces in {OPUS}.
 \newblock In {\em Proceedings of the 8th International Conference on Language
   Resources and Evaluation (LREC)}, pages 2214--2218, Istanbul, Turkey.
+
+\bibitem[\protect\citename{Zaidan}2009]{zaidan:zmert:09}
+Omar~F. Zaidan.
+\newblock 2009.
+\newblock {Z-MERT}: A fully configurable open source tool for minimum error
+  rate training of machine translation systems.
+\newblock {\em The Prague Bulletin of Mathematical Linguistics}, 91:79--88.
 
 \end{thebibliography}
