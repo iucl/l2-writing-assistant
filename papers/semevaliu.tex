@@ -46,7 +46,12 @@
 \begin{document}
 \maketitle
 \begin{abstract}
- blabla
+  We describe the Indiana University system for SemEval Task 5.
+%  offering an L2 translation for an L1 fragment.  
+  The system is based on combining different information sources to
+  arrive at a final L2 guess, incorporating: phrase tables, an L2
+  language model, and collocational tendencies.  We also consider
+  different data sources.
  \end{abstract}
 
 
@@ -56,10 +61,10 @@
     %
     % for review submission
     %
-    \hspace{-0.65cm}  % space normally used by the marker
-    Place licence statement here for the camera-ready version, see
-    Section~\ref{licence} of the instructions for preparing a
-    manuscript.
+    % \hspace{-0.65cm}  % space normally used by the marker
+    % Place licence statement here for the camera-ready version, see
+    % Section~\ref{licence} of the instructions for preparing a
+    % manuscript.
     %
     % % final paper: en-uk version (to license, a licence)
     %
@@ -73,19 +78,20 @@
     % 
     % % final paper: en-us version (to licence, a license)
     %
-    % \hspace{-0.65cm}  % space normally used by the marker
-    % This work is licenced under a Creative Commons 
-    % Attribution 4.0 International License.
-    % Page numbers and proceedings footer are added by
-    % the organizers.
-    % License details:
-    % \url{http://creativecommons.org/licenses/by/4.0/}
+    \hspace{-0.65cm}  % space normally used by the marker
+    This work is licenced under a Creative Commons 
+    Attribution 4.0 International License.
+    Page numbers and proceedings footer are added by
+    the organizers.
+    License details:
+    \url{http://creativecommons.org/licenses/by/4.0/}
 }
 
 The task of translating an L1 fragment occurring in the midst of an L2 sentence is one in which a phrase occurs in an already-rich target language (L2) context; this makes the task quite different from translation in the general case. For this reason, we decided to approach the problem by combining standard Machine Translation technology in combination with target language information,
 % allows one to rely more heavily on target information, 
 such as contextual relationships. 
- We use a log-linear model ... This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven pointwise mutual information (PMI); and 4) combining the scores from 1)-30 via minimized error rate training (MERT), to arrive at a final solution.  Step 1) models transfer knowledge between the L1 and L2; step 2) models facts about the L2 grammar, i.e., what translations fit well into the local context; step 3) models collocational and semantic tendencies of the L2; and step 4)  gives different weights to each of the three sources of information.  Although we did not finish step 3) in time for the official results, we report it here, as it represents the most novel aspect of the system--namely, the exploitation of the rich L2 context--and it results in our team’s best system.  In general, our system is fully language-independent, with accuracy varying due to the size of data sources and quality of input technology (e.g., syntactic parse accuracy).
+% We use a log-linear model ... 
+This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven pointwise mutual information (PMI); and 4) combining the scores from 1)-3) via minimized error rate training (MERT), to arrive at a final solution.  Step 1) models transfer knowledge between the L1 and L2; step 2) models facts about the L2 grammar, i.e., what translations fit well into the local context; step 3) models collocational and semantic tendencies of the L2; and step 4)  gives different weights to each of the three sources of information.  Although we did not finish step 3) in time for the official results, we report it here, as it represents the most novel aspect of the system--namely, the exploitation of the rich L2 context--and it results in our team's best system.  In general, our system is fully language-independent, with accuracy varying due to the size of data sources and quality of input technology (e.g., syntactic parse accuracy).
 
 \section{Data Sources}
 
