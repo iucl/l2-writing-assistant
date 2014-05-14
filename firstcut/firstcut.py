@@ -84,7 +84,7 @@ def rescore_candidates(candidates, weights, leftcontext, rightcontext, sentid, a
         logprob_lex = math.log(score_lex, 10)
         logprob_pos = math.log(score_pos, 10)
 
-        print("PTENTRY, LEX AND POS:", ptentry.target, score_lex, score_pos)
+        dprint("PTENTRY, LEX AND POS:", ptentry.target, score_lex, score_pos)
 
         score += (weights["PMI_LEX"] * logprob_lex)
         score += (weights["PMI_POS"] * logprob_pos)

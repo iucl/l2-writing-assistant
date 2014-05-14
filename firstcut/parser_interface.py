@@ -3,6 +3,7 @@ import commands
 from commands import *
 import codecs, sys, re
 import os
+import subprocess
 
 here = os.path.dirname(os.path.realpath(__file__))
 PARPATH = here + "/../parseout/"##parser path
@@ -65,7 +66,8 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         filename,filename,\
         filename,filename)
 
-        os.system(cmd)
+        # os.system(cmd)
+        subprocess.call(cmd, shell=True, stdout=subprocess.DEVNULL)
         ##Now read the parse and make it into a dictionary
         parsed_sents = self.read_sents(filename + ".conll")
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import pickle
+from util import dprint
 
 here = os.path.dirname(os.path.realpath(__file__))
 PICPATH = here + "/../cache/"
@@ -39,7 +40,7 @@ def load_en():
 
 def load_de():
     de = pickle.load(open(PICPATH + "de.cache","rb"))
-    print("CHECK LOADING in load_de!! size:", len(de))
+    dprint("CHECK LOADING in load_de!! size:", len(de))
     return de
 
 def load_es():
@@ -54,7 +55,7 @@ def dump_es(pic):
     pickle.dump(pic,open(PICPATH + "es.cache","wb"))
 
 def dump_de(pic):
-    print("CHECK DUMPING in dump_de!! size:", len(pic))
+    dprint("CHECK DUMPING in dump_de!! size:", len(pic))
     pickle.dump(pic,open(PICPATH + "de.cache","wb"))
 
 
