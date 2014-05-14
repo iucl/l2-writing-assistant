@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2012)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: semevaliu.aux
+The style file: acl.bst
+Database file #1: semevaliu.bib
+You've used 10 entries,
+            2490 wiz_defined-function locations,
+            615 strings with 6632 characters,
+and the built_in function-call counts, 4879 in all, are:
+= -- 520
+> -- 188
+< -- 6
++ -- 66
+- -- 64
+* -- 339
+:= -- 746
+add.period$ -- 40
+call.type$ -- 10
+change.case$ -- 71
+chr.to.int$ -- 10
+cite$ -- 10
+duplicate$ -- 227
+empty$ -- 371
+format.name$ -- 79
+if$ -- 1063
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 11
+newline$ -- 63
+num.names$ -- 30
+pop$ -- 100
+preamble$ -- 1
+purify$ -- 82
+quote$ -- 0
+skip$ -- 171
+stack$ -- 0
+substring$ -- 255
+swap$ -- 72
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 76
+warning$ -- 0
+while$ -- 40
+width$ -- 14
+write$ -- 147

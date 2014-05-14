@@ -96,8 +96,8 @@ The task of translating an L1 fragment occurring in the midst of an L2 sentence 
 \paragraph{Europarl}  %(MD: for phrase alignment / candidate generation?)
 
 \paragraph{Wikipedia} %(MD: for dependency/PMI calculation?) Levi:
-For German and Spanish, we used recent Wikipedia dumps (Alex may have the exact info if needed). To save time during parsing, sentences longer than 25 words were removed. The remaining sentences were POS tagged and dependency parsed using Mate Parser and pre-trained models (Bohnet, 2010; Bohnet and Kuhn, 2012; Seeker and Kuhn, 2012). To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we chose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences were POS tagged and dependency parsed using the pre-trained Stanford Parser (Klein and Manning, 2003; de Marneffe et al., 2006). The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets served as training for the PMI system described in section XYZ.
-For English, we also trained a PMI system on the arcs dataset of the Google Books Syntactic N-Grams (Goldberg and Orwant, 2013).
+For German and Spanish, we used recent Wikipedia dumps (Alex may have the exact info if needed). To save time during parsing, sentences longer than 25 words were removed. The remaining sentences were POS tagged and dependency parsed using Mate Parser and pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we chose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences were POS tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets served as training for the PMI system described in section XYZ.
+For English, we also trained a PMI system on the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}.
 %[[
 %--Levi: Here are more exact numbers, if needed:
 %German Wikipedia:
@@ -126,7 +126,7 @@ For English, we also trained a PMI system on the arcs dataset of the Google Book
 
 - GIZA++ and Moses for phrase table extraction
 
-Given that this is essentially a local translation problem, we use as our starting point a phrase table constructed from parallel text, weighted with probabilities.  We use GIZA++ (CITE) and Moses (CITE) to construct the phrase tables.  The quality of the phrase table depends upon the size of the data--an issue we discuss with larger phrase tables in section XX--but in the case of missing phrases from the table, we back off to subphrases in the following way: ...
+Given that this is essentially a local translation problem, we use as our starting point a phrase table constructed from parallel text, weighted with probabilities.  We use GIZA++ \cite{och:ney:00} and Moses \cite{koehn:hoang:ea:07} to construct the phrase tables.  The quality of the phrase table depends upon the size of the data--an issue we discuss with larger phrase tables in section XX--but in the case of missing phrases from the table, we back off to subphrases in the following way: ...
 
 MD: 1. What is the exact back-off procedure? 2. Do we back off only in the case of missing phrases, or do we consider multiple possibilities for one phrase, even if it’s already in the table?
 
@@ -161,7 +161,7 @@ Two important points: 1) PMI is able to calculate semantic/collocational relatio
 
 - EU bookshop corpus
 - MultiUN corpus
-- you can find so many corpora on Opus!! (Tiedemann)
+- you can find so many corpora on Opus!! \cite{tiedemann:12}
 
 \section{Conclusion} 
 
