@@ -1,4 +1,6 @@
 LM		|||	0.01	Opt	-Inf	+Inf	-1	+1
 DIRECT |||	1.0	Opt	-Inf	+Inf	-1	+1
 INVERSE	|||	1.0	Opt	-Inf	+Inf	-1	+1
+PMI_LEX |||	1.0	Opt	-Inf	+Inf	-1	+1
+PMI_POS |||	1.0	Opt	-Inf	+Inf	-1	+1
 normalization = none

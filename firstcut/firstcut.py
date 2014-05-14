@@ -53,8 +53,8 @@ def nonzero(num):
 def rescore_candidates(candidates, weights, leftcontext, rightcontext, sentid, args):
     pmi_cls = pmi.PMI(args.target)
     parsefn = "{0}-{1}-{2}-devel".format(args.source, args.target, sentid)
-    parser = parser_interface.Pcandidates(args.target, parsefn)
     parsecache = parser_interface.PARPATH + parsefn + ".conll"
+    parser = parser_interface.Pcandidates(args.target, parsecache)
     newcandidates = []
 
     allsentences = []

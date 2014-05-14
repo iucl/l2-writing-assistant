@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
+import os
 import pickle
-PICPATH = "../cache/"
+
+here = os.path.dirname(os.path.realpath(__file__))
+PICPATH = here + "/../cache/"
 
 def cache_head_dep_deprel( handle,count, head, dep, deprel):
     """Return the number of times we've seen this head,dep,deprel triple."""

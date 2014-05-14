@@ -5,7 +5,6 @@ from collections import defaultdict
 
 import dependency_queries as dbtool ##this is the code from Alex.
 
-DBPATH = "../dependency-dbs/"
 DBPATH = "/space/dependency-dbs/"
 ##use python class. 
 ##So every language can be an instance of it. 
@@ -32,9 +31,7 @@ class PMI:
             wikipath = "english-wikipedia"
         self.posdb = sql.connect(DBPATH + wikipath +  "{0}-pos.db".format(lang))
         self.lexdb = sql.connect(DBPATH + wikipath + "{0}-lex.db".format(lang))
-
-
-        print("Database for {} has been loaded!".format(lang))
+        #print("Database for {} has been loaded!".format(lang))
    
     def dump_cache(self):
         eval("dump_{0}({1})".format(self.lang,self.cache))

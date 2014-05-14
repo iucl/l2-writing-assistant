@@ -3,7 +3,9 @@ import commands
 from commands import *
 import codecs, sys, re
 import os
-PARPATH = "../parseout/"##parser path
+
+here = os.path.dirname(os.path.realpath(__file__))
+PARPATH = here + "/../parseout/"##parser path
 ###!!!! The input has be a list of words
 ####   the input has to contain all the commas, periods..
 #EN_MODE = "wiki"
@@ -18,7 +20,7 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         
     def read_sents(self,filename): ##wt for "whole text"; should be the entire conll file read in as a single string.
         """ This just reads in the parsed sentences, and return a list of sentences """
-        IN = codecs.open(PARPATH + filename, "r", encoding="utf-8", errors="surrogateescape")
+        IN = codecs.open(filename, "r", encoding="utf-8", errors="surrogateescape")
         wholetext = IN.read()
 
         #print wholetext, "\n\n######"
@@ -39,29 +41,29 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         sentS_list = [" ".join(x) + "\n" for x in sent_list]##A list of sentence strings.
         filename = self.outputname##self.lang+"candi"
 
-        OUT = codecs.open(PARPATH + filename, 'w', encoding='utf-8')
-        #OUT = open(PARPATH + filename,"w")
+        OUT = codecs.open(filename, 'w', encoding='utf-8')
+        #OUT = open(filename,"w")
         OUT.writelines(sentS_list)
         OUT.close()
         
         ##parse it
         if self.lang == "en":
             if EN_MODE == "google":
-                cmd = en_cmd_google.format(PARPATH + filename,PARPATH,PARPATH + filename,PARPATH,PARPATH + filename )
+                cmd = en_cmd_google.format(filename,PARPATH,filename,PARPATH,filename )
             else:
-                cmd = en_cmd_wiki.format(PARPATH + filename,PARPATH,PARPATH + filename,PARPATH,PARPATH + filename )
+                cmd = en_cmd_wiki.format(filename,PARPATH,filename,PARPATH,filename )
 
         if self.lang == "de":
-            cmd = de_cmd.format(PARPATH + filename,PARPATH + filename,\
- 	PARPATH + filename,PARPATH + filename, \
-	PARPATH + filename,PARPATH + filename,\
-	PARPATH + filename,PARPATH + filename)
+            cmd = de_cmd.format(filename,filename,\
+ 	filename,filename, \
+	filename,filename,\
+	filename,filename)
 
         if self.lang == "es":
-            cmd = es_cmd.format(PARPATH + filename,PARPATH + filename,\
-        PARPATH + filename,PARPATH + filename, \
-        PARPATH + filename,PARPATH + filename,\
-        PARPATH + filename,PARPATH + filename)
+            cmd = es_cmd.format(filename,filename,\
+        filename,filename, \
+        filename,filename,\
+        filename,filename)
 
         os.system(cmd)
         ##Now read the parse and make it into a dictionary
@@ -89,7 +91,6 @@ class Pcandidates:  ##this class parses all the candidate sentences for a langua
         ##the number of sentences have to match!!
         ## assert len(parsed_sents) == len(sent_list)
         if len(parsed_sents) != len(sent_list):
-            print("Couldn't load sentences from cache; parsing again.")
             assert False, "this shouldn't happen"
             return
 
