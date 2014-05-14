@@ -1,0 +1,173 @@
+%
+% File twocolumn.tex
+%
+%%
+%% Based on the style files for *SEM-2014, which were, in turn,
+%% Based on the style files for COLING-2014, which were, in turn,
+%% Based on the style files for ACL-2014, which were, in turn,
+%% Based on the style files for ACL-2013, which were, in turn,
+%% Based on the style files for ACL-2012, which were, in turn,
+%% based on the style files for ACL-2011, which were, in turn,
+%% based on the style files for ACL-2010, which were, in turn,
+%% based on the style files for ACL-IJCNLP-2009, which were, in turn,
+%% based on the style files for EACL-2009 and IJCNLP-2008...
+
+%% Based on the style files for EACL 2006 by
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt]{article}
+\usepackage{semeval2014}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+
+%\setlength\titlebox{5cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+\newcommand{\wsname}{SemEval-2014}
+\newcommand{\submissionpage}{\url{http://alt.qcri.org/semeval2014/index.php?id=cfp}}
+\newcommand{\filename}{semeval2014}
+\newcommand{\contact}{pnakov qf.org.qa}
+
+\title{IUCL: Combining Several Information Sources for SemEval Task 5}
+
+\author{First Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\\And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  {\tt email@domain} \\}
+
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+ blabla
+ \end{abstract}
+
+
+\section{Introduction}
+
+\blfootnote{
+    %
+    % for review submission
+    %
+    \hspace{-0.65cm}  % space normally used by the marker
+    Place licence statement here for the camera-ready version, see
+    Section~\ref{licence} of the instructions for preparing a
+    manuscript.
+    %
+    % % final paper: en-uk version (to license, a licence)
+    %
+    % \hspace{-0.65cm}  % space normally used by the marker
+    % This work is licensed under a Creative Commons 
+    % Attribution 4.0 International Licence.
+    % Page numbers and proceedings footer are added by
+    % the organisers.
+    % Licence details:
+    % \url{http://creativecommons.org/licenses/by/4.0/}
+    % 
+    % % final paper: en-us version (to licence, a license)
+    %
+    % \hspace{-0.65cm}  % space normally used by the marker
+    % This work is licenced under a Creative Commons 
+    % Attribution 4.0 International License.
+    % Page numbers and proceedings footer are added by
+    % the organizers.
+    % License details:
+    % \url{http://creativecommons.org/licenses/by/4.0/}
+}
+
+The task of translating an L1 fragment occurring in the midst of an L2 sentence is one in which a phrase occurs in an already-rich target language (L2) context; this makes the task quite different from translation in the general case and allows one to rely more heavily on target information, such as contextual relationships.  We use a log-linear model ... This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven pointwise mutual information; and 4) combining the scores from \#1-\#3 via minimized error rate training (MERT), to arrive at a final solution.  Step \#1 models transfer knowledge between the L1 and L2; step \#2 models facts about the L2 grammar, i.e., what translations fit well into the local context; step \#3 models collocational and semantic tendencies of the L2; and step \#4 simply gives different weights to each of the three sources of information.  Although we did not finish step \#3 in time for the official results, we report it here, as it represents the most novel aspect of the system--namely, the exploitation of the rich L2 context--and it results in our team’s best system.  In general, our system is fully language-independent, with accuracy varying due to the size of data sources and quality of input technology (e.g., syntactic parse accuracy).
+
+\section{Data Sources}
+
+
+\paragraph{Europarl}  %(MD: for phrase alignment / candidate generation?)
+
+\paragraph{Wikipedia} %(MD: for dependency/PMI calculation?) Levi:
+For German and Spanish, we used recent Wikipedia dumps (Alex may have the exact info if needed). To save time during parsing, sentences longer than 25 words were removed. The remaining sentences were POS tagged and dependency parsed using Mate Parser and pre-trained models (Bohnet, 2010; Bohnet and Kuhn, 2012; Seeker and Kuhn, 2012). To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we chose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences were POS tagged and dependency parsed using the pre-trained Stanford Parser (Klein and Manning, 2003; de Marneffe et al., 2006). The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets served as training for the PMI system described in section XYZ.
+For English, we also trained a PMI system on the arcs dataset of the Google Books Syntactic N-Grams (Goldberg and Orwant, 2013).
+%[[
+%--Levi: Here are more exact numbers, if needed:
+%German Wikipedia:
+%number_of_sents: 27,657,877
+%number_of_words: 388,635,816
+%avg wds per sent: 14.05
+%Spanish Wikipedia:
+%number_of_sents: 11,577,130
+%number_of_words: 146,850,355
+%avg wds per sent: 12.68
+%English Wikipedia:
+%number_of_sents: 14,547,754
+%number_of_words: 252,934,861
+%avg wds per sent: 17.39
+%Google Syntactic Ngrams “Arcs”: The paper says this set contains 919M “items”, which I think means dependency types (not tokens), but I’m not sure… Taken from 3,473,595 English books.
+%]]
+
+\paragraph{Babelnet} %(MD: can’t remember what this was for …)
+
+- we used: University of Pisa wikipedia extractor
+- MD: make clear which data sources were for which parts (quick point-aheads should be good)
+
+\section{Our  System}
+
+\subsection{Constructing Candidate Translations}
+
+- GIZA++ and Moses for phrase table extraction
+
+Given that this is essentially a local translation problem, we use as our starting point a phrase table constructed from parallel text, weighted with probabilities.  We use GIZA++ (CITE) and Moses (CITE) to construct the phrase tables.  The quality of the phrase table depends upon the size of the data--an issue we discuss with larger phrase tables in section XX--but in the case of missing phrases from the table, we back off to subphrases in the following way: ...
+
+MD: 1. What is the exact back-off procedure? 2. Do we back off only in the case of missing phrases, or do we consider multiple possibilities for one phrase, even if it’s already in the table?
+
+MD: we should give names to each model, to easily refer to them throughout the paper and in tables (IUCL1 and IUCL2 are the official submissions, but for other models we may want more descriptive names)
+alexr: the models are basically the same -- we just changed the phrase tables for the English/German setup on the second run. I'll have to check the differences exactly, but there was some problem with the phrase tables for the first run -- maybe we didn't run the whole Moses pipeline appropriately and tokenization/truecasing was messed up. But from an algorithmic perspective, they're the same.
+
+MD: Okay, that makes sense - do we just concatenate the data sources to derive a phrase table for each language pair?  Or is it just Europarl for this phase?
+
+\subsection{Scoring Candidate Translations via a L2 Language Model}
+- kenlm for language models (Kenneth Heafield)
+
+\subsection{Scoring Candidate Translations via Dependency-Based PMI}
+
+- MATE parser
+- Stanford parser
+- we used: sqlite3 (for storing dependencies?)
+
+Two important points: 1) PMI is able to calculate semantic/collocational relationships.  We should cite work on collocational error detection.  2) We do not use just any PMI, but one which is derived from syntactic dependencies.
+
+\subsection{Tuning Weights with MERT}
+- ZMERT (Omar Zaidan)
+- exact set-up
+
+\section{Experiments}
+
+\subsection{Official System}
+\cite{nltkbook}
+
+\subsection{Expansion \#1: Experiments with PMI over Dependencies}
+
+\subsection{Expansion \#2: Experiments with Large Phrase Tables}
+
+- EU bookshop corpus
+- MultiUN corpus
+- you can find so many corpora on Opus!! (Tiedemann)
+
+\section{Conclusion} 
+
+% include your own bib file like this:
+\bibliographystyle{acl}
+\bibliography{semevaliu}
+
+
+\end{document}
