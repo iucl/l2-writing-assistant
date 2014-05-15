@@ -91,21 +91,32 @@ The task of translating an L1 fragment occurring in the midst of an L2 sentence 
 % allows one to rely more heavily on target information, 
 such as contextual relationships. 
 % We use a log-linear model ... 
-This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven similarity measure \cite{lin:98}
+This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven word similarity measure \cite{lin:98} ( in this paper we call it SIM )
 %pointwise mutual information (PMI); 
 and 4) combining the scores from 1)-3) via minimized error rate training (MERT), to arrive at a final solution.  Step 1) models transfer knowledge between the L1 and L2; step 2) models facts about the L2 grammar, i.e., what translations fit well into the local context; step 3) models collocational and semantic tendencies of the L2; and step 4)  gives different weights to each of the three sources of information.  Although we did not finish step 3) in time for the official results, we report it here, as it represents the most novel aspect of the system -- namely, the exploitation of the rich L2 context -- and it results in our team's best system.  In general, our system is fully language-independent, with accuracy varying due to the size of data sources and quality of input technology (e.g., syntactic parse accuracy).
 
 \section{Data Sources}
+%%%% CL: added the following, not sure if correct.
 
 
 \paragraph{Europarl}  %(MD: for phrase alignment / candidate generation?)
+%%%% CL: Added the following sentence not sure it is correct.
+The Europarl Parallel Corpus is a corpus of proceedings of the European Parliament. It is a good resource for constructing translation phrase tables because the corpus contains 21 European Languages, and it is aligned sentence by sentence. From this corpus, we built phrase tables for English-Spanish, English-German, French-English, Dutch-English.\\
+%%% CL: Alex, is that right?
+
+\paragraph{Babelnet} %(MD: can’t remember what this was for …)
+%%% CL: added not sure if it correct. 
+In the case our constructed phrase-tables do not contain a translation for a source phrase, we need to split up the source phrase into smaller components and look up each components from Babelnet. \\
+- we used: University of Pisa wikipedia extractor
+- MD: make clear which data sources were for which parts (quick point-aheads should be good)
 
 \paragraph{Wikipedia} %(MD: for dependency/PMI calculation?) Levi:
-For German and Spanish, we used recent Wikipedia dumps\marginpar{LK: Alex may have the exact info for the dumps if needed}. To save time during parsing, sentences longer than 25 words were removed. The remaining sentences were POS tagged and dependency parsed using Mate Parser and pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we chose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences were POS tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets served as training for the PMI system described in section \ref{sec:dependencyPMI}.
+For German and Spanish, we used recent Wikipedia dumps\marginpar{LK: Alex may have the exact info for the dumps if needed}. To save time during parsing, sentences longer than 25 words were removed. The remaining sentences were POS tagged and dependency parsed using Mate Parser and pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we chose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences were POS tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets served as training for the SIM system described in section \ref{sec:dependencySIM}.
+%%% CL: training changed to data source, because it is not strictly training?
 
 \paragraph{Google Books Syntactic N-grams}
 \marginpar{\cite{goldberg:orwant:13} says this contains 919M ``items''; = dependency types? Taken from 3,473,595 books.}
-For English, we also trained a PMI system on the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}.%[[
+For English, we also trained a SIM system on the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}.%[[
 %--Levi: Here are more exact numbers, if needed:
 %German Wikipedia:
 %number_of_sents: 27,657,877
@@ -120,11 +131,6 @@ For English, we also trained a PMI system on the arcs dataset of the Google Book
 %number_of_words: 252,934,861
 %avg wds per sent: 17.39
 %]]
-
-\paragraph{Babelnet} %(MD: can’t remember what this was for …)
-
-- we used: University of Pisa wikipedia extractor
-- MD: make clear which data sources were for which parts (quick point-aheads should be good)
 
 \section{Our  System}
 
