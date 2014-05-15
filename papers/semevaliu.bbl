@@ -62,12 +62,25 @@ Philipp Koehn, Hieu Hoang, Alexandra Birch, Chris Callison-Burch, Marcello
   Computational Linguistics Companion Volume Proceedings of the Demo and Poster
   Sessions}, Prague, Czech Republic.
 
+\bibitem[\protect\citename{Koehn}2005]{koehn:05}
+Philipp Koehn.
+\newblock 2005.
+\newblock Europarl: A parallel corpus for statistical machine translation.
+\newblock In {\em MT Summit}.
+
 \bibitem[\protect\citename{Lin}1998]{lin:98}
 Dekang Lin.
 \newblock 1998.
 \newblock An information-theoretic definition of similarity.
 \newblock In {\em International Conference on Machine Learning (ICML)},
   volume~98, pages 296--304.
+
+\bibitem[\protect\citename{Navigli and Ponzetto}2012]{Navigli:Ponzetto:12}
+Roberto Navigli and Simone~Paolo Ponzetto.
+\newblock 2012.
+\newblock {B}abel{N}et: {T}he automatic construction, evaluation and
+  application of a wide-coverage multilingual semantic network.
+\newblock {\em Artificial Intelligence}, 193:217--250.
 
 \bibitem[\protect\citename{Och and Ney}2000]{och:ney:00}
 Franz~Josef Och and Hermann Ney.

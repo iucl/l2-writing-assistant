@@ -3,44 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: semevaliu.aux
 The style file: acl.bst
 Database file #1: semevaliu.bib
-You've used 13 entries,
+You've used 15 entries,
             2490 wiz_defined-function locations,
-            635 strings with 7166 characters,
-and the built_in function-call counts, 6193 in all, are:
-= -- 667
-> -- 209
+            647 strings with 7494 characters,
+and the built_in function-call counts, 6885 in all, are:
+= -- 738
+> -- 229
 < -- 9
-+ -- 73
-- -- 70
-* -- 421
-:= -- 935
-add.period$ -- 52
-call.type$ -- 13
-change.case$ -- 86
-chr.to.int$ -- 13
-cite$ -- 13
-duplicate$ -- 296
-empty$ -- 487
-format.name$ -- 88
-if$ -- 1360
++ -- 79
+- -- 76
+* -- 467
+:= -- 1048
+add.period$ -- 60
+call.type$ -- 15
+change.case$ -- 97
+chr.to.int$ -- 15
+cite$ -- 15
+duplicate$ -- 329
+empty$ -- 549
+format.name$ -- 97
+if$ -- 1506
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 14
-newline$ -- 81
-num.names$ -- 39
-pop$ -- 117
+missing$ -- 16
+newline$ -- 93
+num.names$ -- 45
+pop$ -- 130
 preamble$ -- 1
-purify$ -- 100
+purify$ -- 113
 quote$ -- 0
-skip$ -- 228
+skip$ -- 250
 stack$ -- 0
-substring$ -- 350
-swap$ -- 98
+substring$ -- 381
+swap$ -- 103
 text.length$ -- 9
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 100
+type$ -- 116
 warning$ -- 0
-while$ -- 53
-width$ -- 18
-write$ -- 192
+while$ -- 58
+width$ -- 21
+write$ -- 219

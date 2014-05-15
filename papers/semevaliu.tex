@@ -20,7 +20,7 @@
 \usepackage{semeval2014}
 \usepackage{times}
 \usepackage{url}
-\usepackage{latexsym}
+\usepackage{latexsym,amsmath}
 
 %\setlength\titlebox{5cm}
 
@@ -163,42 +163,55 @@ Given that this is essentially a local translation problem, we use as our starti
 \label{sec:l2model}
 
 %%%%CL: added the following, might not be accurate!! 
-To examine how well a phrase fits into a L2 context, a quick and intuitive method is to use an N-gram language model (LM) built from the L2 and rank the candidate phrases based on their LM scores. With a large vocabulary, the construction and query of a N-gram language model is potentially very time-consuming, and thus we use the KenLM Language Model Toolkit for efficiency \cite{heafield:kenlm:11}.
+To examine how well a phrase fits into an L2 context, a quick and intuitive method is to use an N-gram language model (LM), built from the L2, and rank the candidate phrases based on their LM scores. With a large vocabulary, the construction and query of an N-gram language model is potentially very time-consuming, and thus we use the KenLM Language Model Toolkit for efficiency \cite{heafield:kenlm:11}.
 
 %%%%CL: @Alex, How many n-grams did we use, up to 3-gram, 4-gram,5-gram?
 
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
 
-\paragraph{Definition} In addition to a N-gram language model ranking, we can rank the candidate phrases based on how well each of the components fits into the L2 context. The fitness is measured in terms of dependency-based word similarity. We slightly adapted the word similarity measure in \cite{lin:98}:
+\paragraph{Definition} The candidate ranking based on the N-gram language model is based on very shallow information. We can also rank the candidate phrases based on how well each of the components fits into the L2 context based on syntactic information. In this case, the fitness is measured in terms of dependency-based word similarity based on dependency triples consisting of the the head, the dependent, and the dependency label. We slightly adapted the word similarity measure by \newcite{lin:98}:\marginpar{SK: Can, please check comment}
+%%SK: From the text, it is not clear whether this is the original or the modified. Could you also add a sentence saying what the modification is?
+
 \begin{equation}
-sim(w_1,w_2) = \frac{2 \prod c(h,d,l)} 
+SIM(w_1,w_2) = \frac{2 \prod c(h,d,l)} 
 {c(h,-,l) + c(-,d,l)}
 \end{equation}
+\marginpar{SK: how do w1 and w2 relate to h,d,l?}
 
-\marginpar{MD: this said ``L1 corpus'', but I think we mean ``L2''}
-Where $c(h,d,l)$ is the frequency that a particular $(head, dependent, label)$ dependency triple occurs in the L2 corpus. $c(h,-,l)$ is the frequency that a word occurs as a head in an $l$ relationship with any dependent. $c(-,d,l)$ is the frequency that a word occurs as a dependent in an $l$ relationship with any head. 
+%\marginpar{MD: this said ``L1 corpus'', but I think we mean ``L2''}
+\noindent
+where $c(h,d,l)$ is the frequency that a particular $(head, dependent, label)$ dependency triple occurs in the L2 corpus. $c(h,-,l)$ is the frequency that a word occurs as a head in a dependency labeled $l$ with any dependent. $c(-,d,l)$ is the frequency that a word occurs as a dependent in a dependency labeled $l$  with any head. 
 
-\begin{itemize}
-\item MD: I think we're missing the step of comparing a word (e.g.,
-  \textit{eat} with its context, i.e., $fit(w_i) = \sum_{w_j}
-  sim(w_i,w_j)$
-\end{itemize}
+%\begin{itemize}
+%\marginpar{MD: I think we're missing the step of comparing a word (e.g.,  \textit{eat} with its context, i.e., $fit(w_i) = \sum_{w_j}  sim(w_i,w_j)$}
+%\end{itemize}
 
-The fitness of a phrase is the average word similarity over all its components. For example the fitness of phrase "eat with chopsticks" would be computed as:
-\begin{equation}
-fit(\mbox{eat with chopsticks}) = \frac{fit(eat) + fit(with) + fit(chopsticks) } {3}
-\end{equation}
-Depending on where the head/dependent of each phrase component lies, it could be outside the phrase or inside the phrase. Both cases are included in our calculation. 
-This method focuses the calculation on tightly associated words by using only one words's head and dependent in the computation.\\ 
-During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with N-gram language model to rank the candidate phrase. \\
+The fitness of a phrase is the average word similarity over all its components. For example the fitness of the phrase "eat with chopsticks" would be computed as:
 
-\paragraph{Storing and Caching}
-The large vocabulary and huge number of combinations of ``head, dependent, relationship" label poses an efficiency problem when querying the dependency-based word similarity values. Thus we stored the dependency triples in a database with a Python programming interface (sqlite3), and built database indexes on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently queries triples. Using the database and cache significantly speeds up our system. \\
+\begin{align}
+& fit(\mbox{eat with chopsticks}) = \nonumber \\
+ & \qquad \frac{SIM(eat) + SIM(with) + SIM(chopsticks)}{3}
+\end{align}
+
+Since we consider the heads and dependents of a target phrase component, these may be situated  inside or outside the phrase. Both cases are included in our calculation, thus enabling us to consider a more variable, syntactically determined local context of the phrase.
+By basing the calculation on a  single words's head and dependent, we focus on  tightly associated words and thus avoid data sparseness issues.
 
 \paragraph{Back-Off}
-Lexical-based dependency suffers from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example POS fitness of ``eat with chopsticks" would be computed as\\
-$  \frac{fit(VBG) + fit(IN) fit(NNS)}{3}  $\\
+Lexical-based dependency triples suffer from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example, the POS fitness of ``eat with chopsticks" would be computed as follows:
+
+\begin{align}
+& fit(\mbox{eat/VBG with/IN chopsticks/NNS}) = \nonumber \\
+ & \qquad \frac{SIM(\mbox{VBG}) + SIM(\mbox{IN}) + SIM(\mbox{NNS})}{3} 
+\end{align}
+
+\paragraph{Storing and Caching}
+The large vocabulary and huge number of combinations of  our head/dependent/label" triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (sqlite3) and built database indexes on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently queries triples. Using the database and cache significantly speeds up our system. 
+
+
+\paragraph{Combining SIM and LM}
+During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with the N-gram language model to rank the candidate phrase. 
+\marginpar{SK: how???}
 
 
 %More specifically, 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.8.27)  15 MAY 2014 18:47
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.8.27)  15 MAY 2014 21:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -50,6 +50,64 @@ Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
 LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
 (Font)                  U/lasy/m/n --> U/lasy/b/n on input line 47.
 )
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2000/07/18 v2.13 AMS math features
+\@mathmargin=\skip44
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks14
+\ex@=\dimen103
+))
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen104
+)
+(/usr/local/texlive/2012/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count87
+LaTeX Info: Redefining \frac on input line 211.
+\uproot@=\count88
+\leftroot@=\count89
+LaTeX Info: Redefining \overline on input line 307.
+\classnum@=\count90
+\DOTSCASE@=\count91
+LaTeX Info: Redefining \ldots on input line 379.
+LaTeX Info: Redefining \dots on input line 382.
+LaTeX Info: Redefining \cdots on input line 467.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen105
+LaTeX Font Info:    Redeclaring font encoding OML on input line 567.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 568.
+\macc@depth=\count92
+\c@MaxMatrixCols=\count93
+\dotsspace@=\muskip11
+\c@parentequation=\count94
+\dspbrk@lvl=\count95
+\tag@help=\toks15
+\row@=\count96
+\column@=\count97
+\maxfields@=\count98
+\andhelp@=\toks16
+\eqnshift@=\dimen106
+\alignsep@=\dimen107
+\tagshift@=\dimen108
+\tagwidth@=\dimen109
+\totwidth@=\dimen110
+\lineht@=\dimen111
+\@envbody=\toks17
+\multlinegap=\skip45
+\multlinetaggap=\skip46
+\mathdisplay@stack=\toks18
+LaTeX Info: Redefining \[ on input line 2666.
+LaTeX Info: Redefining \] on input line 2667.
+)
 (./semevaliu.aux)
 \openout1 = `semevaliu.aux'.
 
@@ -72,12 +130,6 @@ File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 47.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 47.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 47.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 47.
 LaTeX Font Info:    Try loading font information for U+lasy on input line 47.
 
 (/usr/local/texlive/2012/texmf-dist/tex/latex/base/ulasy.fd
@@ -97,39 +149,36 @@ File: omspcr.fd
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 47.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 88.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 88.
-
-Underfull \hbox (badness 2689) in paragraph at lines 100--101
-\OT1/ptm/m/n/10.95 Eu-roparl, Be-bel-net 2) For can-di-date rank-ing
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 100--101
-
- []
-
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 104.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 105.
 
-Underfull \hbox (badness 1418) in paragraph at lines 104--106
-\OT1/ptm/m/n/10.95 phrase ta-bles be-cause the cor-pus con-tains 21
+Underfull \hbox (badness 1062) in paragraph at lines 105--109
+ \OT1/ptm/b/n/10.95 Eu-roparl \OT1/ptm/m/n/10.95 The Eu-roparl Par-al-lel Cor-p
+us (Eu-
  []
 
 
-Underfull \hbox (badness 7907) in paragraph at lines 104--106
-\OT1/ptm/m/n/10.95 ta-bles for English-Spanish, English-German,
+Underfull \hbox (badness 1571) in paragraph at lines 105--109
+\OT1/ptm/m/n/10.95 for English-Spanish, English-German, French-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--106
-
+Underfull \hbox (badness 10000) in paragraph at lines 112--112
+[]\OT1/ptm/m/n/10.95 MD: check
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 114--114
+Underfull \hbox (badness 10000) in paragraph at lines 112--112
+\OT1/ptm/m/n/10.95 ver-sion
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 120--120
+[][]$\OT1/pcr/m/n/9 http : / / medialab . di . unipi . it / wiki /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 120--120
 []\OT1/ptm/m/n/10.95 LK: Alex
  []
 
@@ -138,153 +187,56 @@ Underfull \hbox (badness 10000) in paragraph at lines 114--114
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-[]\OT1/ptm/m/n/10.95 (Goldberg
- []
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 150.
 
 
-Underfull \hbox (badness 2790) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 and Or-want,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 2013) says
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 this con-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 tains 919M
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 ``items'';
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 = de-pen-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 Taken from
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
-\OT1/ptm/m/n/10.95 3,473,595
- []
-
+(/usr/local/texlive/2012/texmf-dist/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 150.
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 160.
 
-Underfull \hbox (badness 1852) in paragraph at lines 159--162
-\OT1/ptm/m/n/10.95 model rank-ing, we could rank the can-di-date
+Underfull \hbox (badness 10000) in paragraph at lines 173--173
+[]\OT1/ptm/m/n/10.95 SK: Can,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 159--162
-\OML/cmm/m/it/10.95 sim\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 w[]; w[]\OT1/cmr
-/m/n/10.95 ) =
+Underfull \hbox (badness 10000) in paragraph at lines 180--180
+[]\OT1/ptm/m/n/10.95 SK: how
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 159--162
-
+Underfull \hbox (badness 6741) in paragraph at lines 180--180
+\OT1/ptm/m/n/10.95 do w1 and
  []
 
 
-Underfull \hbox (badness 5288) in paragraph at lines 163--169
-[]\OT1/ptm/m/n/10.95 Where $\OML/cmm/m/it/10.95 count\OT1/cmr/m/n/10.95 (\OML/c
-mm/m/it/10.95 head; dep; label\OT1/cmr/m/n/10.95 )$ \OT1/ptm/m/n/10.95 is the f
-re-
+Underfull \hbox (badness 1097) in paragraph at lines 180--180
+\OT1/ptm/m/n/10.95 w2 re-late to
  []
 
 
-Underfull \hbox (badness 1565) in paragraph at lines 163--169
-\OT1/ptm/m/n/10.95 The fit-ness of a phrase is the av-er-age word
+Overfull \hbox (19.68703pt too wide) in paragraph at lines 195--195
+[] 
  []
 
-
-Underfull \hbox (badness 4144) in paragraph at lines 163--169
-\OT1/ptm/m/n/10.95 Depending on where the head/dependent of
- []
-
-
-Underfull \hbox (badness 2096) in paragraph at lines 163--169
-\OT1/ptm/m/n/10.95 based word sim-i-lar-ity statis-tics for all tar-get
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 163--169
-\OT1/ptm/m/n/10.95 lan-guages us-ing cor-re-spond-ing de-pen-dency
- []
-
-
-Underfull \hbox (badness 1953) in paragraph at lines 163--169
-\OT1/ptm/m/n/10.95 value is queried and com-bined with N-gram
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 163--169
-
- []
-
-
-Underfull \hbox (badness 2409) in paragraph at lines 171--172
+[2]
+Underfull \hbox (badness 2409) in paragraph at lines 209--210
  \OT1/ptm/b/n/10.95 Stor-ing and Caching \OT1/ptm/m/n/10.95 The large vo-cab-u-
 lary
  []
 
 
-Underfull \hbox (badness 1960) in paragraph at lines 171--172
-\OT1/ptm/m/n/10.95 and huge num-ber of com-bi-na-tions of ``head,
+Underfull \hbox (badness 6808) in paragraph at lines 209--210
+\OT1/ptm/m/n/10.95 and huge num-ber of com-bi-na-tions of our
  []
 
 
-Underfull \hbox (badness 1163) in paragraph at lines 171--172
+Underfull \hbox (badness 1163) in paragraph at lines 209--210
 \OT1/ptm/m/n/10.95 prob-lem when query-ing the dependency-based
- []
-
-
-Underfull \hbox (badness 1490) in paragraph at lines 171--172
-\OT1/ptm/m/n/10.95 word sim-i-lar-ity val-ues. Thus we stored the
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 171--172
-\OT1/ptm/m/n/10.95 pro-gram-ming in-ter-face (sqlite3), and built
- []
-
-
-Underfull \hbox (badness 1769) in paragraph at lines 171--172
-\OT1/ptm/m/n/10.95 How-ever, for fre-quently searched de-pen-dency
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 171--172
-
- []
-
-[2]
-Underfull \hbox (badness 10000) in paragraph at lines 174--176
- \OT1/ptm/b/n/10.95 Back-Off \OT1/ptm/m/n/10.95 Lexical-based de-pen-dency suf-
-fers
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 174--176
-
  []
 
 (./semevaliu.bbl
@@ -297,31 +249,31 @@ Underfull \hbox (badness 2762) in paragraph at lines 56--64
 \OT1/ptm/m/n/10 Brooke Cowan, Wade Shen, Chris-tine Moran,
  []
 
-) [3] (./semevaliu.aux) ) 
+[3]) [4
+
+] (./semevaliu.aux) ) 
 Here is how much of TeX's memory you used:
- 507 strings out of 493488
- 6469 string characters out of 3141326
- 59160 words of memory out of 3000000
- 3841 multiletter control sequences out of 15000+200000
- 23786 words of font info for 57 fonts, out of 3000000 for 9000
+ 1137 strings out of 493488
+ 13716 string characters out of 3141326
+ 70036 words of memory out of 3000000
+ 4446 multiletter control sequences out of 15000+200000
+ 29483 words of font info for 68 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 23i,10n,19p,1000b,261s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/ba
-se/8r.enc}</usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-ex10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
-i10.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi
-8.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.
-pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
-></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-</usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></
+ 27i,10n,20p,1118b,268s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8
+r.enc}</usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10
+.pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.
+pfb></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b></usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><
+/usr/local/texlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
 usr/local/texlive/2012/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/loca
 l/texlive/2012/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/
 2012/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2012/texmf
 -dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on semevaliu.pdf (3 pages, 132069 bytes).
+Output written on semevaliu.pdf (4 pages, 115924 bytes).
 PDF statistics:
- 59 PDF objects out of 1000 (max. 8388607)
- 42 compressed objects within 1 object stream
+ 54 PDF objects out of 1000 (max. 8388607)
+ 38 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
