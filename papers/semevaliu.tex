@@ -153,9 +153,21 @@ To examine how well a phrase fit into a L1 context, the most intuitive method is
 
 %%%%CL: @Alex, How many n-grams did we use, up to 3-gram, 4-gram,5-gram?
 
-\subsection{Scoring Candidate Translations via Dependency-Based SIM}
-\label{sec:dependencyPMI}
+\subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
+\label{sec:dependencySIM}
 
+In addition to a N-gram language model ranking, we could rank the candidate phrases based on how well each of the component fits into the L1 context. The fitness is measured in terms of dependency-based word similarity. More specifically:\\
+
+
+The fitness of a phrase is the average word similarity over all its components. For example the fitness of phrase "eat with chopsticks" would be computed as:\\
+$ \frac{fit(eac) + fit(with) + fit(chopsticks) } {3} $\\
+Depending on where the head/dependent of each phrase component lies, it could be outside the phrase or inside the phrase. Both cases are included in our calculation. \\
+
+This method focuses the calculation on tightly associated words by using only one words's head and dependent in the computation. 
+
+During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with N-gram language model to rank the candidate phrase. 
+
+More specifically, 
 - MATE parser
 - Stanford parser
 - we used: sqlite3 (for storing dependencies?)
