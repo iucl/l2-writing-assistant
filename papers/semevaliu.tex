@@ -148,6 +148,7 @@ alexr: the models are basically the same -- we just changed the phrase tables fo
 MD: Okay, that makes sense - do we just concatenate the data sources to derive a phrase table for each language pair?  Or is it just Europarl for this phase?
 
 \subsection{Scoring Candidate Translations via a L2 Language Model}
+%%%%CL: added the following, might not be accurate!! 
 To examine how well a phrase fit into a L1 context, the most intuitive method is to use a N-gram model built from the L1 and rank the candidate phrases using N-gram scores. With a large vocabulary, the construction and query of a N-gram language model could be very time consuming, we used KenLM Language Model Toolkit for efficiency \cite{heafield:kenlm:11}. 
 
 %%%%CL: @Alex, How many n-grams did we use, up to 3-gram, 4-gram,5-gram?
