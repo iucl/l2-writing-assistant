@@ -91,32 +91,38 @@ The task of translating an L1 fragment occurring in the midst of an L2 sentence 
 % allows one to rely more heavily on target information, 
 such as contextual relationships. 
 % We use a log-linear model ... 
-This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven word similarity measure \cite{lin:98} ( in this paper we call it SIM )
+This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven word similarity measure \cite{lin:98} (which we call \textit{SIM})
 %pointwise mutual information (PMI); 
 and 4) combining the scores from 1)-3) via minimized error rate training (MERT), to arrive at a final solution.  Step 1) models transfer knowledge between the L1 and L2; step 2) models facts about the L2 grammar, i.e., what translations fit well into the local context; step 3) models collocational and semantic tendencies of the L2; and step 4)  gives different weights to each of the three sources of information.  Although we did not finish step 3) in time for the official results, we report it here, as it represents the most novel aspect of the system -- namely, the exploitation of the rich L2 context -- and it results in our team's best system.  In general, our system is fully language-independent, with accuracy varying due to the size of data sources and quality of input technology (e.g., syntactic parse accuracy).
 
 \section{Data Sources}
 %%%% CL: added the following, not sure if correct.
-The data sources serves two major steps of our system: 1) For L2 candidate generation we used Europarl, Bebelnet 2) For candidate ranking using L1 context we used Wikipedia, Google Books Syntactic N-grams. The data sources are described below:\\
+The data sources serve two major steps of our system: for L2 candidate generation, we use Europarl and BabelNet; and for candidate ranking using L2 context, we use Wikipedia and the Google Books Syntactic N-grams.  For the candidate generation, we later experiment with expanding to larger sets of data (section~\ref{sec:exp:large-pts}).
+%The data sources are described below:\\
 
 \paragraph{Europarl}  %(MD: for phrase alignment / candidate generation?)
 %%%% CL: Added the following sentence not sure it is correct.
-The Europarl Parallel Corpus is a corpus of proceedings of the European Parliament. It is a good resource for constructing translation phrase tables because the corpus contains 21 European Languages, and it is aligned sentence by sentence. From this corpus, we built phrase tables for English-Spanish, English-German, French-English, Dutch-English.\\
+The Europarl Parallel Corpus (Europarl, v7) \cite{koehn:05} is a corpus of proceedings of the European Parliament, containing 21 European languages with sentence alignments.
+%It is a good resource for constructing translation phrase tables because the corpus contains 21 European Languages, and it is aligned sentence by sentence. 
+From this corpus, we build phrase tables for English-Spanish, English-German, French-English, Dutch-English.
 %%% CL: Alex, is that right?
 
-\paragraph{Babelnet} %(MD: can’t remember what this was for …)
+\paragraph{BabelNet} %(MD: can’t remember what this was for …)
 %%% CL: added not sure if it correct. 
-In the case our constructed phrase-tables do not contain a translation for a source phrase, we need to split up the source phrase into smaller components and look up each components from Babelnet. \\
-- we used: University of Pisa wikipedia extractor
-- MD: make clear which data sources were for which parts (quick point-aheads should be good)
+\marginpar{MD: check version number}
+
+In the cases where the constructed phrase tables do not contain a translation for a source phrase, we will need to back off to smaller phrases and find candidate translations for these components.  To better handle sparsity, we extend look-up using the multilingual dictionary BabelNet, v2.5 \cite{Navigli:Ponzetto:12} as a way to look up translation candidates.
 
 \paragraph{Wikipedia} %(MD: for dependency/PMI calculation?) Levi:
-For German and Spanish, we used recent Wikipedia dumps\marginpar{LK: Alex may have the exact info for the dumps if needed}. To save time during parsing, sentences longer than 25 words were removed. The remaining sentences were POS tagged and dependency parsed using Mate Parser and pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we chose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences were POS tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets served as training for the SIM system described in section \ref{sec:dependencySIM}.
+
+%- we used: University of Pisa wikipedia extractor
+
+For German and Spanish, we use recent Wikipedia dumps, obtained through the Wikipedia Extractor tool.\footnote{\url{http://medialab.di.unipi.it/wiki/Wikipedia_Extractor}}\marginpar{LK: Alex may have the exact info for the dumps if needed}. To save time during parsing, sentences longer than 25 words are removed. The remaining sentences are POS-tagged and dependency parsed using Mate Parser with its pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we choose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences are POS-tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets serve as training for the SIM system described in section \ref{sec:dependencySIM}.
 %%% CL: training changed to data source, because it is not strictly training?
 
 \paragraph{Google Books Syntactic N-grams}
-\marginpar{\cite{goldberg:orwant:13} says this contains 919M ``items''; = dependency types? Taken from 3,473,595 books.}
-For English, we also trained a SIM system on the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}.%[[
+% \marginpar{\cite{goldberg:orwant:13} says this contains 919M ``items''; = dependency types? Taken from 3,473,595 books.}
+For English, we also trained a SIM system on the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}, which has 919M items.%[[
 %--Levi: Here are more exact numbers, if needed:
 %German Wikipedia:
 %number_of_sents: 27,657,877
@@ -133,36 +139,56 @@ For English, we also trained a SIM system on the arcs dataset of the Google Book
 %]]
 
 \section{Our  System}
+\label{sec:system}
 
 \subsection{Constructing Candidate Translations}
+\label{sec:candidates}
 
-- GIZA++ and Moses for phrase table extraction
+Given that this is essentially a local translation problem, we use as our starting point a phrase table constructed from parallel text, weighted with probabilities.  We use GIZA++ \cite{och:ney:00} and Moses \cite{koehn:hoang:ea:07} to construct the phrase tables.  The quality of the phrase table depends upon the size of the data---an issue we discuss with larger phrase tables in section~\ref{sec:exp:large-pts}---but in the case of missing phrases from the table, we back off to subphrases in the following way: ...
 
-Given that this is essentially a local translation problem, we use as our starting point a phrase table constructed from parallel text, weighted with probabilities.  We use GIZA++ \cite{och:ney:00} and Moses \cite{koehn:hoang:ea:07} to construct the phrase tables.  The quality of the phrase table depends upon the size of the data--an issue we discuss with larger phrase tables in section XX--but in the case of missing phrases from the table, we back off to subphrases in the following way: ...
+\begin{itemize}
+\item some text: split up the source phrase into smaller components
+  and look up each components from Babelnet.
+\item MD: 1. What is the exact back-off procedure? 2. Do we back off
+  only in the case of missing phrases, or do we consider multiple
+  possibilities for one phrase, even if it’s already in the table?
+\end{itemize}
 
-MD: 1. What is the exact back-off procedure? 2. Do we back off only in the case of missing phrases, or do we consider multiple possibilities for one phrase, even if it’s already in the table?
+% MD: we should give names to each model, to easily refer to them throughout the paper and in tables (IUCL1 and IUCL2 are the official submissions, but for other models we may want more descriptive names)
+% alexr: the models are basically the same -- we just changed the phrase tables for the English/German setup on the second run. I'll have to check the differences exactly, but there was some problem with the phrase tables for the first run -- maybe we didn't run the whole Moses pipeline appropriately and tokenization/truecasing was messed up. But from an algorithmic perspective, they're the same.
 
-MD: we should give names to each model, to easily refer to them throughout the paper and in tables (IUCL1 and IUCL2 are the official submissions, but for other models we may want more descriptive names)
-alexr: the models are basically the same -- we just changed the phrase tables for the English/German setup on the second run. I'll have to check the differences exactly, but there was some problem with the phrase tables for the first run -- maybe we didn't run the whole Moses pipeline appropriately and tokenization/truecasing was messed up. But from an algorithmic perspective, they're the same.
-
-MD: Okay, that makes sense - do we just concatenate the data sources to derive a phrase table for each language pair?  Or is it just Europarl for this phase?
+% MD: Okay, that makes sense - do we just concatenate the data sources to derive a phrase table for each language pair?  Or is it just Europarl for this phase?
 
 \subsection{Scoring Candidate Translations via a L2 Language Model}
+\label{sec:l2model}
+
 %%%%CL: added the following, might not be accurate!! 
-To examine how well a phrase fit into a L1 context, the most intuitive method is to use a N-gram model built from the L1 and rank the candidate phrases using N-gram scores. With a large vocabulary, the construction and query of a N-gram language model could be very time consuming, we used KenLM Language Model Toolkit for efficiency \cite{heafield:kenlm:11}. 
+To examine how well a phrase fits into a L2 context, a quick and intuitive method is to use an N-gram language model (LM) built from the L2 and rank the candidate phrases based on their LM scores. With a large vocabulary, the construction and query of a N-gram language model is potentially very time-consuming, and thus we use the KenLM Language Model Toolkit for efficiency \cite{heafield:kenlm:11}.
 
 %%%%CL: @Alex, How many n-grams did we use, up to 3-gram, 4-gram,5-gram?
 
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
 
-\paragraph{Definition} In addition to a N-gram language model ranking, we could rank the candidate phrases based on how well each of the component fits into the L1 context. The fitness is measured in terms of dependency-based word similarity. We slightly adapted the word similarity measure in \cite{lin:98}:\\
-$ sim(w_1,w_2) = \frac{2 \prod count(head,dep,label)} 
-{count(head,-,label) + count(-,dep,label)}$\\
+\paragraph{Definition} In addition to a N-gram language model ranking, we can rank the candidate phrases based on how well each of the components fits into the L2 context. The fitness is measured in terms of dependency-based word similarity. We slightly adapted the word similarity measure in \cite{lin:98}:
+\begin{equation}
+sim(w_1,w_2) = \frac{2 \prod c(h,d,l)} 
+{c(h,-,l) + c(-,d,l)}
+\end{equation}
 
-Where $count(head,dep,label)$ is the frequency that a particular dependency triple occurs in the L1 corpus. $count(head,-,label)$ is the frequency that a word occurs as a head in relationship ``label" with any dependent. $count(-,dep,label)$ is the frequency that a word occurs as a dependent in relationship ``label" with any head. \\
-The fitness of a phrase is the average word similarity over all its components. For example the fitness of phrase "eat with chopsticks" would be computed as:\\
-$ \frac{fit(eac) + fit(with) + fit(chopsticks) } {3} $\\
+\marginpar{MD: this said ``L1 corpus'', but I think we mean ``L2''}
+Where $c(h,d,l)$ is the frequency that a particular $(head, dependent, label)$ dependency triple occurs in the L2 corpus. $c(h,-,l)$ is the frequency that a word occurs as a head in an $l$ relationship with any dependent. $c(-,d,l)$ is the frequency that a word occurs as a dependent in an $l$ relationship with any head. 
+
+\begin{itemize}
+\item MD: I think we're missing the step of comparing a word (e.g.,
+  \textit{eat} with its context, i.e., $fit(w_i) = \sum_{w_j}
+  sim(w_i,w_j)$
+\end{itemize}
+
+The fitness of a phrase is the average word similarity over all its components. For example the fitness of phrase "eat with chopsticks" would be computed as:
+\begin{equation}
+fit(\mbox{eat with chopsticks}) = \frac{fit(eat) + fit(with) + fit(chopsticks) } {3}
+\end{equation}
 Depending on where the head/dependent of each phrase component lies, it could be outside the phrase or inside the phrase. Both cases are included in our calculation. 
 This method focuses the calculation on tightly associated words by using only one words's head and dependent in the computation.\\ 
 During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with N-gram language model to rank the candidate phrase. \\
@@ -182,17 +208,24 @@ $  \frac{fit(VBG) + fit(IN) fit(NNS)}{3}  $\\
 %Two important points: 1) PMI is able to calculate semantic/collocational relationships.  We should cite work on collocational error detection.  2) We do not use just any PMI, but one which is derived from syntactic dependencies.
 
 \subsection{Tuning Weights with MERT}
+\label{sec:mert}
+
 - ZMERT \cite{zaidan:zmert:09}
 - exact set-up
 
 \section{Experiments}
+\label{sec:exp}
 
 \subsection{Official System}
+\label{sec:exp:official}
+
 \cite{nltkbook}
 
-\subsection{Expansion \#1: Experiments with PMI over Dependencies}
+\subsection{Expansion \#1: Experiments with SIM over Dependencies}
+\label{sec:exp:sim}
 
 \subsection{Expansion \#2: Experiments with Large Phrase Tables}
+\label{sec:exp:large-pts}
 
 - EU bookshop corpus
 - MultiUN corpus
