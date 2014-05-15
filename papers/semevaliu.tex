@@ -156,23 +156,30 @@ To examine how well a phrase fit into a L1 context, the most intuitive method is
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
 
-In addition to a N-gram language model ranking, we could rank the candidate phrases based on how well each of the component fits into the L1 context. The fitness is measured in terms of dependency-based word similarity. More specifically:\\
+\paragraph{Definition} In addition to a N-gram language model ranking, we could rank the candidate phrases based on how well each of the component fits into the L1 context. The fitness is measured in terms of dependency-based word similarity. We slightly adapted the word similarity measure in \cite{lin:98}:\\
+$ sim(w_1,w_2) = \frac{2 \prod count(head,dep,label)} 
+{count(head,-,label) + count(-,dep,label)}$\\
 
-
+Where $count(head,dep,label)$ is the frequency that a particular dependency triple occurs in the L1 corpus. $count(head,-,label)$ is the frequency that a word occurs as a head in relationship ``label" with any dependent. $count(-,dep,label)$ is the frequency that a word occurs as a dependent in relationship ``label" with any head. \\
 The fitness of a phrase is the average word similarity over all its components. For example the fitness of phrase "eat with chopsticks" would be computed as:\\
 $ \frac{fit(eac) + fit(with) + fit(chopsticks) } {3} $\\
-Depending on where the head/dependent of each phrase component lies, it could be outside the phrase or inside the phrase. Both cases are included in our calculation. \\
+Depending on where the head/dependent of each phrase component lies, it could be outside the phrase or inside the phrase. Both cases are included in our calculation. 
+This method focuses the calculation on tightly associated words by using only one words's head and dependent in the computation.\\ 
+During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with N-gram language model to rank the candidate phrase. \\
 
-This method focuses the calculation on tightly associated words by using only one words's head and dependent in the computation. 
+\paragraph{Storing and Caching}
+The large vocabulary and huge number of combinations of ``head, dependent, relationship" label poses an efficiency problem when querying the dependency-based word similarity values. Thus we stored the dependency triples in a database with a Python programming interface (sqlite3), and built database indexes on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently queries triples. Using the database and cache significantly speeds up our system. \\
 
-During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with N-gram language model to rank the candidate phrase. 
+\paragraph{Back-Off}
+Lexical-based dependency suffers from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example POS fitness of ``eat with chopsticks" would be computed as\\
+$  \frac{fit(VBG) + fit(IN) fit(NNS)}{3}  $\\
 
-More specifically, 
-- MATE parser
-- Stanford parser
-- we used: sqlite3 (for storing dependencies?)
 
-Two important points: 1) PMI is able to calculate semantic/collocational relationships.  We should cite work on collocational error detection.  2) We do not use just any PMI, but one which is derived from syntactic dependencies.
+%More specifically, 
+%- MATE parser
+%- Stanford parser
+%- we used: sqlite3 (for storing dependencies?)
+%Two important points: 1) PMI is able to calculate semantic/collocational relationships.  We should cite work on collocational error detection.  2) We do not use just any PMI, but one which is derived from syntactic dependencies.
 
 \subsection{Tuning Weights with MERT}
 - ZMERT \cite{zaidan:zmert:09}
