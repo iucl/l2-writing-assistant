@@ -97,7 +97,7 @@ and 4) combining the scores from 1)-3) via minimized error rate training (MERT),
 
 \section{Data Sources}
 %%%% CL: added the following, not sure if correct.
-The data sources serve two major steps of our system: for L2 candidate generation, we use Europarl and BabelNet; and for candidate ranking using L2 context, we use Wikipedia and the Google Books Syntactic N-grams.  For the candidate generation, we later experiment with expanding to larger sets of data (section~\ref{sec:exp:large-pts}).
+The data sources serve two major steps of our system: for L2 candidate generation, we use Europarl and BabelNet; and for candidate ranking based on L2 context, we use Wikipedia and the Google Books Syntactic N-grams.  For the candidate generation, we later experiment with expanding to larger sets of data (section~\ref{sec:exp:large-pts}).
 %The data sources are described below:\\
 
 \paragraph{Europarl}  %(MD: for phrase alignment / candidate generation?)
@@ -122,7 +122,13 @@ For German and Spanish, we use recent Wikipedia dumps, obtained through the Wiki
 
 \paragraph{Google Books Syntactic N-grams}
 % \marginpar{\cite{goldberg:orwant:13} says this contains 919M ``items''; = dependency types? Taken from 3,473,595 books.}
-For English, we also trained a SIM system on the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}, which has 919M items.%[[
+
+%%%%CL THUR: I am wondering SIM system is not enough for the reader to understand, added something.
+For English, we also obtained an additional word similarity statistics using
+
+the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}, which has 919M items. The performance will be compared against that using English Wikipedia. 
+ 
+%[[
 %--Levi: Here are more exact numbers, if needed:
 %German Wikipedia:
 %number_of_sents: 27,657,877
@@ -146,6 +152,7 @@ For English, we also trained a SIM system on the arcs dataset of the Google Book
 
 Given that this is essentially a local translation problem, we use as our starting point a phrase table constructed from parallel text, weighted with probabilities.  We use GIZA++ \cite{och:ney:00} and Moses \cite{koehn:hoang:ea:07} to construct the phrase tables.  The quality of the phrase table depends upon the size of the data---an issue we discuss with larger phrase tables in section~\ref{sec:exp:large-pts}---but in the case of missing phrases from the table, we back off to subphrases in the following way: ...
 
+%%%% CL THUR:  this paragraph is not complete.
 \begin{itemize}
 \item some text: split up the source phrase into smaller components
   and look up each components from Babelnet.
@@ -170,28 +177,38 @@ To examine how well a phrase fits into an L2 context, a quick and intuitive meth
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
 
-\paragraph{Definition} The candidate ranking based on the N-gram language model is based on very shallow information. We can also rank the candidate phrases based on how well each of the components fits into the L2 context based on syntactic information. In this case, the fitness is measured in terms of dependency-based word similarity based on dependency triples consisting of the the head, the dependent, and the dependency label. We slightly adapted the word similarity measure by \newcite{lin:98}:\marginpar{SK: Can, please check comment}
+\paragraph{Definition} The candidate ranking based on the N-gram language model is based on very shallow information. We can also rank the candidate phrases based on how well each of the components fits into the L2 context based on syntactic information. In this case, the fitness is measured in terms of dependency-based word similarity computed from dependency triples consisting of the the head, the dependent, and the dependency label. We slightly adapted the word similarity measure by \newcite{lin:98}:\\
 %%SK: From the text, it is not clear whether this is the original or the modified. Could you also add a sentence saying what the modification is?
+%%%% CL THURS: I added explaination at line 196.
 
 \begin{equation}
 SIM(w_1,w_2) = \frac{2 \prod c(h,d,l)} 
 {c(h,-,l) + c(-,d,l)}
 \end{equation}
-\marginpar{SK: how do w1 and w2 relate to h,d,l?}
+%\marginpar{SK: how do w1 and w2 relate to h,d,l?}
+%%%% CL THURS:  I added a sentence at line 194
 
 %\marginpar{MD: this said ``L1 corpus'', but I think we mean ``L2''}
+%%% CL THURS, thanks Markus, that's right!
 \noindent
-where $c(h,d,l)$ is the frequency that a particular $(head, dependent, label)$ dependency triple occurs in the L2 corpus. $c(h,-,l)$ is the frequency that a word occurs as a head in a dependency labeled $l$ with any dependent. $c(-,d,l)$ is the frequency that a word occurs as a dependent in a dependency labeled $l$  with any head. 
-
+where $h=w_1$ and $d=w_2$ and 
+$c(h,d,l)$ is the frequency that a particular $(head, dependent, label)$ dependency triple occurs in the L2 corpus. $c(h,-,l)$ is the frequency that a word occurs as a head in a dependency labeled $l$ with any dependent. $c(-,d,l)$ is the frequency that a word occurs as a dependent in a dependency labeled $l$  with any head. 
+In \cite{lin:98}'s measure, the numerator is defined as the information of all dependency features that $w_1$ and $w_2$ share, computed as the negative sum of the log probability of each dependency feature. Similarly, the denominator is computed as the sum of information of dependency features for $w_1$ and $w_2$. \\
 %\begin{itemize}
 %\marginpar{MD: I think we're missing the step of comparing a word (e.g.,  \textit{eat} with its context, i.e., $fit(w_i) = \sum_{w_j}  sim(w_i,w_j)$}
+%%%% CL THURS: added a sentence at line 202~205.
 %\end{itemize}
+
+To compute the fitness of a word $w_i$ to its context, we consider a set $D$ of all words that are directly dependency-related to $w_i$. The fitness of $w_i$ is thus computed as:\\
+\begin{equation}
+FIT(w_i) =  \frac {  \sum_{w_j}^{D} sim(w_i,w_j) } {  |D|}
+\end{equation}
 
 The fitness of a phrase is the average word similarity over all its components. For example the fitness of the phrase "eat with chopsticks" would be computed as:
 
 \begin{align}
-& fit(\mbox{eat with chopsticks}) = \nonumber \\
- & \qquad \frac{SIM(eat) + SIM(with) + SIM(chopsticks)}{3}
+& FIT(\mbox{eat with chopsticks}) = \nonumber \\
+ & \qquad \frac{FIT(eat) + FIT(with) + FIT(chopsticks)}{3}
 \end{align}
 
 Since we consider the heads and dependents of a target phrase component, these may be situated  inside or outside the phrase. Both cases are included in our calculation, thus enabling us to consider a more variable, syntactically determined local context of the phrase.
@@ -201,17 +218,22 @@ By basing the calculation on a  single words's head and dependent, we focus on  
 Lexical-based dependency triples suffer from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example, the POS fitness of ``eat with chopsticks" would be computed as follows:
 
 \begin{align}
-& fit(\mbox{eat/VBG with/IN chopsticks/NNS}) = \nonumber \\
- & \qquad \frac{SIM(\mbox{VBG}) + SIM(\mbox{IN}) + SIM(\mbox{NNS})}{3} 
+& FIT(\mbox{eat/VBG with/IN chopsticks/NNS}) = \nonumber \\
+ & \qquad \frac{FIT(\mbox{VBG}) + FIT(\mbox{IN}) + FIT(\mbox{NNS})}{3} 
 \end{align}
+
+
+%%%% CL THURS: myself is a little confused where we should use FIT or SIM for defining the equations above. I am voting fot FIT, because FIT meant to be the fitness of the context, which can involve more than one word. where SIM is defined first for just two words. 
 
 \paragraph{Storing and Caching}
 The large vocabulary and huge number of combinations of  our head/dependent/label" triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (sqlite3) and built database indexes on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently queries triples. Using the database and cache significantly speeds up our system. 
 
 
 \paragraph{Combining SIM and LM}
-During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with the N-gram language model to rank the candidate phrase. 
-\marginpar{SK: how???}
+%During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with the N-gram language model to rank the candidate phrase. 
+Note that we only store dependency triples and their corresponding counts, the dependency-based similarity value is calculated on the fly during training and testing. For each candidate phrase, the scores from LM and SIM are combined using a weight vector $v$, which is optimized during training time using MERT. 
+%\marginpar{SK: how???}
+%%%%% CL THURS:  does the above paragraph make more sense?
 
 
 %More specifically, 
