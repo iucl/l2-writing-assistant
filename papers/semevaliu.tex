@@ -152,6 +152,7 @@ and then extract phrases with the \texttt{grow-diag-final-and} heuristic.
 At translation time, we look for the given source-language phrase in the phrase
 table, and if it is found, we take all translations of that phrase as our
 candidates.
+%MD: If space needed, combine above two paragraphs.
 
 When trying to translate a source-language phrase that is not found in the
 phrase table, we try to construct a ``synthetic phrase" out of the available
@@ -179,20 +180,20 @@ For the evaluation, in cases where an L1 phrase contained words that were
 neither in our training data nor BabelNet (and thus were simply
 out-of-vocabulary for our system), we took the first translation for that
 phrase, without regard to context, from Google Translate, through the
-semi-automated Google Docs interface. This 
-
+semi-automated Google Docs interface. %This 
+%
 %%%% CL THUR:  this paragraph is not complete.
-\begin{itemize}
-\item some text: split up the source phrase into smaller components
-  and look up each components from BabelNet.
-\item MD: 1. What is the exact back-off procedure? 2. Do we back off
-  only in the case of missing phrases, or do we consider multiple
-  possibilities for one phrase, even if it’s already in the table?
-\end{itemize}
+%\begin{itemize}
+%\item some text: split up the source phrase into smaller components
+%  and look up each components from BabelNet.
+%\item MD: 1. What is the exact back-off procedure? 2. Do we back off
+%  only in the case of missing phrases, or do we consider multiple
+%  possibilities for one phrase, even if it’s already in the table?
+%\end{itemize}
 
+\marginpar{Is someone still working on this paragraph?}
 The quality of the phrase table depends upon the size of the data---an issue we
 discuss with larger phrase tables in section~\ref{sec:exp:large-pts}---
-
 
 % MD: we should give names to each model, to easily refer to them throughout the paper and in tables (IUCL1 and IUCL2 are the official submissions, but for other models we may want more descriptive names)
 % alexr: the models are basically the same -- we just changed the phrase tables for the English/German setup on the second run. I'll have to check the differences exactly, but there was some problem with the phrase tables for the first run -- maybe we didn't run the whole Moses pipeline appropriately and tokenization/truecasing was messed up. But from an algorithmic perspective, they're the same.
@@ -203,17 +204,16 @@ discuss with larger phrase tables in section~\ref{sec:exp:large-pts}---
 \label{sec:l2model}
 
 %%%%CL: added the following, might not be accurate!! 
-To examine how well a phrase fits into an L2 context, a quick and intuitive method is to use an N-gram language model (LM), built from the L2, and rank the candidate phrases based on their LM scores. With a large vocabulary, the construction and query of an N-gram language model is potentially very time-consuming, and thus we use the KenLM Language Model Toolkit for efficiency \cite{heafield:kenlm:11}.
+To examine how well a phrase fits into an L2 context, a quick and intuitive method is to use an N-gram language model (LM), built from the L2 (we use Wikipedia text), and rank the candidate phrases based on their LM scores. With a large vocabulary, the construction and query of an N-gram language model is potentially very time-consuming, and thus we use the KenLM Language Model Toolkit for efficiency \cite{heafield:kenlm:11}.
 
 %%%%CL: @Alex, How many n-grams did we use, up to 3-gram, 4-gram,5-gram?
 
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
 
-\paragraph{Definition} The candidate ranking based on the N-gram language model is based on very shallow information. We can also rank the candidate phrases based on how well each of the components fits into the L2 context using syntactic information. In this case, the fitness is measured in terms of dependency-based word similarity computed from dependency triples consisting of the the head, the dependent, and the dependency label. We slightly adapted the word similarity measure by \newcite{lin:98}:\\
+\paragraph{Definition} The candidate ranking based on the N-gram language model is based on very shallow information. We can also rank the candidate phrases based on how well each of the components fits into the L2 context using syntactic information. In this case, the fitness is measured in terms of dependency-based word similarity computed from dependency triples consisting of the the head, the dependent, and the dependency label. We slightly adapted the word similarity measure by \newcite{lin:98}:
 %%SK: From the text, it is not clear whether this is the original or the modified. Could you also add a sentence saying what the modification is?
 %%%% CL THURS: I added explaination at line 196.
-
 \begin{equation}
 SIM(w_1,w_2) = \frac{2 \prod c(h,d,l)} 
 {c(h,-,l) + c(-,d,l)}
@@ -241,11 +241,11 @@ The fitness of a phrase is the average word similarity over all its components. 
 
 \begin{align}
 & FIT(\mbox{eat with chopsticks}) = \nonumber \\
- & \qquad \frac{FIT(eat) + FIT(with) + FIT(chopsticks)}{3}
+ & \qquad \frac{FIT(\mbox{eat}) + FIT(\mbox{with}) + FIT(\mbox{chopsticks})}{3}
 \end{align}
 
-Since we consider the heads and dependents of a target phrase component, these may be situated  inside or outside the phrase. Both cases are included in our calculation, thus enabling us to consider a more variable, syntactically determined local context of the phrase.
-By basing the calculation on a  single words's head and dependent, we focus on  tightly associated words and thus avoid data sparseness issues.
+Since we consider the heads and dependents of a target phrase component, these may be situated  inside or outside the phrase. Both cases are included in our calculation, thus enabling us to consider a more variable, syntactically-determined local context of the phrase.
+By basing the calculation on a single word's head and dependents, we focus on tightly associated words and thus avoid data sparseness issues that we might get from an n-gram context.
 
 \paragraph{Back-Off}
 Lexical-based dependency triples suffer from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example, the POS fitness of ``eat with chopsticks'' would be computed as follows:
@@ -259,12 +259,12 @@ Lexical-based dependency triples suffer from data sparsity, so in addition to co
 %%%% CL THURS: myself is a little confused where we should use FIT or SIM for defining the equations above. I am voting fot FIT, because FIT meant to be the fitness of the context, which can involve more than one word. where SIM is defined first for just two words. 
 
 \paragraph{Storing and Caching}
-The large vocabulary and huge number of combinations of our ``head/dependent/label'' triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (sqlite3) and built database indexes on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently queried triples. Using the database and cache significantly speeds up our system. 
+The large vocabulary and huge number of combinations of our $(head, dependent, label)$ triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (sqlite3) and built database indices on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently-queried triples. Using the database and cache significantly speeds up our system. 
 
 
 \paragraph{Combining SIM and LM}
 %During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with the N-gram language model to rank the candidate phrase. 
-Note that we only store dependency triples and their corresponding counts, the dependency-based similarity value is calculated on the fly during training and testing. For each candidate phrase, the scores from LM and SIM are combined using a weight vector $v$, which is optimized during training time using MERT. 
+Note that we only store dependency triples and their corresponding counts; the dependency-based similarity value is calculated on the fly during training and testing. For each candidate phrase, the scores from LM and SIM are combined using a weight vector $v$, which is optimized during training time using MERT. 
 %\marginpar{SK: how???}
 %%%%% CL THURS:  does the above paragraph make more sense?
 
