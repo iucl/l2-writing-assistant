@@ -1,21 +1,3 @@
-%
-% File twocolumn.tex
-%
-%%
-%% Based on the style files for *SEM-2014, which were, in turn,
-%% Based on the style files for COLING-2014, which were, in turn,
-%% Based on the style files for ACL-2014, which were, in turn,
-%% Based on the style files for ACL-2013, which were, in turn,
-%% Based on the style files for ACL-2012, which were, in turn,
-%% based on the style files for ACL-2011, which were, in turn,
-%% based on the style files for ACL-2010, which were, in turn,
-%% based on the style files for ACL-IJCNLP-2009, which were, in turn,
-%% based on the style files for EACL-2009 and IJCNLP-2008...
-
-%% Based on the style files for EACL 2006 by
-%%e.agirre@ehu.es or Sergi.Balari@uab.es
-%% and that of ACL 08 by Joakim Nivre and Noah Smith
-
 \documentclass[11pt]{article}
 \usepackage{semeval2014}
 \usepackage{times}
@@ -34,7 +16,7 @@
 \newcommand{\filename}{semeval2014}
 \newcommand{\contact}{pnakov qf.org.qa}
 
-\title{IUCL: Combining Several Information Sources for SemEval Task 5}
+\title{IUCL: Combining Information Sources for SemEval Task 5}
 
 \author{Alex Rudnick, Levi King, Can Liu, Markus Dickinson, Sandra K\"ubler  \\
   Indiana University \\
@@ -46,13 +28,16 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-  We describe the Indiana University system for SemEval Task 5.
-%  offering an L2 translation for an L1 fragment.  
-  The system is based on combining different information sources to
-  arrive at a final L2 guess, incorporating: phrase tables, an L2
-  language model, and collocational tendencies.  We also consider
-  different data sources.
- \end{abstract}
+Here we describe the Indiana University system for SemEval Task 5, the L2
+writing assistant task, as well as some extensions to the system that were
+completed after the main evaluation. Our team submitted translations for all
+four language pairs in the evaluation, yielding the top scores for
+English-German.  The system is based on combining different information sources
+to arrive at a final L2 translation for a given L1 text fragment, incorporating
+phrase tables extracted from bitexts, an L2 language model, a multilingual
+dictionary, and dependency-based collocational models derived from large
+samples of target-language text.
+\end{abstract}
 
 
 \section{Introduction}
@@ -111,7 +96,11 @@ From this corpus, we build phrase tables for English-Spanish, English-German, Fr
 %%% CL: added not sure if it correct. 
 \marginpar{MD: check version number}
 
-In the cases where the constructed phrase tables do not contain a translation for a source phrase, we will need to back off to smaller phrases and find candidate translations for these components.  To better handle sparsity, we extend look-up using the multilingual dictionary BabelNet, v2.5 \cite{Navigli:Ponzetto:12} as a way to look up translation candidates.
+In the cases where the constructed phrase tables do not contain a translation
+for a source phrase, we will need to back off to smaller phrases and find
+candidate translations for these components.  To better handle sparsity, we
+extend look-up using the multilingual dictionary BabelNet, v2.5
+\cite{Navigli:Ponzetto:12} as a way to look up translation candidates.
 
 \paragraph{Wikipedia} %(MD: for dependency/PMI calculation?) Levi:
 
@@ -141,18 +130,62 @@ For English, we also trained a SIM system on the arcs dataset of the Google Book
 \section{Our  System}
 \label{sec:system}
 
+As previously mentioned, at run-time our system decomposes the fragment
+translation task into two parts: generating a number of possible candidate
+translations, and then scoring and ranking them in the target-language context,
+such that best-scoring translations can be returned.
+
 \subsection{Constructing Candidate Translations}
 \label{sec:candidates}
 
-Given that this is essentially a local translation problem, we use as our starting point a phrase table constructed from parallel text, weighted with probabilities.  We use GIZA++ \cite{och:ney:00} and Moses \cite{koehn:hoang:ea:07} to construct the phrase tables.  The quality of the phrase table depends upon the size of the data---an issue we discuss with larger phrase tables in section~\ref{sec:exp:large-pts}---but in the case of missing phrases from the table, we back off to subphrases in the following way: ...
+As a starting point, we use phrase tables constructed in a fairly standard way,
+using the training scripts packaged with Moses \cite{koehn:hoang:ea:07}, which
+preprocess the given bitext, find word alignments with GIZA++ \cite{och:ney:00}
+and then extract phrases with the \texttt{grow-diag-final-and} heuristic. 
+
+At translation time, we look for the given source-language phrase in the phrase
+table, and if it is found, we take all translations of that phrase as our
+candidates.
+
+When trying to translate a source-language phrase that is not found in the
+phrase table, we try to construct a ``synthetic phrase" out of the available
+components. This is done by listing, combinatorially, all ways to decompose the
+input phrase into sub-phrases of at least one token long. Then for each
+decomposition of the input phrase such that all of its components can be found
+in the phrase table, we generate a translation by concatenating their
+target-language sides. This approach naively assumes that generating valid L2
+text requires no reordering of the components. Also, since there are $2^{n-1}$
+possible ways to split an $n$-token phrase into sub-sequences (\textit{i.e.},
+each token is either the first token in a new sub-sequence, or it is not), we
+perform some heuristic pruning at this step, taking only the first 100
+decompositions, preferring those built from longer phrase-table entries. Every
+phrase in the phrase table, including these synthetic phrases, has both a
+``direct" and ``inverse" probability score; for synthetic phrases, we produce
+probability estimates by multiplying the scores of each of its components.
+
+In the case that an individual word cannot be found in the phrase table, the
+system attempts to look up the word in BabelNet, estimating the probabilities
+as uniformly distributed over the available entries in BabelNet. Thus,
+synthetic phrase table entries can be constructed by combining phrases found in
+the training data and words available in BabelNet.
+
+For the evaluation, in cases where an L1 phrase contained words that were
+neither in our training data nor BabelNet (and thus were simply
+out-of-vocabulary for our system), we took the first translation for that
+phrase, without regard to context, from Google Translate, through the
+semi-automated Google Docs interface. This 
 
 \begin{itemize}
 \item some text: split up the source phrase into smaller components
-  and look up each components from Babelnet.
+  and look up each components from BabelNet.
 \item MD: 1. What is the exact back-off procedure? 2. Do we back off
   only in the case of missing phrases, or do we consider multiple
   possibilities for one phrase, even if it’s already in the table?
 \end{itemize}
+
+The quality of the phrase table depends upon the size of the data---an issue we
+discuss with larger phrase tables in section~\ref{sec:exp:large-pts}---
+
 
 % MD: we should give names to each model, to easily refer to them throughout the paper and in tables (IUCL1 and IUCL2 are the official submissions, but for other models we may want more descriptive names)
 % alexr: the models are basically the same -- we just changed the phrase tables for the English/German setup on the second run. I'll have to check the differences exactly, but there was some problem with the phrase tables for the first run -- maybe we didn't run the whole Moses pipeline appropriately and tokenization/truecasing was messed up. But from an algorithmic perspective, they're the same.
