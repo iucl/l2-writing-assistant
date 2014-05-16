@@ -94,7 +94,7 @@ From this corpus, we build phrase tables for English-Spanish, English-German, Fr
 
 \paragraph{BabelNet} %(MD: can’t remember what this was for …)
 %%% CL: added not sure if it correct. 
-\marginpar{MD: check version number}
+%\marginpar{MD: check version number}
 
 In the cases where the constructed phrase tables do not contain a translation
 for a source phrase, we will need to back off to smaller phrases and find
@@ -106,16 +106,14 @@ extend look-up using the multilingual dictionary BabelNet, v2.5
 
 %- we used: University of Pisa wikipedia extractor
 
-For German and Spanish, we use recent Wikipedia dumps, obtained through the Wikipedia Extractor tool.\footnote{\url{http://medialab.di.unipi.it/wiki/Wikipedia_Extractor}}\marginpar{LK: Alex may have the exact info for the dumps if needed}. To save time during parsing, sentences longer than 25 words are removed. The remaining sentences are POS-tagged and dependency parsed using Mate Parser with its pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia data set comparable in size to the German and Spanish sets, we choose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences are POS-tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the data sets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed data sets serve as training for the SIM system described in section \ref{sec:dependencySIM}.
+For German and Spanish, we use recent Wikipedia dumps, obtained through the Wikipedia Extractor tool.\footnote{\url{http://medialab.di.unipi.it/wiki/Wikipedia_Extractor}}. To save time during parsing, sentences longer than 25 words are removed. The remaining sentences are POS-tagged and dependency parsed using Mate Parser with its pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia dataset comparable in size to the German and Spanish sets, we choose an older (2006), smaller dump. Long sentences were removed, and the remaining sentences are POS-tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the datasets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed datasets serve as training for the SIM system described in section \ref{sec:dependencySIM}.
 %%% CL: training changed to data source, because it is not strictly training?
 
 \paragraph{Google Books Syntactic N-grams}
 % \marginpar{\cite{goldberg:orwant:13} says this contains 919M ``items''; = dependency types? Taken from 3,473,595 books.}
 
 %%%%CL THUR: I am wondering SIM system is not enough for the reader to understand, added something.
-For English, we also obtained an additional word similarity statistics using
-
-the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}, which has 919M items. The performance will be compared against that using English Wikipedia. 
+For English, we also obtained additional word similarity statistics using the arcs dataset of the Google Books Syntactic N-Grams \cite{goldberg:orwant:13}, which has 919M items. The performance will be compared against that using English Wikipedia. 
  
 %[[
 %--Levi: Here are more exact numbers, if needed:
@@ -210,7 +208,7 @@ To examine how well a phrase fits into an L2 context, a quick and intuitive meth
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
 
-\paragraph{Definition} The candidate ranking based on the N-gram language model is based on very shallow information. We can also rank the candidate phrases based on how well each of the components fits into the L2 context based on syntactic information. In this case, the fitness is measured in terms of dependency-based word similarity computed from dependency triples consisting of the the head, the dependent, and the dependency label. We slightly adapted the word similarity measure by \newcite{lin:98}:\\
+\paragraph{Definition} The candidate ranking based on the N-gram language model is based on very shallow information. We can also rank the candidate phrases based on how well each of the components fits into the L2 context using syntactic information. In this case, the fitness is measured in terms of dependency-based word similarity computed from dependency triples consisting of the the head, the dependent, and the dependency label. We slightly adapted the word similarity measure by \newcite{lin:98}:\\
 %%SK: From the text, it is not clear whether this is the original or the modified. Could you also add a sentence saying what the modification is?
 %%%% CL THURS: I added explaination at line 196.
 
@@ -237,7 +235,7 @@ To compute the fitness of a word $w_i$ to its context, we consider a set $D$ of 
 FIT(w_i) =  \frac {  \sum_{w_j}^{D} sim(w_i,w_j) } {  |D|}
 \end{equation}
 
-The fitness of a phrase is the average word similarity over all its components. For example the fitness of the phrase "eat with chopsticks" would be computed as:
+The fitness of a phrase is the average word similarity over all its components. For example the fitness of the phrase ``eat with chopsticks'' would be computed as:
 
 \begin{align}
 & FIT(\mbox{eat with chopsticks}) = \nonumber \\
@@ -248,7 +246,7 @@ Since we consider the heads and dependents of a target phrase component, these m
 By basing the calculation on a  single words's head and dependent, we focus on  tightly associated words and thus avoid data sparseness issues.
 
 \paragraph{Back-Off}
-Lexical-based dependency triples suffer from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example, the POS fitness of ``eat with chopsticks" would be computed as follows:
+Lexical-based dependency triples suffer from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example, the POS fitness of ``eat with chopsticks'' would be computed as follows:
 
 \begin{align}
 & FIT(\mbox{eat/VBG with/IN chopsticks/NNS}) = \nonumber \\
@@ -259,7 +257,7 @@ Lexical-based dependency triples suffer from data sparsity, so in addition to co
 %%%% CL THURS: myself is a little confused where we should use FIT or SIM for defining the equations above. I am voting fot FIT, because FIT meant to be the fitness of the context, which can involve more than one word. where SIM is defined first for just two words. 
 
 \paragraph{Storing and Caching}
-The large vocabulary and huge number of combinations of  our head/dependent/label" triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (sqlite3) and built database indexes on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently queries triples. Using the database and cache significantly speeds up our system. 
+The large vocabulary and huge number of combinations of our ``head/dependent/label'' triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (sqlite3) and built database indexes on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently queried triples. Using the database and cache significantly speeds up our system. 
 
 
 \paragraph{Combining SIM and LM}
