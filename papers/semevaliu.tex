@@ -76,7 +76,7 @@ The task of translating an L1 fragment occurring in the midst of an L2 sentence 
 For this reason, we decided to approach the problem by combining standard
 statistical machine translation approaches with target language information,
 % allows one to rely more heavily on target information, 
-such as colocational relationships between tokens in L2 context and the
+such as collocational relationships between tokens in L2 context and the
 proposed fragment translations.
 % We use a log-linear model ... 
 This is broken down into various steps: 1) constructing candidate translations for the L1 fragment, including weights for the likelihood of each translation; 2) scoring candidate translations via a language model of the L2; 3) scoring candidate translations via dependency-driven word similarity measure \cite{lin:98} (which we call \textit{SIM})
@@ -133,7 +133,7 @@ statistics using the arcs dataset of the Google Books Syntactic N-Grams
 dependency chains, which may contain several tokens. This data set does not
 contain the actual parses of books from the Google Books corpus, but counts of
 these dependency chains. We converted the longer chains into their component
-$(head,dependent,label)$ triples and then colated these triples into counts,
+$(head,dependent,label)$ triples and then collated these triples into counts,
 also for use in the SIM system.
 
 %[[
@@ -272,10 +272,10 @@ Lexical-based dependency triples suffer from data sparsity, so in addition to co
 \end{align}
 
 
-%%%% CL THURS: myself is a little confused where we should use FIT or SIM for defining the equations above. I am voting fot FIT, because FIT meant to be the fitness of the context, which can involve more than one word. where SIM is defined first for just two words. 
+%%%% CL THURS: myself is a little confused where we should use FIT or SIM for defining the equations above. I am voting for FIT, because FIT meant to be the fitness of the context, which can involve more than one word. where SIM is defined first for just two words. 
 
 \paragraph{Storing and Caching}
-The large vocabulary and huge number of combinations of our $(head, dependent, label)$ triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (sqlite3) and built database indices on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently-queried triples. Using the database and cache significantly speeds up our system. 
+The large vocabulary and huge number of combinations of our $(head, dependent, label)$ triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (SQLite3) and built database indices on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently-queried triples. Using the database and cache significantly speeds up our system. 
 
 \begin{figure}[t]
   \begin{center}
