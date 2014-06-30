@@ -72,7 +72,7 @@ samples of target-language text.
     \url{http://creativecommons.org/licenses/by/4.0/}
 }
 
-In this task, we must translate an L1 fragment in the midst of an existing,
+In the L2 writing assistant task, we must translate an L1 fragment in the midst of an existing,
 nearly complete, L2 sentence.  With the presence of this rich target-language
 context, the task is rather different from a standard machine translation
 setting, and our goal with our design was to make effective use of the L2
@@ -85,12 +85,12 @@ Our system proceeds in several stages: (1) looking up or constructing candidate
 translations for the L1 fragment, (2) scoring candidate translations via a
 language model of the L2; (3) scoring candidate translations with a
 dependency-driven word similarity measure \cite{lin:98} (which we call
-\textit{SIM}) and (4) combining the previous scores in a log-linear model to
-arrive at a final n-best list.  Step 1 models transfer knowledge between the L1
-and L2; step 2 models facts about the L2 syntax, \emph{i.e.}, which
-translations fit well into the local context; step 3 models collocational and
-semantic tendencies of the L2; and step 4 gives different weights to each of
-the three sources of information.  Although we did not finish step 3 in time
+\textit{SIM}), and (4) combining the previous scores in a log-linear model to
+arrive at a final $n$-best list.  Step~1 models transfer knowledge between the L1
+and L2; step~2 models facts about the L2 syntax, \emph{i.e.}, which
+translations fit well into the local context; step~3 models collocational and
+semantic tendencies of the L2; and step~4 gives different weights to each of
+the three sources of information.  Although we did not finish step~3 in time
 for the official results, we discuss it here, as it represents the most novel
 aspect of the system -- namely, steps towards the exploitation of the rich L2
 context. In general, our approach is language-independent, with accuracy
@@ -101,7 +101,7 @@ target-language knowledge could be promising.
 
 \section{Data Sources}
 %%%% CL: added the following, not sure if correct.
-The data sources serve two major purposes for our system: for L2 candidate generation, we use Europarl and BabelNet; and for candidate ranking based on L2 context, we use Wikipedia and the Google Books Syntactic N-grams. 
+The data sources serve two major purposes for our system: For L2 candidate generation, we use Europarl and BabelNet; and for candidate ranking based on L2 context, we use Wikipedia and the Google Books Syntactic N-grams. 
 
 \paragraph{Europarl}  %(MD: for phrase alignment / candidate generation?)
 %%%% CL: Added the following sentence not sure it is correct.
@@ -145,7 +145,7 @@ for the SIM system described in section \ref{sec:dependencySIM}.
 For English, we also obtained dependency relationships for our word similarity
 statistics using the arcs dataset of the Google Books Syntactic N-Grams
 \cite{goldberg:orwant:13}, which has 919M items, each of which is a small
-``syntactic n-gram", a term Goldberg and Orwant use to describe short
+``syntactic $n$-gram", a term Goldberg and Orwant use to describe short
 dependency chains, each of which may contain several tokens. This data set does
 not contain the actual parses of books from the Google Books corpus, but counts
 of these dependency chains. We converted the longer chains into their component
@@ -171,7 +171,7 @@ also for use in the SIM system.
 \section{System Design}
 \label{sec:system}
 
-As previously mentioned, at run-time our system decomposes the fragment
+As previously mentioned, at run-time, our system decomposes the fragment
 translation task into two parts: generating many possible candidate
 translations, then scoring and ranking them in the target-language context.
 
@@ -193,7 +193,7 @@ When translating a phrase that is not found in the
 phrase table, we try to construct a ``synthetic phrase" out of the available
 components. This is done by listing, combinatorially, all ways to decompose the
 L1 phrase into sub-phrases of at least one token long. Then for each
-decomposition of the input phrase such that all of its components can be found
+decomposition of the input phrase, such that all of its components can be found
 in the phrase table, we generate a translation by concatenating their
 target-language sides. This approach naively assumes that generating valid L2
 text requires no reordering of the components. Also, since there are $2^{n-1}$
@@ -231,7 +231,7 @@ situation.
 
 %%%%CL: added the following, might not be accurate!! 
 To model how well a phrase fits into the L2 context, we score candidates 
-with an n-gram language model (LM) trained on a large sample of
+with an $n$-gram language model (LM) trained on a large sample of
 target-language text.
 Constructing and querying a large language model is potentially computationally
 expensive, so here we use the KenLM Language Model Toolkit and its Python
@@ -241,7 +241,7 @@ KenLM set to 5-grams and the default settings.
 
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
-The candidate ranking based on the N-gram language model -- while quite useful
+The candidate ranking based on the $n$-gram language model -- while quite useful
 -- is based on very
 shallow information. We can also rank the candidate phrases based on how well
 each of the components fits into the L2 context using syntactic information.
@@ -267,7 +267,7 @@ dependency triple occurs in the L2 corpus.
 $c(h,-,l)$ is the frequency with which a word occurs as a head in a dependency
 labeled $l$ with any dependent. $c(-,d,l)$ is the frequency with which a word
 occurs as a dependent in a dependency labeled $l$  with any head. 
-In \cite{lin:98}'s measure, the numerator is defined as the information of all dependency features that $w_1$ and $w_2$ share, computed as the negative sum of the log probability of each dependency feature. Similarly, the denominator is computed as the sum of information of dependency features for $w_1$ and $w_2$. \\
+In the  measure by \newcite{lin:98}, the numerator is defined as the information of all dependency features that $w_1$ and $w_2$ share, computed as the negative sum of the log probability of each dependency feature. Similarly, the denominator is computed as the sum of information of dependency features for $w_1$ and $w_2$. \\
 %\begin{itemize}
 %\marginpar{MD: I think we're missing the step of comparing a word (e.g.,  \textit{eat} with its context, i.e., $fit(w_i) = \sum_{w_j}  sim(w_i,w_j)$}
 %%%% CL THURS: added a sentence at line 202~205.
@@ -275,7 +275,7 @@ In \cite{lin:98}'s measure, the numerator is defined as the information of all d
 
 To compute the fitness of a word $w_i$ for its context, we consider a set $D$ of all words that are directly dependency-related to $w_i$. The fitness of $w_i$ is thus computed as:\\
 \begin{equation}
-FIT(w_i) =  \frac {  \sum_{w_j}^{D} sim(w_i,w_j) } {  |D|}
+FIT(w_i) =  \frac {  \sum_{w_j}^{D} SIM(w_i,w_j) } {  |D|}
 \end{equation}
 
 The fitness of a phrase is the average word similarity over all its components. For example the fitness of the phrase ``eat with chopsticks'' would be computed as:
@@ -287,10 +287,10 @@ The fitness of a phrase is the average word similarity over all its components. 
 
 Since we consider the heads and dependents of a target phrase component, these
 may be situated  inside or outside the phrase. Both cases are included in our
-calculation, thus enabling us to consider a broader, syntactically-determined
+calculation, thus enabling us to consider a broader, syntactically determined
 local context of the phrase.
 By basing the calculation on a single word's head and dependents, we attempt to 
-avoid data sparseness issues that we might get from rare n-gram contexts.
+avoid data sparseness issues that we might get from rare $n$-gram contexts.
 
 \paragraph{Back-Off}
 Lexical-based dependency triples suffer from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example, the POS fitness of ``eat with chopsticks'' would be computed as follows:
@@ -304,11 +304,11 @@ Lexical-based dependency triples suffer from data sparsity, so in addition to co
 %%%% CL THURS: myself is a little confused where we should use FIT or SIM for defining the equations above. I am voting for FIT, because FIT meant to be the fitness of the context, which can involve more than one word. where SIM is defined first for just two words. 
 
 \paragraph{Storing and Caching}
-The large vocabulary and huge number of combinations of our $(head, dependent, label)$ triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (SQLite3) and built database indices on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently-queried triples. Using the database and cache significantly speeds up our system. 
+The large vocabulary and huge number of combinations of our $(head, dependent, label)$ triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (SQLite3) and built database indices on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus, we built a query cache to store the recently-queried triples. Using the database and cache significantly speeds up our system. 
 
 This database only stores dependency triples and their corresponding counts;
 the dependency-based similarity value is calculated as needed, for each
-particular context. Then these SIM scores are combined with the scores from the
+particular context. Then, these SIM scores are combined with the scores from the
 phrase table and language model, using weights tuned by MERT.
 
 \begin{figure}[t]
