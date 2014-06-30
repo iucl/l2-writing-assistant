@@ -395,10 +395,10 @@ negative numbers, and at translation time we return the translation (or
 $n$-best) with the highest (least negative) score.
 
 This leaves us with the question of how to set the weights for the log-linear
-model; in this work we use the ZMERT package \cite{zaidan:zmert:09}, which
+model; in this work, we use the ZMERT package \cite{zaidan:zmert:09}, which
 implements the MERT optimization algorithm \cite{och:2003:ACL}, iteratively
 tuning the feature weights by repeatedly requesting $n$-best lists from the
-system. Here we used ZMERT with its default settings, optimizing our system's
+system. We used ZMERT with its default settings, optimizing our system's
 BLEU scores on the provided development set. We chose, for convenience, BLEU as
 a stand-in for the word-level accuracy score, as BLEU scores are maximized when
 the system output matches the reference translations.
@@ -406,7 +406,7 @@ the system output matches the reference translations.
 \section{Experiments}
 \label{sec:exp}
 
-In the above figures, we show the scores on this year's test set for running
+In figures \ref{fig:theresults-en-de}-\ref{fig:theresults-nl-en}, we show the scores on this year's test set for running
 the two variations of our system: \emph{run2}, the version without the SIM
 extensions, which we submitted for the evaluation, 
 and \emph{SIM}, with the extensions
@@ -419,12 +419,12 @@ parsing the Spanish test set, as for all of the other language pairs, the
 effects of adding SIM features were small.
 
 \section{Conclusion} 
-Here we have described our entry for the initial running of the ``L2 Writing
+We have described our entry for the initial running of the ``L2 Writing
 Assistant" task and explained some possible extensions to our base log-linear
 model system.
 
 In developing the SIM extensions, we faced some interesting software
-engineering challenges, and can now produce large databases of dependency
+engineering challenges, and we can now produce large databases of dependency
 relationship counts for various languages. Unfortunately, these extensions have
 not yet led to improvements in performance on this particular task. The
 databases themselves seem at least intuitively promising, capturing interesting
