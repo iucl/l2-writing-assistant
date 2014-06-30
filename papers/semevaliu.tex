@@ -32,7 +32,7 @@ We describe the Indiana University system for SemEval Task 5, the L2
 writing assistant task, as well as some extensions to the system that were
 completed after the main evaluation. Our team submitted translations for all
 four language pairs in the evaluation, yielding the top scores for
-English-German.  The system is based on combining different information sources
+English-German.  The system is based on combining several information sources
 to arrive at a final L2 translation for a given L1 text fragment, incorporating
 phrase tables extracted from bitexts, an L2 language model, a multilingual
 dictionary, and dependency-based collocational models derived from large
@@ -73,37 +73,35 @@ samples of target-language text.
 }
 
 In this task, we must translate an L1 fragment in the midst of an existing,
-nearly complete, L2 sentence. Thus this task is quite different from a standard
-machine translation setting, with the presence of rich target-language context.
-For this reason, we decided to approach the problem by combining standard
-statistical machine translation approaches with target language information,
+nearly complete, L2 sentence.  With the presence of this rich target-language
+context, the task is rather different from a standard machine translation
+setting, and our goal with our design was to make effective use of the L2
+context, exploiting collocational relationships between tokens anywhere in the
+L2 context and the proposed fragment translations.
+
 % allows one to rely more heavily on target information, 
-such as collocational relationships between tokens in L2 context and the
-proposed fragment translations.
 % We use a log-linear model ... 
-This is broken down into various steps: 1) constructing candidate translations
-for the L1 fragment, including weights for the likelihood of each translation;
-2) scoring candidate translations via a language model of the L2; 3) scoring
-candidate translations with a dependency-driven word similarity measure
-\cite{lin:98} (which we call \textit{SIM})
-%pointwise mutual information (PMI); 
-and 4) combining the scores from 1)-3) via minimized error rate training
-(MERT), to arrive at a final n-best list.  Step 1) models transfer knowledge
-between the L1 and L2; step 2) models facts about the L2 syntax, \emph{i.e.}, what
-translations fit well into the local context; step 3) models collocational and
-semantic tendencies of the L2; and step 4)  gives different weights to each of
-the three sources of information.  Although we did not finish step 3) in time
-for the official results, we report it here, as it represents the most novel
+Our system proceeds in several stages: (1) looking up or constructing candidate
+translations for the L1 fragment, (2) scoring candidate translations via a
+language model of the L2; (3) scoring candidate translations with a
+dependency-driven word similarity measure \cite{lin:98} (which we call
+\textit{SIM}) and (4) combining the previous scores in a log-linear model to
+arrive at a final n-best list.  Step 1 models transfer knowledge between the L1
+and L2; step 2 models facts about the L2 syntax, \emph{i.e.}, which
+translations fit well into the local context; step 3 models collocational and
+semantic tendencies of the L2; and step 4 gives different weights to each of
+the three sources of information.  Although we did not finish step 3 in time
+for the official results, we discuss it here, as it represents the most novel
 aspect of the system -- namely, steps towards the exploitation of the rich L2
 context. In general, our approach is language-independent, with accuracy
-varying due to the size of data sources and quality of input technology (e.g.,
-syntactic parse accuracy). More features could easily be added to the
-log-linear model framework, and further explorations of ways to make use of
+varying due to the size of data sources and quality of input technology
+(\emph{e.g.}, syntactic parse accuracy). More features could easily be added to
+the log-linear model, and further explorations of ways to make use of
 target-language knowledge could be promising.
 
 \section{Data Sources}
 %%%% CL: added the following, not sure if correct.
-The data sources serve two major steps of our system: for L2 candidate generation, we use Europarl and BabelNet; and for candidate ranking based on L2 context, we use Wikipedia and the Google Books Syntactic N-grams. 
+The data sources serve two major purposes for our system: for L2 candidate generation, we use Europarl and BabelNet; and for candidate ranking based on L2 context, we use Wikipedia and the Google Books Syntactic N-grams. 
 
 \paragraph{Europarl}  %(MD: for phrase alignment / candidate generation?)
 %%%% CL: Added the following sentence not sure it is correct.
@@ -125,7 +123,19 @@ extend look-up using the multilingual dictionary BabelNet, v2.0
 \paragraph{Wikipedia} %(MD: for dependency/PMI calculation?) Levi:
 
 For German and Spanish, we use recent Wikipedia dumps, which were converted to
-plain text with the Wikipedia Extractor tool.\footnote{\url{http://medialab.di.unipi.it/wiki/Wikipedia_Extractor}} To save time during parsing, sentences longer than 25 words are removed. The remaining sentences are POS-tagged and dependency parsed using Mate Parser with its pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep our English Wikipedia dataset comparable in size to the German and Spanish sets, we choose an older (2006), smaller dump. Long sentences are removed, and the remaining sentences are POS-tagged and dependency parsed using the pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}. The resulting sizes of the datasets are (roughly): German: 389M words, 28M sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M sentences. Dependencies extracted from these parsed datasets serve as training for the SIM system described in section \ref{sec:dependencySIM}.
+plain text with the Wikipedia Extractor
+tool.\footnote{\url{http://medialab.di.unipi.it/wiki/Wikipedia_Extractor}} To
+save time during parsing, sentences longer than 25 words are removed. The
+remaining sentences are POS-tagged and dependency parsed using Mate Parser with
+its pre-trained models \cite{bohnet:10,bohnet:kuhn:12,seeker:kuhn:13}. To keep
+our English Wikipedia dataset a manageable size, we choose an older (2006),
+smaller dump. Long sentences are removed, and
+the remaining sentences are POS-tagged and dependency parsed using the
+pre-trained Stanford Parser \cite{klein:manning:03,marneffe:maccartney:ea:06}.
+The resulting sizes of the datasets are (roughly): German: 389M words, 28M
+sentences; Spanish: 147M words, 12M sentences; English: 253M words, 15M
+sentences. Dependencies extracted from these parsed datasets serve as training
+for the SIM system described in section \ref{sec:dependencySIM}.
 %%% CL: training changed to data source, because it is not strictly training?
 
 \paragraph{Google Books Syntactic N-grams}
@@ -136,9 +146,9 @@ For English, we also obtained dependency relationships for our word similarity
 statistics using the arcs dataset of the Google Books Syntactic N-Grams
 \cite{goldberg:orwant:13}, which has 919M items, each of which is a small
 ``syntactic n-gram", a term Goldberg and Orwant use to describe short
-dependency chains, which may contain several tokens. This data set does not
-contain the actual parses of books from the Google Books corpus, but counts of
-these dependency chains. We converted the longer chains into their component
+dependency chains, each of which may contain several tokens. This data set does
+not contain the actual parses of books from the Google Books corpus, but counts
+of these dependency chains. We converted the longer chains into their component
 $(head,dependent,label)$ triples and then collated these triples into counts,
 also for use in the SIM system.
 
@@ -158,31 +168,31 @@ also for use in the SIM system.
 %avg wds per sent: 17.39
 %]]
 
-\section{Our System}
+\section{System Design}
 \label{sec:system}
 
 As previously mentioned, at run-time our system decomposes the fragment
-translation task into two parts: generating a number of possible candidate
-translations, and then scoring and ranking them in the target-language context,
-such that best-scoring translations can be returned.
+translation task into two parts: generating many possible candidate
+translations, then scoring and ranking them in the target-language context.
 
 \subsection{Constructing Candidate Translations}
 \label{sec:candidates}
 
 As a starting point, we use phrase tables constructed in typical SMT fashion,
-using the training scripts packaged with Moses \cite{koehn:hoang:ea:07}, which
-preprocess the given bitext, find word alignments with GIZA++ \cite{och:ney:00}
-and then extract phrases with the \texttt{grow-diag-final-and} heuristic. 
+built with the training scripts packaged with Moses \cite{koehn:hoang:ea:07}.
+These scripts preprocess the bitext, estimate word alignments with GIZA++
+\cite{och:ney:00} and then extract phrases with the
+\texttt{grow-diag-final-and} heuristic. 
 
 At translation time, we look for the given source-language phrase in the phrase
 table, and if it is found, we take all translations of that phrase as our
 candidates.
 %MD: If space needed, combine above two paragraphs.
 
-When trying to translate a source-language phrase that is not found in the
+When translating a phrase that is not found in the
 phrase table, we try to construct a ``synthetic phrase" out of the available
 components. This is done by listing, combinatorially, all ways to decompose the
-input phrase into sub-phrases of at least one token long. Then for each
+L1 phrase into sub-phrases of at least one token long. Then for each
 decomposition of the input phrase such that all of its components can be found
 in the phrase table, we generate a translation by concatenating their
 target-language sides. This approach naively assumes that generating valid L2
@@ -192,13 +202,13 @@ each token is either the first token in a new sub-sequence, or it is not), we
 perform some heuristic pruning at this step, taking only the first 100
 decompositions, preferring those built from longer phrase-table entries. Every
 phrase in the phrase table, including these synthetic phrases, has both a
-``direct" and ``inverse" probability score; for synthetic phrases, we produce
-these probability estimates by taking the product of probabilities for the
+``direct" and ``inverse" probability score; for synthetic phrases, we estimate
+these scores by taking the product of the corresponding probabilities for the
 individual components.
 
 In the case that an individual word cannot be found in the phrase table, the
 system attempts to look up the word in BabelNet, estimating the probabilities
-as uniformly distributed over the available entries in BabelNet. Thus,
+as uniformly distributed over the available BabelNet entries. Thus,
 synthetic phrase table entries can be constructed by combining phrases found in
 the training data and words available in BabelNet.
 
@@ -220,23 +230,19 @@ situation.
 \label{sec:l2model}
 
 %%%%CL: added the following, might not be accurate!! 
-To model how well a phrase fits into an L2 context, a quick and intuitive
-method is to use an n-gram language model (LM) trained on a large sample of
-target-language text, scoring candidate phrases based on their LM
-probabilities.
-Constructing and querying a large language model is potentially very
-time-consuming, so here we use the KenLM Language Model Toolkit and its Python
-interface \cite{heafield:kenlm:11}. Here our models were trained
-on the Wikipedia text mentioned previously, with KenLM set to 5-grams and the
-default settings.
+To model how well a phrase fits into the L2 context, we score candidates 
+with an n-gram language model (LM) trained on a large sample of
+target-language text.
+Constructing and querying a large language model is potentially computationally
+expensive, so here we use the KenLM Language Model Toolkit and its Python
+interface \cite{heafield:kenlm:11}. Here our models were trained on the
+Wikipedia text mentioned previously (without filtering long sentences), with
+KenLM set to 5-grams and the default settings.
 
 \subsection{Scoring Candidate Translations via Dependency-Based Word Similarity}
 \label{sec:dependencySIM}
-We would like to make use of syntactic knowledge of the target language to
-improve results on this task; n-gram language models, while often effective,
-are very shallow and 
-%% XXX: writing here.
-The candidate ranking based on the N-gram language model is based on very
+The candidate ranking based on the N-gram language model -- while quite useful
+-- is based on very
 shallow information. We can also rank the candidate phrases based on how well
 each of the components fits into the L2 context using syntactic information.
 In this case, the fitness is measured in terms of dependency-based word
@@ -256,14 +262,18 @@ SIM(w_1,w_2) = \frac{2 \prod c(h,d,l)}
 %%% CL THURS, thanks Markus, that's right!
 \noindent
 where $h=w_1$ and $d=w_2$ and 
-$c(h,d,l)$ is the frequency that a particular $(head, dependent, label)$ dependency triple occurs in the L2 corpus. $c(h,-,l)$ is the frequency that a word occurs as a head in a dependency labeled $l$ with any dependent. $c(-,d,l)$ is the frequency that a word occurs as a dependent in a dependency labeled $l$  with any head. 
+$c(h,d,l)$ is the frequency with which a particular $(head, dependent, label)$
+dependency triple occurs in the L2 corpus.
+$c(h,-,l)$ is the frequency with which a word occurs as a head in a dependency
+labeled $l$ with any dependent. $c(-,d,l)$ is the frequency with which a word
+occurs as a dependent in a dependency labeled $l$  with any head. 
 In \cite{lin:98}'s measure, the numerator is defined as the information of all dependency features that $w_1$ and $w_2$ share, computed as the negative sum of the log probability of each dependency feature. Similarly, the denominator is computed as the sum of information of dependency features for $w_1$ and $w_2$. \\
 %\begin{itemize}
 %\marginpar{MD: I think we're missing the step of comparing a word (e.g.,  \textit{eat} with its context, i.e., $fit(w_i) = \sum_{w_j}  sim(w_i,w_j)$}
 %%%% CL THURS: added a sentence at line 202~205.
 %\end{itemize}
 
-To compute the fitness of a word $w_i$ to its context, we consider a set $D$ of all words that are directly dependency-related to $w_i$. The fitness of $w_i$ is thus computed as:\\
+To compute the fitness of a word $w_i$ for its context, we consider a set $D$ of all words that are directly dependency-related to $w_i$. The fitness of $w_i$ is thus computed as:\\
 \begin{equation}
 FIT(w_i) =  \frac {  \sum_{w_j}^{D} sim(w_i,w_j) } {  |D|}
 \end{equation}
@@ -275,8 +285,12 @@ The fitness of a phrase is the average word similarity over all its components. 
  & \qquad \frac{FIT(\mbox{eat}) + FIT(\mbox{with}) + FIT(\mbox{chopsticks})}{3}
 \end{align}
 
-Since we consider the heads and dependents of a target phrase component, these may be situated  inside or outside the phrase. Both cases are included in our calculation, thus enabling us to consider a more variable, syntactically-determined local context of the phrase.
-By basing the calculation on a single word's head and dependents, we focus on tightly associated words and thus avoid data sparseness issues that we might get from an n-gram context.
+Since we consider the heads and dependents of a target phrase component, these
+may be situated  inside or outside the phrase. Both cases are included in our
+calculation, thus enabling us to consider a broader, syntactically-determined
+local context of the phrase.
+By basing the calculation on a single word's head and dependents, we attempt to 
+avoid data sparseness issues that we might get from rare n-gram contexts.
 
 \paragraph{Back-Off}
 Lexical-based dependency triples suffer from data sparsity, so in addition to computing the lexical fitness of a phrase, we also calculate the POS fitness. For example, the POS fitness of ``eat with chopsticks'' would be computed as follows:
@@ -375,26 +389,29 @@ phrase table and language model, using weights tuned by MERT.
 
 In order to rank the various candidate translations, we must combine the
 different sources of information in some way.  Here we use a familiar
-log-linear model, taking each score -- the direct and inverse translation
-probabilities, the LM probability, and the surface and POS SIM scores -- take
-the log of each of these, and then produce a weighted sum. Since the original
-scores are either probabilities or probability-like (in the range $[0,1]$),
-their logs are negative numbers, and at translation time, we return the
-translation (or $n$-best) with the highest (least negative) score.
+log-linear model, taking the $\log$ of each score -- the direct and inverse
+translation probabilities, the LM probability, and the surface and POS SIM
+scores -- and producing a weighted sum. Since the original scores are either
+probabilities or probability-like (in the range $[0,1]$), their $\log$s are
+negative numbers, and at translation time we return the translation (or
+$n$-best) with the highest (least negative) score.
 
 This leaves us with the question of how to set the weights for the log-linear
 model; in this work we use the ZMERT package \cite{zaidan:zmert:09}, which
 implements the MERT optimization algorithm \cite{och:2003:ACL}, iteratively
 tuning the feature weights by repeatedly requesting $n$-best lists from the
 system. Here we used ZMERT with its default settings, optimizing our system's
-BLEU scores on the provided development set.
+BLEU scores on the provided development set. We chose, for convenience, BLEU as
+a stand-in for the word-level accuracy score, as BLEU scores are maximized when
+the system output matches the reference translations.
 
 \section{Experiments}
 \label{sec:exp}
 
 In the above figures, we show the scores on this year's test set for running
-the two variations of our system: \emph{run2}, the version we submitted for the
-evaluation, without the SIM extensions, and \emph{SIM}, with the extensions
+the two variations of our system: \emph{run2}, the version without the SIM
+extensions, which we submitted for the evaluation, 
+and \emph{SIM}, with the extensions
 enabled. For comparison, we also include the best (or for English-German,
 next-best) submitted system.
 We see here that the use of the SIM features did not improve the performance of
@@ -414,7 +431,7 @@ relationship counts for various languages. Unfortunately, these extensions have
 not yet led to improvements in performance on this particular task. The
 databases themselves seem at least intuitively promising, capturing interesting
 information about common usage patterns of the target language.
-Finding a way to make use of this information may involve computing some
+Finding a good way to make use of this information may involve computing some
 measure that we have not yet considered, or perhaps the insights captured by
 SIM are covered effectively by the language model.
 
