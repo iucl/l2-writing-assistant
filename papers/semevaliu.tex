@@ -306,6 +306,11 @@ Lexical-based dependency triples suffer from data sparsity, so in addition to co
 \paragraph{Storing and Caching}
 The large vocabulary and huge number of combinations of our $(head, dependent, label)$ triples poses an efficiency problem when querying the dependency-based word similarity values. Thus, we stored the dependency triples in a database with a Python programming interface (SQLite3) and built database indices on the frequent query types. However, for frequently searched dependency triples, re-querying the database is still inefficient. Thus we built a query cache to store the recently-queried triples. Using the database and cache significantly speeds up our system. 
 
+This database only stores dependency triples and their corresponding counts;
+the dependency-based similarity value is calculated as needed, for each
+particular context. Then these SIM scores are combined with the scores from the
+phrase table and language model, using weights tuned by MERT.
+
 \begin{figure}[t]
   \begin{center}
   \begin{tabular}{|r|c|c|c|c|}
@@ -318,8 +323,7 @@ The large vocabulary and huge number of combinations of our $(head, dependent, l
     \hline
   \end{tabular}
   \end{center}
-\caption{Scores on the test set for English-German; here nb (for
-``next-best") is CNRC-run1.}
+\caption{Scores on the test set for English-German; here next-best is CNRC-run1.}
 \label{fig:theresults-en-de}
 \end{figure}
 
@@ -363,7 +367,7 @@ The large vocabulary and huge number of combinations of our $(head, dependent, l
     \hline
     run2        &  0.544      &  0.679  & 0.634   & 0.753    \\
     SIM              &  0.540      &  0.676  & 0.635   & 0.753    \\
-    best       &  0.733      &  0.811  & 99      & 57       \\
+    best       &  0.575   & 0.692  & 0.733      &  0.811 \\
     \hline
   \end{tabular}
   \end{center}
@@ -371,12 +375,6 @@ The large vocabulary and huge number of combinations of our $(head, dependent, l
 \label{fig:theresults-nl-en}
 \end{figure}
 
-
-%During training time, we obtained dependency-based word similarity statistics for all target languages using corresponding dependency triples. During testing time, the word similarity value is queried and combined with the N-gram language model to rank the candidate phrase. 
-This database only stores dependency triples and their corresponding counts;
-the dependency-based similarity value is calculated as needed, for each
-particular context. Then these SIM scores are combined with the scores from the
-phrase table and language model, using weights tuned by MERT.
 
 %More specifically, 
 %- MATE parser
