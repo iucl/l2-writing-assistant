@@ -83,7 +83,7 @@ L2 context and the proposed fragment translations.
 % We use a log-linear model ... 
 Our system proceeds in several stages: (1) looking up or constructing candidate
 translations for the L1 fragment, (2) scoring candidate translations via a
-language model of the L2; (3) scoring candidate translations with a
+language model of the L2, (3) scoring candidate translations with a
 dependency-driven word similarity measure \cite{lin:98} (which we call
 \textit{SIM}), and (4) combining the previous scores in a log-linear model to
 arrive at a final $n$-best list.  Step~1 models transfer knowledge between the L1
@@ -252,7 +252,7 @@ measure by \newcite{lin:98}:
 %%SK: From the text, it is not clear whether this is the original or the modified. Could you also add a sentence saying what the modification is?
 %%%% CL THURS: I added explaination at line 196.
 \begin{equation}
-SIM(w_1,w_2) = \frac{2 \prod c(h,d,l)} 
+SIM(w_1,w_2) = \frac{2 * c(h,d,l)} 
 {c(h,-,l) + c(-,d,l)}
 \end{equation}
 %\marginpar{SK: how do w1 and w2 relate to h,d,l?}
@@ -278,7 +278,8 @@ To compute the fitness of a word $w_i$ for its context, we consider a set $D$ of
 FIT(w_i) =  \frac {  \sum_{w_j}^{D} SIM(w_i,w_j) } {  |D|}
 \end{equation}
 
-The fitness of a phrase is the average word similarity over all its components. For example the fitness of the phrase ``eat with chopsticks'' would be computed as:
+The fitness of a phrase is the average word similarity over all its components.
+For example, the fitness of the phrase ``eat with chopsticks'' would be computed as:
 
 \begin{align}
 & FIT(\mbox{eat with chopsticks}) = \nonumber \\
