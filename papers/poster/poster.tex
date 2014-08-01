@@ -1,0 +1,228 @@
+\documentclass[final,t]{beamer}
+\mode<presentation>{\usetheme{Purdue}}
+
+\usepackage{natbib,url}
+\usepackage{multicol}
+\usepackage{geometry}
+\usepackage{multirow}
+\usepackage{rotating}
+
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{xcolor}
+
+\definecolor{light-gray}{gray}{0.9}
+
+\usepackage[orientation=landscape,size=a0,scale=1.4]{beamerposter}
+\usepackage{gb4e}
+
+\title[]{IUCL: Combining Information Sources for SemEval Task 5}
+\author[]{Alex Rudnick, Levi King, Can Liu, Markus Dickinson, Sandra K\"ubler}
+\institute[]{Indiana University}
+\date[]{XX August 2014}
+
+\begin{document}
+\begin{frame}{}
+  \begin{columns}[t]
+    \begin{column}{.31\linewidth}
+
+\begin{block}{Approach}
+
+  \textbf{Our approach:} 
+  \begin{itemize}
+  \item 
+  \item 
+  \end{itemize}
+
+\end{block}
+
+\begin{block}{Data sources}
+
+\begin{center}
+\textcolor{purple}{Europarl}
+\end{center}
+
+\colorbox{light-gray}{
+\begin{minipage}{.90\linewidth}
+\begin{itemize}
+\item 
+\end{itemize}
+\end{minipage}
+}
+
+\begin{center}
+\textcolor{purple}{BabelNet}
+\end{center}
+
+\colorbox{light-gray}{
+\begin{minipage}{.90\linewidth}
+\begin{itemize}
+\item
+\end{itemize}
+\end{minipage}
+}
+
+\begin{center}
+\textcolor{purple}{Wikipedia}
+\end{center}
+
+\colorbox{light-gray}{
+\begin{minipage}{.90\linewidth}
+\begin{itemize}
+\item
+\end{itemize}
+\end{minipage}
+}
+
+\begin{center}
+\textcolor{purple}{Google Books Syntactic N-grams}
+\end{center}
+
+\colorbox{light-gray}{
+\begin{minipage}{.90\linewidth}
+\begin{itemize}
+\item
+\end{itemize}
+\end{minipage}
+}
+
+\end{block}
+
+\end{column}
+
+\begin{column}{.64\linewidth}
+
+\begin{columns}
+\begin{column}{.48\linewidth}
+
+\begin{block}{System Design}
+
+\begin{center}
+  \textcolor{purple}{Constructing Candidate Translations}
+  \begin{itemize}
+  \item 
+  \end{itemize}
+
+  \textcolor{purple}{Scoring Candidate Translations via a L2 Language Model}
+  \begin{itemize}
+  \item 
+  \end{itemize}
+
+\end{center}
+
+\end{block}
+
+\end{column}
+
+\begin{column}{.48\linewidth}
+
+\begin{block}{System Design}
+\begin{center}
+
+  \textcolor{purple}{Scoring Candidate Translations via Dependency-Based Word Similarity}
+  \begin{itemize}
+  \item 
+  \end{itemize}
+
+  \textcolor{purple}{Tuning Weights with MERT}
+  \begin{itemize}
+  \item 
+  \end{itemize}
+
+\end{center}
+
+\end{block}
+
+    \end{column}
+  \end{columns}
+  \end{column}
+  \end{columns}
+
+\begin{columns}
+  \begin{column}{.64\linewidth}
+
+\begin{block}{Results}
+
+\begin{figure}[t]
+  \begin{center}
+  \begin{tabular}{|r|c|c|c|c|}
+    \hline
+    system & acc      & wordacc  & oofacc & oofwordacc \\
+    \hline
+    run2  &  0.665 & 0.722  &  0.806  & 0.857 \\
+    SIM    &  0.647 & 0.706 & 0.800 & 0.852 \\
+    nb     &  0.657   & 0.717   & 0.834 & 0.868    \\
+    \hline
+  \end{tabular}
+  \end{center}
+\caption{Scores on the test set for English-German; here next-best is CNRC-run1.}
+\label{fig:theresults-en-de}
+\end{figure}
+
+\begin{figure}[t]
+  \begin{center}
+  \begin{tabular}{|r|c|c|c|c|}
+    \hline
+    system & acc      & wordacc  & oofacc & oofwordacc \\
+    \hline
+    run2  &  0.633 & 0.72 & 0.781 & 0.847 \\
+    SIM    &  0.359 &  0.482 & 0.462 & 0.607 \\
+    best   &  0.755 & 0.827   & 0.920  & 0.944 \\
+    \hline
+  \end{tabular}
+  \end{center}
+\caption{Scores on the test set for English-Spanish; here best is UEdin-run2.}
+\label{fig:theresults-en-es}
+\end{figure}
+
+\begin{figure}[t]
+  \begin{center}
+  \begin{tabular}{|r|c|c|c|c|}
+    \hline
+    system & acc      & wordacc  & oofacc & oofwordacc \\
+    \hline
+    run2  & 0.545  & 0.682 & 0.691 & 0.800 \\
+    SIM        &  0.549 & 0.687 & 0.693 & 0.800 \\
+    best & 0.733 & 0.824 & 0.905 & 0.938 \\
+    \hline
+  \end{tabular}
+  \end{center}
+\caption{Scores on the test set for French-English; here best is UEdin-run1.}
+\label{fig:theresults-fr-en}
+\end{figure}
+
+\begin{figure}[t]
+  \begin{center}
+  \begin{tabular}{|r|c|c|c|c|}
+    \hline
+    system & acc      & wordacc  & oofacc & oofwordacc \\
+    \hline
+    run2        &  0.544      &  0.679  & 0.634   & 0.753    \\
+    SIM              &  0.540      &  0.676  & 0.635   & 0.753    \\
+    best       &  0.575   & 0.692  & 0.733      &  0.811 \\
+    \hline
+  \end{tabular}
+  \end{center}
+\caption{Scores on the test set for Dutch-English; here best is UEdin-run1.}
+\label{fig:theresults-nl-en}
+\end{figure}
+
+\end{block}
+
+  \end{column}
+
+  \begin{column}{.31\linewidth}
+
+\begin{block}{Conclusion}
+
+\begin{itemize}
+\item 
+\end{itemize}
+
+\end{block}
+
+  \end{column}
+\end{columns}
+
+\end{frame}
+\end{document}
