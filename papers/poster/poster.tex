@@ -13,7 +13,7 @@
 
 \definecolor{light-gray}{gray}{0.9}
 
-\usepackage[orientation=landscape,size=a0,scale=1.4]{beamerposter}
+\usepackage[orientation=portrait,size=a0,scale=1.4]{beamerposter}
 \usepackage{gb4e}
 
 \title[]{IUCL: Combining Information Sources for SemEval Task 5}
@@ -28,11 +28,23 @@
 
 \begin{block}{Approach}
 
-  \textbf{Our approach:} 
-  \begin{itemize}
-  \item 
-  \item 
-  \end{itemize}
+  \textbf{Our approach:} make use of rich L2 context, along with
+  proposed fragment translations
+
+  \medskip
+
+  \begin{enumerate}
+  \item Model transfer knowledge between L1 \& L2: look up candidate
+    translations for L1 fragment
+  \item Model facts about L2 syntax: score candidate translations via
+    L2 LM
+  \item Model L2 collocational tendencies: score translations via
+    dependency-driven word similarity (\textit{SIM})
+  \item Weight each source of information (\#1--\#3) in log-linear
+    model to obtain final $n$-best list
+  \end{enumerate}
+
+  $\Rightarrow$ Language-independent approach
 
 \end{block}
 
