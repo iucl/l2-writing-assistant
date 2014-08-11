@@ -13,7 +13,7 @@
 
 \definecolor{light-gray}{gray}{0.9}
 
-\usepackage[orientation=portrait,size=a0,scale=1.4]{beamerposter}
+\usepackage[orientation=portrait,size=a1,scale=1]{beamerposter}
 \usepackage{gb4e}
 
 \title[]{IUCL: Combining Information Sources for SemEval Task 5}
@@ -24,7 +24,7 @@
 \begin{document}
 \begin{frame}{}
   \begin{columns}[t]
-    \begin{column}{.35\linewidth}
+    \begin{column}{.4\linewidth}
 
 \begin{block}{Approach}
 
@@ -54,10 +54,13 @@
 \textcolor{purple}{Europarl}
 \end{center}
 
-\colorbox{light-gray}{
-\begin{minipage}{.90\linewidth}
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
 \begin{itemize}
-\item L2 candidate generation (phrase tables)
+\item parallel corpus: proc.\ of European Parliament
+\item used for L2 candidate generation
+\item  used to generate phrase tables
+\item small, clean, out of domain
 \end{itemize}
 \end{minipage}
 }
@@ -66,10 +69,12 @@
 \textcolor{purple}{BabelNet}
 \end{center}
 
-\colorbox{light-gray}{
-\begin{minipage}{.90\linewidth}
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
 \begin{itemize}
-\item L2 back-off generation for sub-phrases
+\item multilingual encyclopedic dictionary
+\item used as L2 back-off 
+\item look up translations for phrases \& sub-phrases
 \end{itemize}
 \end{minipage}
 }
@@ -78,10 +83,12 @@
 \textcolor{purple}{Wikipedia}
 \end{center}
 
-\colorbox{light-gray}{
-\begin{minipage}{.90\linewidth}
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
 \begin{itemize}
-\item Tagged \& dependency parsed for SIM component
+\item used for estimating collocational tendencies
+\item size: 12-28M sentences
+\item POS tagged \& dependency parsed (Stanford Parser)
 \end{itemize}
 \end{minipage}
 }
@@ -90,10 +97,13 @@
 \textcolor{purple}{Google Books Syntactic N-grams}
 \end{center}
 
-\colorbox{light-gray}{
-\begin{minipage}{.90\linewidth}
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
 \begin{itemize}
-\item Syntactic $n$-grams for SIM component
+\item English only
+\item additional training set for collocations tendencies
+\item syntactic $n$-grams 
+
 \end{itemize}
 \end{minipage}
 }
@@ -102,7 +112,7 @@
 
 \end{column}
 
-\begin{column}{.6\linewidth}
+\begin{column}{.55\linewidth}
 
 %\begin{columns}
 %\begin{column}{.48\linewidth}
@@ -111,14 +121,32 @@
 
 \begin{center}
   \textcolor{purple}{Constructing Candidate Translations}
-  \begin{itemize}
-  \item 
+ 
+ \colorbox{white}{
+\begin{minipage}{.90\linewidth}
+ \begin{itemize}
+  \item build phrase tables using Moses
+  \item during translation: look up source lg.\ phrase, extract all translations from phrase table
+  \item back-off 1: construct ``synthetic phrase'' from sub-phrases
+  \item back-off 2: look up phrase in BabelNet; estimate probs uniformly
+  \item back-off 3: look up phrase in Google Translate\\
   \end{itemize}
+\end{minipage}
+}
+\vspace{1cm}
+
 
   \textcolor{purple}{Scoring Candidate Translations via a L2 Language Model}
-  \begin{itemize}
-  \item 
+ 
+  \colorbox{white}{
+\begin{minipage}{.90\linewidth}
+ \begin{itemize}
+  \item model the fit of phrase in context
+  \item apply language model (KenLM); trained on Wikipedia data
   \end{itemize}
+\end{minipage}
+}
+\vspace{1cm}
 
 %\end{center}
 
@@ -132,14 +160,32 @@
 %\begin{center}
 
   \textcolor{purple}{Scoring Candidate Translations via Dependency-Based Word Similarity}
+
+  \colorbox{white}{
+\begin{minipage}{.90\linewidth}
   \begin{itemize}
-  \item 
+  \item basic idea: use deeper, syntax-based information to estimate fit
+  \item use adaptation of Lin's similarity metric
+  \item similarity is summed over all words in translated phrase
+  \item uses dependencies to \& from this word to context
+  \item similarity based on head, dependent, and label of dependency 
+  \item back-off: use POS instead of words
   \end{itemize}
+\end{minipage}
+}
+\vspace{1cm}
 
   \textcolor{purple}{Tuning Weights with MERT}
+
+  \colorbox{white}{
+\begin{minipage}{.90\linewidth}
   \begin{itemize}
-  \item 
+  \item use long-linear model to combine scores from different types of information
+  \item weights for different types of information estimated using ZMERT
+  \item ZMERT optimized for BLEU scores
   \end{itemize}
+\end{minipage}
+}
 
 \end{center}
 
