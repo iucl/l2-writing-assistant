@@ -1,0 +1,86 @@
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage{times}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{tikz-dependency}
+\usepackage{gb4e}
+
+\begin{document}
+%%% Begin Levi's flowchart (currently doesn't in the poster, but works elsewhere!)
+% Define block styles
+\tikzstyle{block} = [rectangle, draw, text width=10em, text centered, minimum height=4em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse, minimum height=3em,  text width=5em, text centered,]
+
+\begin{figure}
+\begin{center}
+\tiny
+\begin{tikzpicture}[node distance = 1.3cm]
+    %nodes
+    \node [block, node distance=2.5cm] (input) {Input Sentence \\ \smallskip \textless L2\textgreater  \textbf{\textless L1\textgreater } \textless L2\textgreater };%Na
+    \node [block, below of=input, text width=3em] (TargetPhrase) {\textbf{\textless L1\textgreater }};%Nb2
+    \node [block, node distance=.9cm, left of=TargetPhrase, text width=3em] (SentBegin) {\textless L2\textgreater };%Nb1
+    \node [block, node distance=.9cm, right of=TargetPhrase, text width=3em] (SentEnd) {\textless L2\textgreater };%Nb3
+	\node [cloud, below of=TargetPhrase] (PhraseTable) {Phrase Table};%Nc
+	\node [block, text width=8em, node distance=2cm, below of=PhraseTable] (PTOutput) {Candidate Phrases \\ \smallskip
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=7em, node distance=.7cm] (PTOC1) {\textless C1\textgreater  : score}; %Nd1
+		\end{tikzpicture}
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=7em, below of=PTOC1] (PTOC2) {\textless C2\textgreater  : score}; %Nd2
+		\end{tikzpicture} \\ \textbf{...} \smallskip};%Nd
+	\node [block, text width=11em, node distance=4cm, right of=input] (CandidateSents) {Candidate Sentences \\ \smallskip
+		\begin{tikzpicture}[node distance=.7cm, auto]
+			\node [block, node distance=1.3cm] (CS1) {\textless L2\textgreater  \textbf{\textless C1\textgreater } \textless L2\textgreater }; %Ne1
+		\end{tikzpicture}
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, below of=CS1] (CS2) {\textless L2\textgreater  \textbf{\textless C2\textgreater } \textless L2\textgreater }; %Ne2
+		\end{tikzpicture} \\ \textbf{...} \smallskip};%Ne
+	\node [cloud, right of=PhraseTable, node distance=3cm] (NGramLM) {NGram LM};%Nf
+	\node [cloud, right of=NGramLM, node distance=3.5cm] (DependencyModel) {Dependency LM}; %Nh
+	\node [block, text width=14.5em, node distance=2cm, below of=NGramLM] (NLMOutput) {LM Scores \\ \smallskip
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=13.5em, node distance=.7cm] (NLMO1) {\textless L2\textgreater  \textbf{\textless C1\textgreater } \textless L2\textgreater  : score}; %Ng1
+		\end{tikzpicture}
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=13.5em, below of=NLMO1] (NLMO2) {\textless L2\textgreater  \textbf{\textless C2\textgreater } \textless L2\textgreater  : score}; %Ng2
+		\end{tikzpicture} \\ \textbf{...} \smallskip};%Ng
+	\node [block, text width=14.5em, node distance=2cm, below of=DependencyModel] (DMOutput) {\textit{SIM} Scores \\ \smallskip
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=13.5em, node distance=.7cm] (DMO1) {\textless L2\textgreater  \textbf{\textless C1\textgreater } \textless L2\textgreater  : score}; %Ng1
+		\end{tikzpicture}
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=13.5em, below of=DMO1] (DMO2) {\textless L2\textgreater  \textbf{\textless C2\textgreater } \textless L2\textgreater  : score}; %Ng2
+		\end{tikzpicture} \\ \textbf{...} \smallskip};%Ng	
+	\node [cloud, below of=NLMOutput, node distance=2cm] (Ranker) {Weighted Ranker}; %Nj
+	\node [block, text width=14.5em, node distance=2.1cm, below of=Ranker] (ROutput) {Ranked Candidates \\ \smallskip
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=13.5em, node distance=.7cm] (DMO1) {\textbf{\textless C2\textgreater } : score}; %Ng1
+		\end{tikzpicture}
+		\textbf{...} \smallskip \\
+		\begin{tikzpicture}[node distance = .7cm, auto]
+			\node [block, text width=13.5em, below of=DMO1] (DMO2) {\textbf{\textless C1\textgreater } : score}; %Ng2
+		\end{tikzpicture} \\ \textbf{...} \smallskip};%Ng	
+	%paths
+	\path [line] (input) -- (TargetPhrase);%Pa
+	\path [line] (TargetPhrase) -- (PhraseTable);%Pb
+	\path [line, dashed] (input) -- (SentBegin);
+	\path [line, dashed] (input) -- (SentEnd);
+	\path [line] (PhraseTable) -- (PTOutput);%Pc1
+	\path [line] (PhraseTable.east) -- (CandidateSents);%Pc2
+	\path [line] (CandidateSents) -- (NGramLM); %Pe1
+	\path [line] (CandidateSents.south) -- (DependencyModel); %Pe2
+	\path [line] (NGramLM) -- (NLMOutput); %Pf
+	\path [line] (DependencyModel) -- (DMOutput); %Ph
+	\path [line] (PTOutput.south) -- (Ranker); %Pd
+	\path [line] (NLMOutput) -- (Ranker); %Pg
+	\path [line] (DMOutput.south) -- (Ranker); %Pi
+	\path [line] (Ranker) -- (ROutput); %Pi
+\end{tikzpicture}
+\end{center}
+\caption{(Something about our approach....)}
+\label{fig:flowchart}
+\end{figure}
+%%% End Levi's flowchart.
+\end{document}
