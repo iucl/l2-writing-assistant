@@ -8,10 +8,10 @@
 \usepackage{rotating}
 
 %% Levi added (below)
-\usepackage{times}
-\usepackage{tikz}
-\usetikzlibrary{shapes,arrows}
-\usepackage{tikz-dependency}
+% \usepackage{times}
+% \usepackage{tikz}
+% \usetikzlibrary{shapes,arrows}
+% \usepackage{tikz-dependency}
 %% Levi added (above)
 
 \usepackage{enumerate}
@@ -31,27 +31,45 @@
 \begin{document}
 \begin{frame}{}
   \begin{columns}[t]
-    \begin{column}{.4\linewidth}
+    \begin{column}{.5\linewidth}
 
 \begin{block}{Approach}
 
-  \textbf{Our approach:} make use of rich L2 context, along with
-  proposed fragment translations
+  \textbf{Language-independent approach:} make use of rich L2 context,
+  along with proposed fragment translations
 
   \medskip
 
-  \begin{enumerate}
-  \item Model transfer knowledge between L1 \& L2: look up candidate
-    translations for L1 fragment
-  \item Model facts about L2 syntax: score candidate translations via
-    L2 LM
-  \item Model L2 collocational tendencies: score translations via
-    dependency-driven word similarity (\textit{SIM})
-  \item Weight each source of information (\#1--\#3) in log-linear
-    model to obtain final $n$-best list
-  \end{enumerate}
+  % \begin{enumerate}
+  % \item Model transfer knowledge between L1 \& L2: look up candidate
+  %   translations for L1 fragment
+  % \item Model facts about L2 syntax: score candidate translations via
+  %   L2 LM
+  % \item Model L2 collocational tendencies: score translations via
+  %   dependency-driven word similarity (\textit{SIM})
+  % \item Weight each source of information (\#1--\#3) in log-linear
+  %   model to obtain final $n$-best list
+  % \end{enumerate}
 
-  $\Rightarrow$ Language-independent approach
+%  $\Rightarrow$ Language-independent approach
+
+  % trim=left bottom right top, clip
+  \includegraphics[width=.9\textwidth]{flowchart/chart}
+
+\end{block}
+
+\begin{block}{Steps in the pipeline}
+  \begin{enumerate}
+  \item \textbf{Phrase table}: 
+    %Model L1$\mapsto$L2 transfer knowledge:
+    look up candidate translations for L1 fragment
+  \item \textbf{L2 ngram LM}: score candidate translations (L2 syntax)
+  \item \textbf{Dependency-driven word similarity (\textit{SIM})}:
+    score translations % (L2 collocations)
+  \item \textbf{Weighted ranker}: weight \#1--\#3 in log-linear model
+    to obtain $n$-best list
+  \end{enumerate}
+\end{block}
 
 %%% Begin Levi's flowchart (currently doesn't in the poster, but works elsewhere!)
 % Define block styles
@@ -130,167 +148,12 @@
 %\end{figure}
 %%% End Levi's flowchart.
 
-\end{block}
-
-\begin{block}{Data sources}
-
-\begin{center}
-\textcolor{purple}{Europarl}
-\end{center}
-
-\colorbox{white}{
-\begin{minipage}{.85\linewidth}
-\begin{itemize}
-\item parallel corpus: proc.\ of European Parliament
-\item used for L2 candidate generation
-\item  used to generate phrase tables
-\item small, clean, out of domain
-\end{itemize}
-\end{minipage}
-}
-
-\begin{center}
-\textcolor{purple}{BabelNet}
-\end{center}
-
-\colorbox{white}{
-\begin{minipage}{.85\linewidth}
-\begin{itemize}
-\item multilingual encyclopedic dictionary
-\item used as L2 back-off 
-\item look up translations for phrases \& sub-phrases
-\end{itemize}
-\end{minipage}
-}
-
-\begin{center}
-\textcolor{purple}{Wikipedia}
-\end{center}
-
-\colorbox{white}{
-\begin{minipage}{.85\linewidth}
-\begin{itemize}
-\item used for estimating collocational tendencies
-\item size: 12-28M sentences
-\item POS tagged \& dependency parsed (Stanford Parser)
-\end{itemize}
-\end{minipage}
-}
-
-\begin{center}
-\textcolor{purple}{Google Books Syntactic N-grams}
-\end{center}
-
-\colorbox{white}{
-\begin{minipage}{.85\linewidth}
-\begin{itemize}
-\item English only
-\item additional training set for collocations tendencies
-\item syntactic $n$-grams 
-
-\end{itemize}
-\end{minipage}
-}
-
-\end{block}
-
-\end{column}
-
-\begin{column}{.55\linewidth}
-
-%\begin{columns}
-%\begin{column}{.48\linewidth}
-
-\begin{block}{System Design}
-
-\begin{center}
-  \textcolor{purple}{Constructing Candidate Translations}
- \end{center}
-
- \colorbox{white}{
-\begin{minipage}{.90\linewidth}
- \begin{itemize}
-  \item build phrase tables using Moses
-  \item during translation: look up source lg.\ phrase, extract all translations from phrase table
-  \item back-off 1: construct ``synthetic phrase'' from sub-phrases
-  \item back-off 2: look up phrase in BabelNet; estimate probs uniformly
-  \item back-off 3: look up phrase in Google Translate\\
-  \end{itemize}
-\end{minipage}
-}
-\vspace{1cm}
-
-
-\begin{center}
-  \textcolor{purple}{Scoring Candidate Translations via a L2 Language Model}
-\end{center}
- 
-  \colorbox{white}{
-\begin{minipage}{.90\linewidth}
- \begin{itemize}
-  \item model the fit of phrase in context
-  \item apply language model (KenLM); trained on Wikipedia data
-  \end{itemize}
-\end{minipage}
-}
-\vspace{1cm}
-
-%\end{center}
-
 %\end{block}
 
 %\end{column}
 
-%\begin{column}{.48\linewidth}
-
-%\begin{block}{System Design}
-%\begin{center}
-
-\begin{center}
-  \textcolor{purple}{Scoring Candidate Translations via Dependency-Based Word Similarity}
-\end{center}
-
-  \colorbox{white}{
-\begin{minipage}{.90\linewidth}
-  \begin{itemize}
-  \item basic idea: use deeper, syntax-based information to estimate fit
-  \item use adaptation of Lin's similarity metric
-  \item similarity is summed over all words in translated phrase
-  \item uses dependencies to \& from this word to context
-  \item similarity based on head, dependent, and label of dependency 
-  \item back-off: use POS instead of words
-  \item example: \textcolor{blue}{The suitcases disappeared after the $<$Aufgabe$>$ at the airport.}\\
-  	most frequent sense: \textcolor{blue}{Aufgabe = task}\\
-	google translate: \textcolor{blue}{The suitcase had disappeared after posting at the airport.}
-  \end{itemize}
-\end{minipage}
-}
-\vspace{1cm}
-
-\begin{center}
-  \textcolor{purple}{Tuning Weights with MERT}
-\end{center}
-
-  \colorbox{white}{
-\begin{minipage}{.90\linewidth}
-  \begin{itemize}
-  \item use long-linear model to combine scores from different types of information
-  \item weights for different types of information estimated using ZMERT
-  \item ZMERT optimized for BLEU scores
-  \end{itemize}
-\end{minipage}
-}
-
-
-\end{block}
-
-    \end{column}
-%  \end{columns}
-%  \end{column}
-  \end{columns}
-
-\begin{columns}
-  \begin{column}{.64\linewidth}
+%\begin{columns}
+%  \begin{column}{.5\linewidth}
 
 \begin{block}{Results}
 
@@ -366,9 +229,178 @@
 \end{center}
 \end{block}
 
-  \end{column}
+\end{column}
 
-  \begin{column}{.31\linewidth}
+\begin{column}{.47\linewidth}
+
+\begin{block}{Data sources}
+
+\begin{center}
+\textcolor{purple}{Europarl}
+\end{center}
+
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
+\begin{itemize}
+\item parallel corpus: proc.\ of European Parliament
+\item used for L2 candidate generation
+\item  used to generate phrase tables
+\item small, clean, out of domain
+\end{itemize}
+\end{minipage}
+}
+
+\begin{center}
+\textcolor{purple}{BabelNet}
+\end{center}
+
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
+\begin{itemize}
+\item multilingual encyclopedic dictionary
+\item used as L2 back-off 
+\item look up translations for phrases \& sub-phrases
+\end{itemize}
+\end{minipage}
+}
+
+\begin{center}
+\textcolor{purple}{Wikipedia}
+\end{center}
+
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
+\begin{itemize}
+\item used for estimating collocational tendencies
+\item size: 12-28M sentences
+\item POS tagged \& dependency parsed (Stanford Parser)
+\end{itemize}
+\end{minipage}
+}
+
+\begin{center}
+\textcolor{purple}{Google Books Syntactic N-grams}
+\end{center}
+
+\colorbox{white}{
+\begin{minipage}{.85\linewidth}
+\begin{itemize}
+\item English only
+\item additional training set for collocations tendencies
+\item syntactic $n$-grams 
+
+\end{itemize}
+\end{minipage}
+}
+
+\end{block}
+
+%  \end{column}
+%\end{columns}
+
+%\begin{column}{.47\linewidth}
+
+%\begin{columns}
+%\begin{column}{.48\linewidth}
+
+\vspace{3ex}
+
+\begin{block}{System Design}
+
+\begin{center}
+  \textcolor{purple}{1. Constructing Candidate Translations}
+ \end{center}
+
+ \colorbox{white}{
+\begin{minipage}{.90\linewidth}
+ \begin{itemize}
+  \item build phrase tables using Moses
+  \item during translation: look up source lg.\ phrase, \\
+    \mbox{}\hspace{8em}extract all translations from phrase table\\[1ex]
+  % \item back-offs: 1: construct ``synthetic phrase'' from sub-phrases
+  % \item[] \mbox{}\hspace{4.1em} 2: look up phrase in BabelNet; estimate probs uniformly
+  % \item back-off 3: look up phrase in Google Translate\\
+  \item back-off: \begin{tabular}{cl}
+       1: & construct ``synthetic phrase'' from sub-phrases\\
+       2: & look up phrase in BabelNet; estimate probs uniformly\\
+       3: & look up phrase in Google Translate\\
+     \end{tabular}
+  \end{itemize}
+\end{minipage}
+}
+\vspace{1cm}
+
+
+\begin{center}
+  \textcolor{purple}{2. Scoring Candidate Translations via a L2 Language Model}
+\end{center}
+ 
+  \colorbox{white}{
+\begin{minipage}{.90\linewidth}
+ \begin{itemize}
+  \item model the fit of phrase in context
+  \item apply language model (KenLM); trained on Wikipedia data
+  \end{itemize}
+\end{minipage}
+}
+\vspace{1cm}
+
+%\end{center}
+
+%\end{block}
+
+%\end{column}
+
+%\begin{column}{.48\linewidth}
+
+%\begin{block}{System Design}
+%\begin{center}
+
+\begin{center}
+  \textcolor{purple}{3. Scoring Candidate Translations via Dependency-Based Word Similarity}
+\end{center}
+
+  \colorbox{white}{
+\begin{minipage}{.90\linewidth}
+  \begin{itemize}
+  \item basic idea: use deeper, syntax-based information to estimate fit
+    \begin{itemize}
+    \item use adaptation of Lin's similarity metric
+    \item similarity is summed over all words in translated phrase
+    \end{itemize}
+  \item use dependencies to \& from this word to context
+    \begin{itemize}
+    \item similarity based on head, dependent, and label of dependency 
+    \item back-off: use POS instead of words
+    \end{itemize}
+  \item example: \\
+    \textcolor{blue}{The suitcases disappeared after the $<$Aufgabe$>$ at the airport.}
+    \begin{itemize}
+    \item most frequent sense: \textcolor{blue}{Aufgabe = task}\\
+    \item google: \textcolor{blue}{The suitcase had disappeared after posting at the airport.}
+    \end{itemize}      
+  \end{itemize}
+\end{minipage}
+}
+\vspace{1cm}
+
+\begin{center}
+  \textcolor{purple}{4. Tuning Weights with MERT}
+\end{center}
+
+  \colorbox{white}{
+\begin{minipage}{.90\linewidth}
+  \begin{itemize}
+  \item use long-linear model to combine scores from different information
+  \item weights for different types of information estimated using ZMERT
+  \item ZMERT optimized for BLEU scores
+  \end{itemize}
+\end{minipage}
+}
+
+\end{block}
+
+\vspace{3ex}
 
 \begin{block}{Conclusion}
 
@@ -377,12 +409,18 @@
 \item approach is language independent
 \item uses syntactic information
 \item but: syntactic information currently not helpful 
+
+  Open Question: why isn't syntax helpful?  how could it be?
 \end{itemize}
 
 \end{block}
 
-  \end{column}
+
+%    \end{column}
+%  \end{columns}
+\end{column}
 \end{columns}
+
 
 \end{frame}
 \end{document}
